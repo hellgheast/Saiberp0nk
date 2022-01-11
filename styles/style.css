@@ -5,9 +5,24 @@ html {
     font-family: 'Oswald', sans-serif; 
 }
 
-p, li, h1, h2, table {
+p, li, h1, h2 {
     color: greenyellow;
 }
+
+table {
+    color: greenyellow;
+    border: 2px solid greenyellow;
+    padding: 5px;
+    margin: 10px 0px;
+}
+th {
+    text-align: center;
+}
+td {
+    text-align: center;
+    padding: 5px;
+}
+
 #main-title {
     color: greenyellow;
     width: fit-content;
