@@ -1,0 +1,20 @@
+extends layout
+
+block content
+  h1#main-title= "Saiberp0nk Script page"
+  p 
+    button#uplink="Connect to matrix"
+  p 
+    button#downlink="Disconnect from matrix"
+  table(border="border")#corp_container
+
+  .container
+    .row
+      .col
+        p
+          a(href="/") Back to main page !
+      .col
+        p
+          a(href="#top") Back to the top !
+
+  script(src="/javascripts/main.js") 

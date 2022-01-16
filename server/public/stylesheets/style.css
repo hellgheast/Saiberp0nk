@@ -1,0 +1,55 @@
+
+/*First css page*/
+html {
+  font-size: 20px; /* px means "pixels": the base font size is now 10 pixels high  */
+  font-family: 'Oswald', sans-serif; 
+}
+
+p, li, h1, h2 {
+  color: greenyellow;
+}
+
+table {
+  color: greenyellow;
+  border: 2px solid greenyellow;
+  padding: 5px;
+  margin: 10px 0px;
+}
+
+.container {
+  color: greenyellow;
+  border: 2px solid greenyellow;
+  margin: 20px 0px;
+  
+}
+
+.col {
+  color: greenyellow;
+  border: 2px solid greenyellow;
+  text-align: center;
+}
+
+th {
+  text-align: center;
+}
+td {
+  text-align: center;
+  padding: 5px;
+}
+
+#main-title {
+  color: greenyellow;
+  width: fit-content;
+  border: 2px solid greenyellow;
+}
+#top {
+  background-color: black
+}
+a[href]:hover {
+  color:#10655d;
+  transition: color .5s;
+}
+a[href] {
+  color: greenyellow;
+}
+
