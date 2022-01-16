@@ -15,6 +15,20 @@ table {
     padding: 5px;
     margin: 10px 0px;
 }
+
+.container {
+    color: greenyellow;
+    border: 2px solid greenyellow;
+    margin: 20px 0px;
+    
+}
+
+.col {
+    color: greenyellow;
+    border: 2px solid greenyellow;
+    text-align: center;
+}
+
 th {
     text-align: center;
 }

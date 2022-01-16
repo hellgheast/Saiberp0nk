@@ -2,8 +2,11 @@
 Thanks for all the Mumble team for this experiment
 
 # Tech stack
+Now:
 Express.js
 Node.js
+Bootstrap
+Future:
 Vue.js
 Moongoose
 # Docker change folder 
