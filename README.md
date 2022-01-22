@@ -7,6 +7,7 @@ Express.js
 Node.js
 Bootstrap
 Future:
+Websockets
 Vue.js
 Moongoose
 # Docker change folder 
