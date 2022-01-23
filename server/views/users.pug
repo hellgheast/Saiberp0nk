@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  title = "My shitpost page"
+  h1#main-title="Saiberp0nk Chat page"
+  script(src="/socket.io/socket.io.js")
+  script.
+    console.log("Test");
+    const socket = io();
+    socket.on('socketToMe', function (data) {
+      console.log(data);
+    });
