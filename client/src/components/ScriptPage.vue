@@ -6,19 +6,22 @@
     <p><button id="downlink">Disconnect from matrix</button></p>
     <table border="border" id="corp_container">
         <tr><th>Name</th><th>Origin</th></tr>
-        <tr>
-            <td>{{corpo_name}}</td>
-            <td>{{corpo_origin}}</td>
+        <tr v-for="corp in corpos" :key="corp.id">
+            <td>{{corp.name}}</td>
+            <td>{{corp.origin}}</td>
         </tr>
 
-        </table>
+    </table>
+
+    <p>Nb of Kast company : <span> {{ numberKastCorpos }} </span></p>
     
     <p><a href="#top">Back to the top !</a></p> <!-- Goes to object id  -->
+
 </div>
 </template>
 
 <script>
-const corpos = [["Zai","Hasek"],["Haas-Kepler","Kast"],["Kosmonav","Soviet"],["Asclepia","Kast"]];
+
 
 export default {
     name: "ScriptPage",
@@ -28,20 +31,35 @@ export default {
 
     data: function() {
         return {
-        corpo_name: "",
-        corpo_origin: ""
-        };
+            corpos: [
+                {name:"Haas-Kepler",origin:"Kast"},
+                {name:"Zai",origin:"Hasek"},
+                {name:"Kosmonav",origin:"Soviet"},
+                {name:"Asclepia",origin:"Kast"}
+            ],
+        }
     },
 
     methods: {
-        updateCorpo: function () {
-            this.corpo_origin = corpos[0][1]
-            this.corpo_name = corpos[0][0]
+    },
+
+    computed: {
+        numberKastCorpos() {
+            let number = 0;
+            for (let index = 0; index < this.corpos.length; index++) {
+                if (this.corpos[index].origin === "Kast") {
+                    number++;
+                }         
+            }
+            return number
+        },
+        kastCompany() {
+            return this.numberKastCorpos() > 0;
         }
     },
 
     mounted: function() {
-        this.updateCorpo();
+        console.log("Script component mounted")
     }
 
 };

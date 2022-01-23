@@ -2,6 +2,7 @@
   <div id="app">
     <!--All the application is inside here ?-->
     <basic-page flavour="Vue version on WSL" />
+    <chat-box/>
     <HelloWorld msg="Welcome to Your Vue.js App"/>
     <script-page flavour="Script"/>
     
@@ -13,11 +14,13 @@
 import HelloWorld from './components/HelloWorld.vue'
 import BasicPage  from './components/BasicPage.vue'
 import ScriptPage from './components/ScriptPage.vue'
+import ChatBox from './components/ChatBox.vue'
 
 export default {
   name: 'App',
   components: {
     HelloWorld,
+    ChatBox,
     BasicPage,
     ScriptPage
   }
