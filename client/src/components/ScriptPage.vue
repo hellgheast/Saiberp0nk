@@ -1,9 +1,9 @@
 <template>
 <div>
-    <h1 id="main-title">Saiberp0nk {{flavour}} page</h1>
+    <h1 id="main-title">{{ script_title }}</h1>
 
-    <p><button id="uplink">Connect to matrix</button></p>
-    <p><button id="downlink">Disconnect from matrix</button></p>
+    <p><button v-on:click="uplinkButton" id="uplink">Connect to matrix</button></p>
+    <p><button v-on:click="downlinkButton" id="downlink">Disconnect from matrix</button></p>
     <table border="border" id="corp_container">
         <tr><th>Name</th><th>Origin</th></tr>
         <tr v-for="corp in corpos" :key="corp.id">
@@ -37,10 +37,42 @@ export default {
                 {name:"Kosmonav",origin:"Soviet"},
                 {name:"Asclepia",origin:"Kast"}
             ],
+            script_title: "Saiberp0nk script title"
         }
     },
 
     methods: {
+        setUserName() {
+            let myNickname = prompt("Please enter your nickname");
+            if(!myNickname) {
+                this.setUserName();
+            } else {
+                localStorage.setItem('name', myNickname);
+                this.script_title = "Welcome in the grid " + myNickname;
+            }
+        },
+
+        delUserName() {
+            localStorage.removeItem('name');
+        },
+
+        uplinkButton() {
+            if(!localStorage.getItem('name')) {
+                this.setUserName();
+            } else {
+                let storedNickname = localStorage.getItem('name');
+                this.script_title = "Welcome back in the grid " + storedNickname; 
+            }    
+        },
+        downlinkButton() {
+            if(localStorage.getItem('name')) {
+                let storedNickname = localStorage.getItem('name');
+                this.delUserName();
+                this.script_title = "You're offgrid " + storedNickname; 
+            } else {
+                this.script_title = "You're not inside the grid.."; 
+            }   
+        }
     },
 
     computed: {
@@ -55,7 +87,7 @@ export default {
         },
         kastCompany() {
             return this.numberKastCorpos() > 0;
-        }
+        },   
     },
 
     mounted: function() {

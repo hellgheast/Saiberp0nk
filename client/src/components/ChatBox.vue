@@ -1,6 +1,7 @@
 <template>
   <div id="event-handling" class="demo" border="border">
       <p @click="changeTitle">{{ message }}</p>
+      <input v-model="message">
       <button v-on:click="sendServer">Send to server</button>
   </div>
 </template>
