@@ -1,9 +1,11 @@
 <template>
   <div id="app">
     <!--All the application is inside here ?-->
-    <img alt="Vue logo" src="./assets/logo.png">
+    <basic-page flavour="Vue version on WSL" />
+    <chat-box/>
     <HelloWorld msg="Welcome to Your Vue.js App"/>
-    <!-- <basic-page flavour="Vue version" /> -->
+    <script-page flavour="Script"/>
+    
 
   </div>
 </template>
@@ -11,23 +13,35 @@
 <script>
 import HelloWorld from './components/HelloWorld.vue'
 import BasicPage  from './components/BasicPage.vue'
+import ScriptPage from './components/ScriptPage.vue'
+import ChatBox from './components/ChatBox.vue'
 
 export default {
   name: 'App',
   components: {
     HelloWorld,
-    BasicPage
+    ChatBox,
+    BasicPage,
+    ScriptPage
   }
 }
 </script>
 
 <style>
+
+/* CSS part */
+
+@import './assets/styles/style.css';
+
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300&display=swap');
+
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-size: 20px; /* px means "pixels": the base font size is now 10 pixels high  */
+  font-family: 'Oswald', sans-serif; 
+
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  background-color: black;
 }
 </style>

@@ -1,7 +1,7 @@
 
 <template>
     <div>
-        <h1 for>Saiberp0nk Main page {{flavour}} </h1>
+        <h1 id="main-title">Saiberp0nk Main page {{flavour}} </h1>
     </div>
 </template>
 
