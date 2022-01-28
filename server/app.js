@@ -6,7 +6,12 @@ var logger = require('morgan');
 
 var app = express();
 var server = require('http').Server(app);
-var io = require('socket.io')(server);
+var io = require('socket.io')(server,
+  {
+    cors: {
+      origin: "http://localhost:8080"
+    }
+  });
 
 
 var indexRouter = require('./routes/index');
@@ -30,6 +35,23 @@ app.use(function(req, res, next){
 
 // Add the router
 app.use('/', indexRouter);
+
+
+// Handle Socket IO events
+io.on('connection', (socket) => {
+  console.log("A user connected");
+  
+  socket.on("disconnect", () =>{
+    console.log("user disconnected");
+  });
+
+  socket.on("my message",(msg) => {
+    console.log("rx msg: " + msg);
+    console.log("broadcast it back !");
+    io.emit("my broadcast", `server ${msg}`)
+  });
+
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
