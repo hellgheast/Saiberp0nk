@@ -34,6 +34,7 @@ export default {
         },
         changeTitle() {
             this.message = "ChatBox clicked message";
+            console.log("Clicked title");
         }
     }
 
