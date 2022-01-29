@@ -14,6 +14,11 @@ class SocketService {
             this.socket.disconnect();
         }
     }
+    sendMessage(message){
+        if(this.socket){
+            this.socket.emit("chatmsg",message);
+        }
+    }
     addListener(){
         this.socket.on('my broadcast',(data) => {
             console.log(data);

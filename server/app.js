@@ -51,6 +51,11 @@ io.on('connection', (socket) => {
     io.emit("my broadcast", `server ${msg}`)
   });
 
+  socket.on("chatmsg",(msg) => {
+    console.log(msg);
+    io.emit("chatmsg",msg);
+  });
+
 });
 
 // catch 404 and forward to error handler

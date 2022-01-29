@@ -1,12 +1,19 @@
 <template>
   <div id="event-handling" class="demo" border="border">
+      
+      <ul>
+        <li v-for="msg in rxmessages" :key="msg.id">{{msg}}</li>
+      </ul>
+      
       <p @click="changeTitle">{{ message }}</p>
-      <input v-model="message">
+      <input v-model="message" placeholder="Enter your message">
       <button v-on:click="sendServer">Send to server</button>
   </div>
 </template>
 
 <script>
+import SocketService from '../scripts/socketio.service.js'
+
 export default {
     name: "ChatBox",
     props: {
@@ -14,23 +21,27 @@ export default {
     },
     data: function() {
         return {
-            message: "Welcome to Chatbox"
+            message: "",
+            rxmessages: []
         }
     },
     // state functions
     created() {
-        console.log('mounted : message is ' + this.message)
+        console.log('created : message is ' + this.message)
+    },
+    mounted(){
+        SocketService.socket.on("chatmsg",(data) => {
+            console.log(`${data}`);
+            this.rxmessages.push(data);
+        });
     },
     unmounted() {
         console.log('unmounted component');
     },
-    // internal methos of the component
+    // internal methods of the component
     methods: {
         sendServer() {
-            this.message = this.message
-                                .split('')
-                                .reverse()
-                                .join('');
+            SocketService.sendMessage(this.message);
         },
         changeTitle() {
             this.message = "ChatBox clicked message";
