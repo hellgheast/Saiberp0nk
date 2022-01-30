@@ -32,7 +32,10 @@ export default {
     mounted(){
         SocketService.socket.on("chatmsg",(data) => {
             console.log(`${data}`);
-            this.rxmessages.push(data);
+            var today = new Date();
+            var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+            let timemsg = time + " " +data;
+            this.rxmessages.push(timemsg);
         });
     },
     unmounted() {
