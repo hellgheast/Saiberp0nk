@@ -24,5 +24,11 @@ class SocketService {
             console.log(data);
         });
     }
+    connected(){
+        if(this.socket){
+            return true;
+        }
+        return false;
+    }
 }
 export default new SocketService();

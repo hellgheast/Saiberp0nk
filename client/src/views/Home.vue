@@ -26,9 +26,14 @@ export default {
     ScriptPage
   },
   created() {
-    console.log("Tried connection");
-    SocketService.setupSocketConnection();
-    SocketService.addListener();
+    if(SocketService.connected()){
+      console.log("Already connected");
+    }
+    else {
+      console.log("Connection..");
+      SocketService.setupSocketConnection();
+      SocketService.addListener();
+    }
   },
   beforeUnmount() {
     SocketService.disconnect();

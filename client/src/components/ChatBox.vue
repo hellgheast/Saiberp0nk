@@ -13,6 +13,7 @@
 
 <script>
 import SocketService from '@/scripts/socketio.service.js'
+//import { useChatMessageStore }from '@/stores/chatmessage.js'
 
 export default {
     name: "ChatBox",
@@ -25,7 +26,15 @@ export default {
             rxmessages: []
         }
     },
+    computed: {
+
+    },
     // state functions
+    /*
+    setup() {
+        const store = useChatMessageStore();
+        return {store}
+    },*/
     created() {
         console.log('created : message is ' + this.message)
     },
@@ -33,9 +42,10 @@ export default {
         SocketService.socket.on("chatmsg",(data) => {
             console.log(`${data}`);
             let today = new Date();
-            let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-            let timemsg = time + " " +data;
+            let time = today.getHours() + ":" + String(today.getMinutes()).padStart(2, "0") + ":" + today.getSeconds();
+            let timemsg = time + " " + data;
             this.rxmessages.push(timemsg);
+            //this.store.addMessage(timemsg);
         });
     },
     unmounted() {
