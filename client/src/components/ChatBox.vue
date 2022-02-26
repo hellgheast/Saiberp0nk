@@ -2,68 +2,52 @@
   <div id="event-handling" class="demo" border="border">
       
       <ul>
-        <li v-for="msg in rxmessages" :key="msg.id">{{msg}}</li>
+        <li v-for="msg in state.rxmessages" :key="msg.id">{{msg}}</li>
       </ul>
       
-      <p @click="changeTitle">{{ message }}</p>
-      <input v-model="message" placeholder="Enter your message">
+      <p @click="changeTitle">{{ state.message }}</p>
+      <input v-model="state.message" placeholder="Enter your message">
       <button v-on:click="sendServer">Send to server</button>
   </div>
 </template>
 
-<script>
+<script setup>
 import SocketService from '@/scripts/socketio.service.js'
+import { reactive,onBeforeMount,onMounted, onUnmounted} from 'vue'
 //import { useChatMessageStore }from '@/stores/chatmessage.js'
 
-export default {
-    name: "ChatBox",
-    props: {
-
-    },
-    data: function() {
-        return {
+        const state = reactive({
             message: "",
             rxmessages: []
-        }
-    },
-    computed: {
+        })
 
-    },
-    // state functions
-    /*
-    setup() {
-        const store = useChatMessageStore();
-        return {store}
-    },*/
-    created() {
-        console.log('created : message is ' + this.message)
-    },
-    mounted(){
-        SocketService.socket.on("chatmsg",(data) => {
-            console.log(`${data}`);
-            let today = new Date();
-            let time = today.getHours() + ":" + String(today.getMinutes()).padStart(2, "0") + ":" + today.getSeconds();
-            let timemsg = time + " " + data;
-            this.rxmessages.push(timemsg);
-            //this.store.addMessage(timemsg);
-        });
-    },
-    unmounted() {
-        console.log('unmounted component');
-    },
-    // internal methods of the component
-    methods: {
-        sendServer() {
-            SocketService.sendMessage(this.message);
-        },
-        changeTitle() {
-            this.message = "ChatBox clicked message";
+        function sendServer() {
+            SocketService.sendMessage(state.message);
+        }
+
+        function changeTitle() {
+            state.message = "ChatBox clicked message";
             console.log("Clicked title");
         }
-    }
 
+        onMounted(() => {
+            SocketService.socket.on("chatmsg",(data) => {
+                console.log(`${data}`);
+                let today = new Date();
+                let time = today.getHours() + ":" + String(today.getMinutes()).padStart(2, "0") + ":" + today.getSeconds();
+                let timemsg = time + " " + data;
+                state.rxmessages.push(timemsg);
+            });
+        })
 
-}
+        onBeforeMount(() => {
+            console.log('onBeforeMount : message is ' + state.message)
+        })
+        
+        onUnmounted(() => {
+            console.log('onUnmounted: Chatbox unmounted');
+        })
+        
 </script>
 
 

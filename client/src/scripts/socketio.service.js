@@ -4,7 +4,7 @@ class SocketService {
     socket;
     constructor() {}
     setupSocketConnection() {
-
+        console.log("Setup Connection..");
         this.socket = io("http://localhost:3000");
         console.log("After socket creation");
         this.socket.emit("my message", "We're bounded from Vue !");
@@ -12,6 +12,9 @@ class SocketService {
     disconnect(){
         if(this.socket) {
             this.socket.disconnect();
+            console.log("Disconnect...");
+        } else {
+            console.log("False disconnect");
         }
     }
     sendMessage(message){
@@ -26,7 +29,9 @@ class SocketService {
     }
     connected(){
         if(this.socket){
-            return true;
+            if(this.socket.connected){
+                return true;
+            }
         }
         return false;
     }

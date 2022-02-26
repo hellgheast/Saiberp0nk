@@ -30,7 +30,6 @@ export default {
       console.log("Already connected");
     }
     else {
-      console.log("Connection..");
       SocketService.setupSocketConnection();
       SocketService.addListener();
     }
