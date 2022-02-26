@@ -23,7 +23,7 @@ import SocketService from '@/scripts/socketio.service.js'
 import ChatBox from '@/components/ChatBox.vue'
 import ScriptPage from '@/components/ScriptPage.vue'
 
-import { ref,reactive,onMounted, onBeforeUnmount} from 'vue'
+import { provide,ref,reactive,onMounted, onBeforeUnmount} from 'vue'
 
 
     const state = reactive({
@@ -34,10 +34,14 @@ import { ref,reactive,onMounted, onBeforeUnmount} from 'vue'
         }
     })
 
-    const game_map = ref(null)
+    const game_map = ref(null);
+    console.log("Setup socket in Game");
+    SocketService.setupSocketConnection();
+    
+    provide("socket",SocketService);
 
     onMounted(() => {
-
+        console.log("onMounted Game");
         if(SocketService.connected()){
             console.log("Already connected");
             state.context = game_map.value.getContext("2d");

@@ -12,9 +12,10 @@
 </template>
 
 <script setup>
-import SocketService from '@/scripts/socketio.service.js'
-import { reactive,onBeforeMount,onMounted, onUnmounted} from 'vue'
+import { reactive,onBeforeMount,onMounted, onUnmounted, inject} from 'vue'
 //import { useChatMessageStore }from '@/stores/chatmessage.js'
+
+        const ssocket = inject("socket")
 
         const state = reactive({
             message: "",
@@ -28,10 +29,10 @@ import { reactive,onBeforeMount,onMounted, onUnmounted} from 'vue'
                 case "left":
                 case "up":
                 case "down":
-                    SocketService.sendMove(state.message);
+                    ssocket.sendMove(state.message);
                     break;
                 default:
-                    SocketService.sendMessage(state.message);
+                    ssocket.sendMessage(state.message);
             }
         }
 
@@ -43,7 +44,7 @@ import { reactive,onBeforeMount,onMounted, onUnmounted} from 'vue'
         onMounted(() => {
             console.log("ChatBox Mounted");
             try {
-                SocketService.socket.on("chatmsg",(data) => {
+                ssocket.socket.on("chatmsg",(data) => {
                     console.log(`${data}`);
                     let today = new Date();
                     let time = today.getHours() + ":" + String(today.getMinutes()).padStart(2, "0") + ":" + today.getSeconds();
