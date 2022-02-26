@@ -1,12 +1,17 @@
-var createError = require('http-errors');
-var express = require('express');
+
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var createError = require('http-errors');
 
-var app = express();
-var server = require('http').Server(app);
-var io = require('socket.io')(server,
+const express = require('express');
+const { createServer } = require('http');
+const { Server } = require('socket.io');
+
+
+const app = express();
+const server = createServer(app);
+const io = new Server(server,
   {
     cors: {
       origin: "http://localhost:8080"

@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import SocketService from '../scripts/socketio.service.js'
+import SocketService from '@/scripts/socketio.service.js'
 
 export default {
     name: "ChatBox",
@@ -32,8 +32,8 @@ export default {
     mounted(){
         SocketService.socket.on("chatmsg",(data) => {
             console.log(`${data}`);
-            var today = new Date();
-            var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+            let today = new Date();
+            let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
             let timemsg = time + " " +data;
             this.rxmessages.push(timemsg);
         });
