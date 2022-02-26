@@ -3,7 +3,7 @@
     <img alt="Vue logo" src="../assets/logo.png">
     <basic-page flavour="Vue version on WSL" />
     <chat-box/>
-    <hello-world msg="Welcome to Your Vue.js App"/>
+    <hello-world msg="Welcome to Your Vue.js 3 App"/>
     <script-page flavour="Script"/> 
 
   </div>

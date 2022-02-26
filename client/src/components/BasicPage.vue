@@ -1,15 +1,13 @@
 
 <template>
     <div>
-        <h1 id="main-title">Saiberp0nk Main page {{flavour}} </h1>
+        <h1 id="main-title">Saiberp0nk Main page {{props.flavour}} </h1>
     </div>
 </template>
 
-<script>
-export default {
-    name: "BasicPage",
-    props: {
-        flavour: String
-    }
-}
+<script setup>
+import {defineProps} from 'vue'
+const props = defineProps({
+    flavour: String
+})
 </script>
