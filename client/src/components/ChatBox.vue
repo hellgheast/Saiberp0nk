@@ -22,7 +22,17 @@ import { reactive,onBeforeMount,onMounted, onUnmounted} from 'vue'
         })
 
         function sendServer() {
-            SocketService.sendMessage(state.message);
+            // Check the content of the message
+            switch(state.message) {
+                case "right":
+                case "left":
+                case "up":
+                case "down":
+                    SocketService.sendMove(state.message);
+                    break;
+                default:
+                    SocketService.sendMessage(state.message);
+            }
         }
 
         function changeTitle() {
@@ -31,13 +41,20 @@ import { reactive,onBeforeMount,onMounted, onUnmounted} from 'vue'
         }
 
         onMounted(() => {
-            SocketService.socket.on("chatmsg",(data) => {
-                console.log(`${data}`);
-                let today = new Date();
-                let time = today.getHours() + ":" + String(today.getMinutes()).padStart(2, "0") + ":" + today.getSeconds();
-                let timemsg = time + " " + data;
-                state.rxmessages.push(timemsg);
-            });
+            console.log("ChatBox Mounted");
+            try {
+                SocketService.socket.on("chatmsg",(data) => {
+                    console.log(`${data}`);
+                    let today = new Date();
+                    let time = today.getHours() + ":" + String(today.getMinutes()).padStart(2, "0") + ":" + today.getSeconds();
+                    let timemsg = time + " " + data;
+                    state.rxmessages.push(timemsg);
+                });
+                console.log("ChatBox connected"); 
+            } catch(err){
+                alert(err.message);
+            }
+            
         })
 
         onBeforeMount(() => {

@@ -32,6 +32,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
+
 // Adds socket.io in our event loop
 app.use(function(req, res, next){
   res.io = io;
@@ -40,6 +41,13 @@ app.use(function(req, res, next){
 
 // Add the router
 app.use('/', indexRouter);
+
+
+// Simple game data
+var position = {
+  x:200,
+  y:200
+}
 
 
 // Handle Socket IO events
@@ -59,6 +67,29 @@ io.on('connection', (socket) => {
   socket.on("chatmsg",(msg) => {
     console.log(msg);
     io.emit("chatmsg",msg);
+  });
+
+  socket.on("position_req",(data) => {
+    io.emit("position",position);
+  });
+
+  socket.on("move",(data) => {
+    switch(data) {
+      case "left":
+        position.x -= 20;
+        break;
+      case "right":
+        position.x += 20;
+        break;
+      case "down":
+        position.y += 20;
+        break;
+      case "up":
+        position.y -= 20;
+        break;
+    }
+    io.emit("position",position);
+     
   });
 
 });

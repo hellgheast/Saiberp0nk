@@ -38,3 +38,14 @@
   color: #42b983;
 }
 </style>
+
+<script setup>
+//!! DIRTY HACK !!
+import SocketService from '@/scripts/socketio.service.js'
+import { onMounted } from 'vue'
+
+    onMounted(() => {
+      SocketService.setupSocketConnection();
+    })
+
+</script>
