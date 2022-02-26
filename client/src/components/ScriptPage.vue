@@ -1,6 +1,6 @@
 <template>
 <div>
-    <h1 id="main-title">{{ script_title }}</h1>
+    <h1 id="main-title">{{ state.script_title }}</h1>
 
     <p><button v-on:click="uplinkButton" id="uplink">Connect to matrix</button></p>
     <p><button v-on:click="downlinkButton" id="downlink">Disconnect from matrix</button></p>
