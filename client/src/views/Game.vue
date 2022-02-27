@@ -28,17 +28,27 @@ import { provide,ref,reactive,onMounted, onBeforeUnmount} from 'vue'
 
     const state = reactive({
         context:{},
-        position: {
-            x:0,
-            y:0
-        }
+        players:[],
     })
 
     const game_map = ref(null);
     console.log("Setup socket in Game");
     SocketService.setupSocketConnection();
     
-    provide("socket",SocketService);
+    provide("ssocket",SocketService);
+
+
+    function drawPlayers() {
+        console.log(state.players);
+        state.context.clearRect(0,0,game_map.value.width,game_map.value.height);
+        Array.from(state.players).forEach(function({x, y, size, c}) {
+            state.context.beginPath();
+            state.context.rect(x, y, size, size);
+            state.context.fillStyle = c;
+            state.context.fillRect(x,y,size,size);
+            state.context.fill();
+        });
+    }
 
     onMounted(() => {
         console.log("onMounted Game");
@@ -50,11 +60,10 @@ import { provide,ref,reactive,onMounted, onBeforeUnmount} from 'vue'
             console.log("Game component init");
             SocketService.addListener();
             state.context = game_map.value.getContext("2d");
-            SocketService.socket.on("position",(data) =>{
-                state.position = data;
-                state.context.fillStyle = "rgb(154, 205, 50)";
-                state.context.clearRect(0,0,game_map.value.width,game_map.value.height);
-                state.context.fillRect(state.position.x,state.position.y,20,20);
+            SocketService.socket.on("players_list",(data) =>{
+                state.players = data;
+                drawPlayers();
+                
                 console.log("Got a position !");
             });
             SocketService.requestPosition();

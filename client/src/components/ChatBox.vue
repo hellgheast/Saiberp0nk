@@ -15,7 +15,7 @@
 import { reactive,onBeforeMount,onMounted, onUnmounted, inject} from 'vue'
 //import { useChatMessageStore }from '@/stores/chatmessage.js'
 
-        const ssocket = inject("socket")
+        const ssocket = inject("ssocket")
 
         const state = reactive({
             message: "",

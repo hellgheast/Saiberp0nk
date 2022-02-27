@@ -43,18 +43,31 @@ app.use(function(req, res, next){
 app.use('/', indexRouter);
 
 
-// Simple game data
-var position = {
-  x:200,
-  y:200
-}
+// Multiplayer version
+const players = {};
 
+
+function getRandomRgb() {
+  var num = Math.round(0xffffff * Math.random());
+  var r = num >> 16;
+  var g = num >> 8 & 255;
+  var b = num & 255;
+  return 'rgb(' + r + ', ' + g + ', ' + b + ')';
+}
 
 // Handle Socket IO events
 io.on('connection', (socket) => {
   console.log("A user connected");
+  // register new player
+  players[socket.id] = {
+    x:200,
+    y:200,
+    size: 20,
+    c: getRandomRgb()
+  }
   
   socket.on("disconnect", () =>{
+    delete players[socket.id];
     console.log("user disconnected");
   });
 
@@ -70,29 +83,35 @@ io.on('connection', (socket) => {
   });
 
   socket.on("position_req",(data) => {
-    io.emit("position",position);
+    io.emit("players_list",Object.values(players));
   });
 
   socket.on("move",(data) => {
     switch(data) {
       case "left":
-        position.x -= 20;
+        players[socket.id].x -= 20;
         break;
       case "right":
-        position.x += 20;
+        players[socket.id].x += 20;
         break;
       case "down":
-        position.y += 20;
+        players[socket.id].y += 20;
         break;
       case "up":
-        position.y -= 20;
+        players[socket.id].y -= 20;
         break;
     }
-    io.emit("position",position);
+    //io.emit("position",position);
      
   });
 
 });
+
+function update() {
+  io.volatile.emit('players_list', Object.values(players));
+}
+
+setInterval(update, 1000/60);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
