@@ -30,8 +30,9 @@ import { provide,ref,reactive,onMounted, onBeforeUnmount} from 'vue'
         context:{},
         players:[],
     })
-
+    // retrieving a DOM element in the javascript part
     const game_map = ref(null);
+
     console.log("Setup socket in Game");
     SocketService.setupSocketConnection();
     
@@ -63,8 +64,6 @@ import { provide,ref,reactive,onMounted, onBeforeUnmount} from 'vue'
             SocketService.socket.on("players_list",(data) =>{
                 state.players = data;
                 drawPlayers();
-                
-                console.log("Got a position !");
             });
             SocketService.requestPosition();
         }

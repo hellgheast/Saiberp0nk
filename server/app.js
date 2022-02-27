@@ -73,7 +73,6 @@ io.on('connection', (socket) => {
 
   socket.on("my message",(msg) => {
     console.log("rx msg: " + msg);
-    console.log("broadcast it back !");
     io.emit("my broadcast", `server ${msg}`)
   });
 
@@ -101,7 +100,7 @@ io.on('connection', (socket) => {
         players[socket.id].y -= 20;
         break;
     }
-    //io.emit("position",position);
+    update();
      
   });
 
@@ -111,7 +110,7 @@ function update() {
   io.volatile.emit('players_list', Object.values(players));
 }
 
-setInterval(update, 1000/60);
+setInterval(update, 500);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
