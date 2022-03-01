@@ -3,6 +3,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var createError = require('http-errors');
+var cors = require('cors');
 
 const express = require('express');
 const { createServer } = require('http');
@@ -10,6 +11,8 @@ const { Server } = require('socket.io');
 
 
 const app = express();
+app.use(cors()); // Don't know why we need this package ?
+
 const server = createServer(app);
 const io = new Server(server,
   {
@@ -20,6 +23,7 @@ const io = new Server(server,
 
 
 var indexRouter = require('./routes/index');
+var authRouter = require('./routes/auth');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -41,6 +45,7 @@ app.use(function(req, res, next){
 
 // Add the router
 app.use('/', indexRouter);
+app.use('/', authRouter);
 
 
 // Multiplayer version

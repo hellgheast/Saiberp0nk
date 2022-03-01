@@ -24,3 +24,8 @@ WrittenRealms : https://github.com/teebes/herald for the good advices provided a
 
 # Ressources, documentation
 https://github.com/sevenecks/lambda-moo-programming
+
+# Useful commands
+sudo mongod --dbpath ./test/db
+mongosh
+mongoose
