@@ -7,6 +7,7 @@ Express.js
 Node.js
 Websockets
 Vue.js
+https://express-validator.github.io/docs/
 Future:
 Pixi.js
 Moongoose
