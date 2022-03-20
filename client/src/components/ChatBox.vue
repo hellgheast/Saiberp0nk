@@ -1,13 +1,12 @@
 <template>
   <div id="event-handling" class="demo" border="border">
-      
-      <ul>
+    <div class="chatText">
+      <ul class="chatListStyle">
         <li v-for="msg in state.rxmessages" :key="msg.id">{{msg}}</li>
       </ul>
-      
-      <p @click="changeTitle">{{ state.message }}</p>
-      <input v-model="state.message" placeholder="Enter your message">
-      <button v-on:click="sendServer">Send to server</button>
+    </div>
+    <textarea v-model="state.message" v-on:keypress.enter.prevent="sendServer" rows="4" cols="50" placeholder="Enter your message"></textarea>
+    <button v-on:click="sendServer">Send to server</button>
   </div>
 </template>
 
@@ -34,11 +33,6 @@ import { reactive,onBeforeMount,onMounted, onUnmounted, inject} from 'vue'
                 default:
                     ssocket.sendMessage(state.message);
             }
-        }
-
-        function changeTitle() {
-            state.message = "ChatBox clicked message";
-            console.log("Clicked title");
         }
 
         onMounted(() => {
@@ -72,8 +66,21 @@ import { reactive,onBeforeMount,onMounted, onUnmounted, inject} from 'vue'
 <style>
 .demo {
     user-select: none;
-    border: 2px solid greenyellow;
+    border: 2px solid rgb(47, 189, 255);
     width: fit-content;
-    border-style: dashed;
+    height: fit-content;
+    border-style: solid;
 }
+
+.chatText {
+    height: 350px;
+    min-width: 200px;
+    border:1px solid grey;
+    overflow-y: scroll;
+}
+
+.chatListStyle {
+    list-style-type:none;
+}
+
 </style>

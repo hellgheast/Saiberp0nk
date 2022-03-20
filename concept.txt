@@ -1,0 +1,52 @@
+* Système de login
+* Opération CRUD pour pouvoir créer des utilisateurs dans une table
+* Apprendre à faire une DB minimale via Mongoose
+* Texte d'ambiance au login
+* système de room
+* changement de room
+* creation de personnage
+
+* express
+	jwt and basta
+	passportjs
+* vuejs
+	axios
+	jwt
+	Tsar House & Home, Red Central District.
+
+----------------------------------------------------------------------
+* Interaction avec les NPC
+* Set de commandes de base
+* Aide pour le parsing des commandes
+
+
+* Système de Quête
+* Mission NPC driven et aussi antagonist
+* factions soient stables
+* joueurs peuvent intégrer et grandir dans la faction
+* permertre un impact des joueurs sur le jeu.
+
+* permet de grandir et permettre certains accès/influence
+
+* tandem entre quêtes annexes et quête qui influence le BG de la ville
+* offrir des PNJ à des factions qui évoluent
+* pousser les joueurs à s'impliquer et à faire
+* les ressources ne sont pas accessible à tout le monde
+* distribution des ressources géré par le jeu (basé sur les factions)
+* emplois sont des quêtes repetables
+
+
+* gains
+* permettre des rerolls
+* durée de vie limité
+* stance de combat par defaut ?
+* Liserai pour indiquer ton personnage
+* Traitement du texte (formattage : gras,italique,cri)
+* Liste d'events aléatoires (façon nanochrome) en JSON
+* -> Soit un timer
+* -> Soit un script qui lance un event random tout les X temps (genre 20 minutes)
+* --> Classification de la chance d'avoir un event dans la chambre.
+
+* Dans une room
+* Random encounter
+* Pouvoir discuter avec les NPCs

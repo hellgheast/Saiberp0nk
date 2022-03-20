@@ -27,7 +27,7 @@ var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth');
 
 // Connect to the localhost DB
-mongoose.connect('mongodb://localhost:27017/sb_test');
+// mongoose.connect('mongodb://localhost:27017/sb_test');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

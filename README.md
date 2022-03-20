@@ -8,9 +8,10 @@ Node.js
 Websockets
 Vue.js
 https://express-validator.github.io/docs/
+Moongoose
 Future:
 Pixi.js
-Moongoose
+Agenda
 # Docker change folder 
 https://stackoverflow.com/a/66314636
 # WSL2 fixing localhost access

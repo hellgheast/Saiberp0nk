@@ -2,14 +2,20 @@
   <div class="game">
     <img alt="Vue logo" src="../assets/logo.png">
     <h1>Testing game page</h1>
-    <chat-box/>
-    <canvas
+
+    <div class="wrapper">
+      <canvas
+        class="box_left"
         ref="game_map"
         width="400"
         height="400"
         style="border: 1px solid greenyellow">
-    </canvas>
-    <script-page flavour="Script"/> 
+      </canvas>
+
+      <chat-box class="box_center"/>
+
+      <script-page class="box_right" flavour="Script"/> 
+    </div>
 
   </div>
 </template>
@@ -74,3 +80,38 @@ import { provide,ref,reactive,onMounted, onBeforeUnmount} from 'vue'
     })
 
 </script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+h3 {
+  margin: 40px 0 0;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+li {
+  display: inline-block;
+  margin: 0 10px;
+}
+a {
+  color: #42b983;
+}
+
+.wrapper {
+  display:grid;
+}
+
+.box_left {
+  grid-column: 1;
+}
+
+.box_center {
+   grid-column: 2;
+}
+
+.box_right {
+   grid-column: 3;
+}
+
+</style>
