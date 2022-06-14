@@ -3,12 +3,13 @@ Thanks for all the Mumble team for this experiment
 
 # Tech stack
 Now:
-Express.js
-Node.js
+## Frontend
 Websockets
 Vue.js
 https://express-validator.github.io/docs/
-Moongoose
+## Backend
+Django
+Evennia 
 # Future tech stack:
 Pixi.js
 Agenda
