@@ -1,0 +1,3 @@
+[submodule "saiberevennia/evennia"]
+	path = saiberevennia/evennia
+	url = https://github.com/evennia/evennia.git
