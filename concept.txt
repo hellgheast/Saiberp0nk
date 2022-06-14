@@ -15,6 +15,7 @@
 	Tsar House & Home, Red Central District.
 
 ----------------------------------------------------------------------
+https://files.ax86.net/terminus-ttf/
 * Interaction avec les NPC
 * Set de commandes de base
 * Aide pour le parsing des commandes

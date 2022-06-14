@@ -2,7 +2,8 @@
   <div id="event-handling" class="demo" border="border">
     <div class="chatText">
       <ul class="chatListStyle">
-        <li v-for="msg in state.rxmessages" :key="msg.id">{{msg}}</li>
+        <!--We should add processing of received message and generate correct span depending on the type of message-->
+        <li class="chatMessage" v-for="msg in state.rxmessages" :key="msg.id">{{msg}}</li>
       </ul>
     </div>
     <textarea v-model="state.message" v-on:keypress.enter.prevent="sendServer" rows="4" cols="50" placeholder="Enter your message"></textarea>
@@ -41,7 +42,7 @@ import { reactive,onBeforeMount,onMounted, onUnmounted, inject} from 'vue'
                 ssocket.socket.on("chatmsg",(data) => {
                     console.log(`${data}`);
                     let today = new Date();
-                    let time = today.getHours() + ":" + String(today.getMinutes()).padStart(2, "0") + ":" + today.getSeconds();
+                    let time = today.getHours() + ":" + String(today.getMinutes()).padStart(2, "0");
                     let timemsg = time + " " + data;
                     state.rxmessages.push(timemsg);
                 });
@@ -64,6 +65,9 @@ import { reactive,onBeforeMount,onMounted, onUnmounted, inject} from 'vue'
 
 
 <style>
+
+@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,400;1,200;1,300;1,500&display=swap');
+
 .demo {
     user-select: none;
     border: 2px solid rgb(47, 189, 255);
@@ -81,6 +85,13 @@ import { reactive,onBeforeMount,onMounted, onUnmounted, inject} from 'vue'
 
 .chatListStyle {
     list-style-type:none;
+    
+}
+.chatMessage {
+    font-family: 'Jost', sans-serif;
+    font-size: 15px;
+    line-height: 15px;
+    color: #ff005f;
 }
 
 </style>

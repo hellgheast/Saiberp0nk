@@ -9,9 +9,11 @@ Websockets
 Vue.js
 https://express-validator.github.io/docs/
 Moongoose
-Future:
+# Future tech stack:
 Pixi.js
 Agenda
+https://github.com/propjockey/augmented-ui
+
 # Docker change folder 
 https://stackoverflow.com/a/66314636
 # WSL2 fixing localhost access

@@ -5,7 +5,8 @@ class SocketService {
     constructor() {}
     setupSocketConnection() {
         console.log("Setup Connection..");
-        this.socket = io("http://localhost:3000");
+        //this.socket = io("http://localhost:3000");
+        this.socket = io("ws://localhost:8001");
         console.log("After socket creation");
         this.socket.emit("my message", "We're bounded from Vue !");
     }
