@@ -10,6 +10,7 @@ creation commands.
 from evennia.objects.objects import DefaultCharacter
 from .objects import ObjectParent
 
+import random
 
 class Character(ObjectParent, DefaultCharacter):
     """
@@ -32,4 +33,14 @@ class Character(ObjectParent, DefaultCharacter):
 
     """
 
-    pass
+
+    def at_object_creation(self):
+        self.db.str = random.randint(0,2)
+        self.db.dex = random.randint(0,2)
+        self.db.int = random.randint(0,2)
+
+    def get_stats(self):
+        """
+        Get the main stats of this character
+        """
+        return self.db.str, self.db.dex, self.db.int
