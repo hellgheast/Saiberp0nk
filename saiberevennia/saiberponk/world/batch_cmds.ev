@@ -24,3 +24,15 @@
 #
 
 
+# Create the room
+dig/tel cell_404;sb#01:typeclasses.rooms.Room
+# Set the description of the room
+desc cell_404 = |rUne cellule lugubre
+# Create the second room
+dig/tel room2;sb#02:sb#01:typeclasses.rooms.Room
+# Set the desc
+desc room2 = |gUne porte de sortie..
+# Create the exits
+open back:typeclasses.exits.Exit,out = cell_404
+# Teleport to 404
+tel cell_404

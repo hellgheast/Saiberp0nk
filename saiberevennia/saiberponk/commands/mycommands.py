@@ -2,7 +2,6 @@ from commands.command import Command
 from evennia import CmdSet
 import evennia
 from evennia import set_trace,default_cmds
-from typeclasses.mobs import Mob
 
 class CmdEchelon(Command):
     """
@@ -69,7 +68,7 @@ class CmdMobAdd(Command):
     def parse(self):
         pass
     def func(self):
-        evennia.create_object("typeclasses.mobs.ArachBot",key="ArachTest",location=self.caller.location)
+        evennia.create_object("typeclasses.monsters.ArachBot",key="ArachTest",location=self.caller.location)
 
 
 class CmdPrendre(default_cmds.CmdGet):

@@ -2,14 +2,14 @@
 
 from typeclasses.objects import Object
 
-class Mob(Object):
-    """It's the base class for any mob in the game"""
+class Monster(Object):
+    """It's the base class for any monster in the game"""
     
     def move_around(self):
         print(f"{self.key} se déplace !")
 
 
-class ArachBot(Mob):
+class ArachBot(Monster):
     """The smallest mob in the game !"""
     def move_around(self):
         super().move_around()
