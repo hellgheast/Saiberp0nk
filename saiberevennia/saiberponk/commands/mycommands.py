@@ -1,7 +1,7 @@
 from commands.command import Command
 from evennia import CmdSet
 import evennia
-from evennia import set_trace
+from evennia import set_trace,default_cmds
 from typeclasses.mobs import Mob
 
 class CmdEchelon(Command):
@@ -72,6 +72,30 @@ class CmdMobAdd(Command):
         evennia.create_object("typeclasses.mobs.ArachBot",key="ArachTest",location=self.caller.location)
 
 
+class CmdPrendre(default_cmds.CmdGet):
+    """
+    Commande pour prendre des objets
+    """
+    key = "prendre"
+
+    def func(self):
+        super().func()
+        self.caller.msg(str(self.caller.location.contents))
+
+
+class CmdFindTerm(Command):
+    """
+    Commande pour trouver un terminal
+    """
+    key = "recherche_terminal"
+
+    def func(self):
+        comterm = self.caller.search("comterm")
+        if not comterm:
+            return
+        else:
+            self.caller.msg("Un comterm est disponible !")
+
 class CustomCmdSet(CmdSet):
     """Set de commandes spéciales"""
 
@@ -79,3 +103,4 @@ class CustomCmdSet(CmdSet):
         self.add(CmdEchelon)
         self.add(CmdHit)
         self.add(CmdMobAdd)
+        self.add(CmdFindTerm)

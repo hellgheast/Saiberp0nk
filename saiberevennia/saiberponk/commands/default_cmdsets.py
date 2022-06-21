@@ -36,7 +36,8 @@ class CharacterCmdSet(default_cmds.CharacterCmdSet):
         #
         # Add a group of commands (CmdSet)
         self.add(mycommands.CustomCmdSet)
-
+        self.remove(default_cmds.CmdGet)
+        self.add(mycommands.CmdPrendre)
 
 class AccountCmdSet(default_cmds.AccountCmdSet):
     """
@@ -74,6 +75,8 @@ class UnloggedinCmdSet(default_cmds.UnloggedinCmdSet):
         #
         # any commands you add below will overload the default ones.
         #
+        self.remove(default_cmds.CmdUnconnectedScreenreader)
+        self.remove(mycommands.CustomCmdSet)
 
 
 class SessionCmdSet(default_cmds.SessionCmdSet):
