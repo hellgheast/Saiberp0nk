@@ -14,51 +14,6 @@ class CmdEchelon(Command):
         if self.args:
             self.caller.msg(f"Ordres\t: [{self.args}]")
 
-class CmdHit(Command):
-    """
-    Commmande de test pour frapper
-    Usage:
-        frapper <cible>
-        frapper <cible> <arme>
-        frapper <cible> avec <arme>
-
-    """
-    key = "frapper"
-    # Continue https://www.evennia.com/docs/1.0-dev/Howtos/Beginner-Tutorial/Part1/More-on-Commands.html
-
-    def parse(self):
-        self.args = self.args.strip()
-        # set_trace()
-        target, *weapon = self.args.split(" avec ", 1)
-        if not weapon:
-            target, *weapon = self.args.split(" ", 1)
-        self.target = target.strip()
-        #TODO: Fix documentation
-        # weapon is a list of a unique str
-        if weapon:
-            self.weapon = weapon[0].strip()
-        else:
-            self.weapon = None
-
-    def func(self):
-        if not self.args:
-            self.caller.msg("Qui veux-tu frapper ?")
-            return
-        target = self.caller.search(self.target)
-        if not target:
-            self.caller.msg("Cible inexistante..")
-            return
-        weapon = None
-        if self.weapon:
-            weapon = self.caller.search(self.weapon)
-        if weapon:
-            weaponstr = f"{weapon.key}"
-        else:
-            weaponstr = "poings"
-
-        self.caller.msg(f"Tu frappes {target.key} à pleine puissance avec {weaponstr} !")
-        target.msg(f"Tu te fais frapper par {self.caller.key} à pleine puissance avec {weaponstr} !")
-
 
 class CmdMobAdd(Command):
     """
@@ -100,6 +55,5 @@ class CustomCmdSet(CmdSet):
 
     def at_cmdset_creation(self):
         self.add(CmdEchelon)
-        self.add(CmdHit)
         self.add(CmdMobAdd)
         self.add(CmdFindTerm)

@@ -15,7 +15,7 @@ own cmdsets by inheriting from them or directly from `evennia.CmdSet`.
 """
 
 from evennia import default_cmds
-from commands import mycommands
+from commands import mycommands,fightcommands,npccommands
 
 class CharacterCmdSet(default_cmds.CharacterCmdSet):
     """
@@ -35,7 +35,13 @@ class CharacterCmdSet(default_cmds.CharacterCmdSet):
         # any commands you add below will overload the default ones.
         #
         # Add a group of commands (CmdSet)
+        # Multiples tests
         self.add(mycommands.CustomCmdSet)
+
+        self.add(fightcommands.FightCmdSet)
+        self.add(npccommands.NpcCmdSet)
+
+        # Traduction
         self.remove(default_cmds.CmdGet)
         self.add(mycommands.CmdPrendre)
 

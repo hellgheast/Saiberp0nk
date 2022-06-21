@@ -35,12 +35,36 @@ class Character(ObjectParent, DefaultCharacter):
 
 
     def at_object_creation(self):
-        self.db.str = random.randint(0,2)
-        self.db.dex = random.randint(0,2)
-        self.db.int = random.randint(0,2)
+        #TODO: Use a class for some chars
+        self.db.strength = random.randint(0,2)
+        self.db.dexterity = random.randint(0,2)
+        self.db.intelligence = random.randint(0,2)
+        self.db.firstname = self.key
+        self.db.lastname = ""
+        self.db.age = random.randint(0,100)
+        self.db.height = 0
+        self.db.weight = 0.0
+        self.db.xp = 0
 
     def get_stats(self):
         """
         Get the main stats of this character
         """
         return self.db.str, self.db.dex, self.db.int
+
+
+    def return_appearance(self, looker):
+        """
+        The return from this method is what
+        looker sees when looking at this object.
+        """
+        text = super().return_appearance(looker)
+        cscore = " (combat score: %s)" % self.db.combat_score
+        if "\n" in text:
+            # text is multi-line, add score after first line
+            first_line, rest = text.split("\n", 1)
+            text = first_line + cscore + "\n" + rest
+        else:
+            # text is only one line; add score to end
+            text += cscore
+        return text
