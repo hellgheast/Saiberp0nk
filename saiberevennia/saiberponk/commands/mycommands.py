@@ -1,5 +1,8 @@
 from commands.command import Command
 from evennia import CmdSet
+import evennia
+from evennia import set_trace
+from typeclasses.mobs import Mob
 
 class CmdEchelon(Command):
     """
@@ -23,17 +26,50 @@ class CmdHit(Command):
     """
     key = "frapper"
     # Continue https://www.evennia.com/docs/1.0-dev/Howtos/Beginner-Tutorial/Part1/More-on-Commands.html
+
+    def parse(self):
+        self.args = self.args.strip()
+        # set_trace()
+        target, *weapon = self.args.split(" avec ", 1)
+        if not weapon:
+            target, *weapon = self.args.split(" ", 1)
+        self.target = target.strip()
+        #TODO: Fix documentation
+        # weapon is a list of a unique str
+        if weapon:
+            self.weapon = weapon[0].strip()
+        else:
+            self.weapon = None
+
     def func(self):
-        args = self.args.strip()
-        if not args:
+        if not self.args:
             self.caller.msg("Qui veux-tu frapper ?")
-        # Find the target in the same location than the caller
-        target = self.caller.search(args)
+            return
+        target = self.caller.search(self.target)
         if not target:
             self.caller.msg("Cible inexistante..")
             return
-        self.caller.msg(f"Tu frappes {target.key} à pleine puissance !")
-        target.msg(f"Tu te fais frapper par {self.caller.key} à pleine puissance !")
+        weapon = None
+        if self.weapon:
+            weapon = self.caller.search(self.weapon)
+        if weapon:
+            weaponstr = f"{weapon.key}"
+        else:
+            weaponstr = "poings"
+
+        self.caller.msg(f"Tu frappes {target.key} à pleine puissance avec {weaponstr} !")
+        target.msg(f"Tu te fais frapper par {self.caller.key} à pleine puissance avec {weaponstr} !")
+
+
+class CmdMobAdd(Command):
+    """
+    Fonction pour rajouter un mob pour faire des essais
+    """
+    key = "mobadd"
+    def parse(self):
+        pass
+    def func(self):
+        evennia.create_object("typeclasses.mobs.ArachBot",key="ArachTest",location=self.caller.location)
 
 
 class CustomCmdSet(CmdSet):
@@ -42,3 +78,4 @@ class CustomCmdSet(CmdSet):
     def at_cmdset_creation(self):
         self.add(CmdEchelon)
         self.add(CmdHit)
+        self.add(CmdMobAdd)
