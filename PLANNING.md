@@ -13,7 +13,7 @@
 * Action with objects (get/use/attack)
 * Have a minimal XP system
 * Custom intro screen
-* Have minimal french support
+* Have minimal french support (own command set)
 
 # As a user
 
@@ -59,8 +59,16 @@ NPC should give quests
 
 ## Characters
 * Only one active character at the time
-* A player can have multiples character 
-* Char-gen should be room and menu
+* A player can have multiples character (would need MULTISESSION_MODE=2)
+but only play one at the time -> override Account method
+```python
+def puppet_object(self, session, obj):
+    if len(self.get_all_puppets()):
+        self.msg("You're already playing a character.")
+        return
+    super().puppet_object(session, obj)
+```
+* Char-gen should be room and menu -> Need to change the DEFAULT_HOME
 * Classes/Races are overloading the same object
 * Hiding is based on perception
 * Skill tree TBD
