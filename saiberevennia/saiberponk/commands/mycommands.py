@@ -108,7 +108,6 @@ class CmdStatCheck(Command):
             self.targetNumber = None
         else:
             statName,targetNumber = self.args.strip().split(" ")
-            set_trace()
             self.statName = statName
             self.targetNumber = int(targetNumber)
     
