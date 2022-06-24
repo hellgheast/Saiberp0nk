@@ -7,7 +7,10 @@ is setup to be the "default" character type created by the default
 creation commands.
 
 """
+from evennia.contrib.rpg import traits
 from evennia.objects.objects import DefaultCharacter
+from evennia.utils import lazy_property
+from evennia.contrib.rpg.traits import TraitHandler
 from .objects import ObjectParent
 
 import random
@@ -33,19 +36,35 @@ class Character(ObjectParent, DefaultCharacter):
 
     """
 
+    @lazy_property
+    def traits(self):
+        return TraitHandler(self)
+
 
     def at_object_creation(self):
+
+        self.traits.add("for","Force",trait_type="static",base=0,mod=0)
+        self.traits.add("dex","Dextérité",trait_type="static",base=0,mod=0)
+        self.traits.add("con","Constitution",trait_type="static",base=0,mod=0)
+        self.traits.add("int","Intelligence",trait_type="static",base=0,mod=0)
+        self.traits.add("sag","Sagesse",trait_type="static",base=0,mod=0)
+        self.traits.add("pv","Points de vie",trait_type="gauge",base=10,min=0,max=100)
+
+        self.db.xp = 0
+
+        self.db.skills = None
+        self.db.archetype = None
+        self.db.culture = None
         #TODO: Use a class for some chars
-        self.db.strength = random.randint(0,2)
-        self.db.dexterity = random.randint(0,2)
-        self.db.intelligence = random.randint(0,2)
+        #self.db.strength = random.randint(0,2)
+        #self.db.dexterity = random.randint(0,2)
+        #self.db.intelligence = random.randint(0,2)
         self.db.firstname = self.key
         self.db.lastname = ""
         self.db.age = random.randint(0,100)
         self.db.height = 0
         self.db.weight = 0.0
-        self.db.xp = 0
-
+       
     def get_stats(self):
         """
         Get the main stats of this character

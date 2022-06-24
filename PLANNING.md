@@ -76,3 +76,38 @@ def puppet_object(self, session, obj):
 * PvP will be allowed
 * Clone based system, cost a lot and death can be definitive
 
+
+
+### Sides-notes
+* Have a look to contrib SdescHandler in the rpsystem contrib is nice and straightforward for having a handler example
+* Handlers are good
+
+basic explanation of a handler is:
+1. a python object attached to a game object through a property
+2. holds references to the object it is attached to, and to a cache (in our case, attributes) it is the sole manipulator of
+3. holds methods for interacting with the cache and doing game actions
+it's essentially a systems interface
+one nice thing about handlers is you can use them as basically "this object is participating in the system"
+you know that if the object has the handler, it also has all the methods necessary to interact with the system
+as a result it lets you divest systems that exist across many object types so you don't have to build convoluted inheritance or lots of boilerplate
+you just attach the handler in the creation method
+and now you can do something like object.combat.attack(foo) and it Just Works™
+
+```python
+
+# Minimum handler
+class CombatHandler(object):
+    obj = None 
+    
+    def __init__(self, obj) -> None:
+        self.obj = obj
+# On the object you want the handler on
+@lazy_property
+    def combat(self) -> CombatHandler:
+        return CombatHandler(self)
+```
+
+
+* To handle archetypes use a helper methed that would take the char and apply the desired archetype on it
+i would do it with a helper method that applies the archetype traits and adds a cmdset for the archetype abilities
+so you'd have a function set_archetype - not attached to a class, just in a module - and then you would pass the Character object and the desired archetype to it, e.g. set_archetype(char, "hacker")
