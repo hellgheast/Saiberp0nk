@@ -89,7 +89,9 @@ class CmdInfo(Command):
 
         text = f"You diagnose {target} as having {strength} strength, {dexterity} dexterity and {intelligence} intelligence."
         prompt = f"{strength} STR, {dexterity} DEX, {intelligence} INT"
-        self.caller.msg(text, prompt=prompt)
+        
+        self.caller.msg(text=text)
+        self.caller.msg(prompt=prompt)
 
 
 class CmdStatCheck(Command):
@@ -125,6 +127,37 @@ class CmdStatCheck(Command):
             caller.msg(f"{self.statName} ROLL FAILURE")
         
 
+class CmdStatSet(Command):
+    """
+    Debug command for setting traits value
+
+
+    Usage:
+        statset statName statValue
+
+    """
+    key = "statset"
+
+    def parse(self):
+        if not self.args:
+            self.statName = None
+            self.statValue = None
+        else:
+            statName,statValue = self.args.strip().split(" ")
+            self.statName = statName
+            self.statValue = int(statValue)    
+
+    def func(self):
+        caller = self.caller
+        
+        if self.statName == None and self.targetNumber == None:
+            caller.msg("Missing arguments")
+            return
+        
+        self.caller.traits[self.statName].base = self.statValue
+        self.caller.msg(f"STAT {self.caller.traits[self.statName].name} set to value : {self.statValue}")
+        
+
 
 class CustomCmdSet(CmdSet):
     """Set de commandes spéciales"""
@@ -135,3 +168,4 @@ class CustomCmdSet(CmdSet):
         self.add(CmdFindTerm)
         self.add(CmdInfo)
         self.add(CmdStatCheck)
+        self.add(CmdStatSet)

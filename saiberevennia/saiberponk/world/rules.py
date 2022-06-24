@@ -23,7 +23,7 @@ def rollStatCheck(character,stat:str,targetNumber:int,debug=False) -> bool:
     
     if debug:
         character.msg("Stat roll check\n")
-        character.msg(f"STAT: {stat}/ CHARSTAT: {charStat} / ROLLRESULT {rollResult}")
+        character.msg(f"STAT: {character.traits[stat].name}/ CHARSTAT: {charStat} / ROLLRESULT :{rollResult} = {charStat} + {d1+d2+d3}")
 
     if rollResult >= targetNumber:
         return True
