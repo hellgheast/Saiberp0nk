@@ -111,3 +111,94 @@ class CombatHandler(object):
 * To handle archetypes use a helper methed that would take the char and apply the desired archetype on it
 i would do it with a helper method that applies the archetype traits and adds a cmdset for the archetype abilities
 so you'd have a function set_archetype - not attached to a class, just in a module - and then you would pass the Character object and the desired archetype to it, e.g. set_archetype(char, "hacker")
+
+### Game Design
+Stats de base :
+FORce
+CONstitution
+DEXtérité
+INTelligence
+SAGesse
+CHArisme
+
+échelle : de +0 à +10
+
+Au départ:
++0,+0,+1,+1,+1,+2
+
+Compétences :
+échelle de +0 à +20
+
+### Backgrounds
+
+Donne des compétences spécifiques au départ
+
+1 Compétences gratuite
+et deux compétences à choix (+1) dans la liste du background
+
+SPACER:
+Description : "Vous étiez destiné à devenir un Orbital, malheureusement, à la mauvaise coursive au  mauvais moment, vous à fait redescendre brutalement"
+UNIVERSITAIRE 0
+----------------
+MEDIC   0
+HACKER  0
+BIOCHEM 0
+
+NOMADE:
+Description : "Vous aviez une vie en dehors de la ville, vous avez su survivre malgré les différentes emmerdes.."
+TECH 0
+----------------
+MARCHAND 0
+ACROBATE 0
+NINJA    0
+
+CITOYEN:
+Description : "Vous êtes né(e) en ville, vous savez comment les choses fonctionnent dans de l'anarzone à l'antizone"
+CORPORATE 0
+----------------
+FLIC   0
+GANGER 0
+FACE   0
+
+
+
+### Compétences/Carrières
+
+ACROBATE ( Athlétisme & Acrobaties )
+FACE  (Persuader & Négocier)
+TECH  (Réparer & Fabriquer)
+NINJA (Observer & Dissimuler)
+UNIVERSITAIRE ( Savoir : académique & scientifique )
+MEDIC  ( Médecine )  
+HACKER ( Informatique )
+MARCHAND ( Connaît le commerce )
+COPORATE ( Sait administrer & travailler )
+BIOCHEM ( Biologie et Chimie )
+FLIC ( Connait la loi, enquêter, investiguer )
+GANGER (Connaît la rue et y trouver des trucs)
+
+### Compétences de combat (4)
+
+Tirer   (Tir)
+Frapper (Corps à corps)
+
+Points de vie = 5 + 5 * CON 
+Défense  = 7 + SAG + PROTECTION
+
+### Mécaniques de résolutions
+Si pas le skill nécéssaire : -2 au jet de dé (peut-être?)
+3D6 + ATT + SKILL + MODIFIER >= TARGET VALUE
+
+### Notes 
+
+Sauvegarde dépends de l'action
+= TargetNUmber <= STAT + 3d6
+
+### Avantages et désavantages/Capacités (1 boons et 1 flaw)
+
+Charcudoc : +1/2 dans tout ce qui concerne le cyberware
+Matrixé   : +1/2 dans les actions matricielles
+Formation militaire : +1/+2 aux jet d'attaques
+Dur à cuir: + 15 PV
+
+
