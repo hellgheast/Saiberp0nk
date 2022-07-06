@@ -1,19 +1,25 @@
+# Saiberponk
+A simple but funny project !
+
 # Shitposters
 Thanks for all the Mumble team for this experiment
+Also big thanks to Natalie from evennia discord and also SirBacon from Mumble for the awesome support !
 
 # Tech stack
 Now:
 ## Frontend
-Websockets
-Vue.js
-https://express-validator.github.io/docs/
+VanillaJS
+GoldenLayout
 ## Backend
 Django
 Evennia 
-# Future tech stack:
+# Maybe Future tech stack:
 Pixi.js
 Agenda
 https://github.com/propjockey/augmented-ui
+Websockets
+Vue.js
+https://express-validator.github.io/docs/
 
 # Docker change folder 
 https://stackoverflow.com/a/66314636

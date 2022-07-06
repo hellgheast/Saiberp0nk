@@ -162,7 +162,9 @@ FACE   0
 
 
 
-### Compétences/Carrières
+### Compétences/Carrières (4)
+
+MAX à 3
 
 ACROBATE ( Athlétisme & Acrobaties )
 FACE  (Persuader & Négocier)
