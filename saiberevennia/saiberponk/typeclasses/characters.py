@@ -11,6 +11,8 @@ from evennia.contrib.rpg import traits
 from evennia.objects.objects import DefaultCharacter
 from evennia.utils import lazy_property
 from evennia.contrib.rpg.traits import TraitHandler
+
+from typeclasses.wallethelper import WalletHelper
 from .objects import ObjectParent
 
 import random
@@ -39,26 +41,55 @@ class Character(ObjectParent, DefaultCharacter):
     @lazy_property
     def traits(self):
         return TraitHandler(self)
+    
+    @lazy_property
+    def wallet(self):
+        return WalletHelper(self)
+
+    #@lazy_property
+    #def stats(self):
+    #    return StatsHandler(self)
+
 
 
     def at_object_creation(self):
+        
+        # STATS
+        self.traits.add("force","Force",trait_type="static",base=0,mod=0)
+        self.traits.add("dexterite","Dexterité",trait_type="static",base=0,mod=0)
+        self.traits.add("constitution","Constitution",trait_type="static",base=0,mod=0)
+        self.traits.add("intelligence","Intelligence",trait_type="static",base=0,mod=0)
+        self.traits.add("sagesse","Sagesse",trait_type="static",base=0,mod=0)
+        self.traits.add("charisme","Charisme",trait_type="static",base=0,mod=0)
 
-        self.traits.add("for","Force",trait_type="static",base=0,mod=0)
-        self.traits.add("dex","Dextérité",trait_type="static",base=0,mod=0)
-        self.traits.add("con","Constitution",trait_type="static",base=0,mod=0)
-        self.traits.add("int","Intelligence",trait_type="static",base=0,mod=0)
-        self.traits.add("sag","Sagesse",trait_type="static",base=0,mod=0)
-        self.traits.add("pv","Points de vie",trait_type="gauge",base=10,min=0,max=100)
+        # SKILLS
+        self.traits.add("acrobate","Acrobate",trait_type="skill",base=0,mod=0)
+        self.traits.add("face","Face",trait_type="skill",base=0,mod=0)
+        self.traits.add("tech","Tech",trait_type="skill",base=0,mod=0)
+        self.traits.add("ninja","Ninja",trait_type="skill",base=0,mod=0)
+        self.traits.add("universitaire","Universitaire",trait_type="skill",base=0,mod=0)
+        self.traits.add("medic","Medic",trait_type="skill",base=0,mod=0)
+        self.traits.add("hacker","Hacker",trait_type="skill",base=0,mod=0)
+        self.traits.add("marchand","Marchand",trait_type="skill",base=0,mod=0)
+        self.traits.add("corporate","Corporate",trait_type="skill",base=0,mod=0)
+        self.traits.add("biochem","Biochem",trait_type="skill",base=0,mod=0)
+        self.traits.add("flic","Flic",trait_type="skill",base=0,mod=0)
+        self.traits.add("ganger","Ganger",trait_type="skill",base=0,mod=0)
+
+        # FIGHT SKILLS
+        self.traits.add("tir","Tir",trait_type="static",base=0,mod=0)
+        self.traits.add("cac","Corps à corps",trait_type="static",base=0,mod=0)
+
+        # Computed properties
+        self.traits.add("pv","Points de vie",trait_type="counter",base=0,min=0,max=None)
+        self.traits.add("defense","Défense",trait_type="static",base=0,mod=0)
+
+        self.wallet.setup()
 
         self.db.xp = 0
-
-        self.db.skills = None
-        self.db.archetype = None
         self.db.culture = None
-        #TODO: Use a class for some chars
-        #self.db.strength = random.randint(0,2)
-        #self.db.dexterity = random.randint(0,2)
-        #self.db.intelligence = random.randint(0,2)
+
+        #TODO: Use a handler/object for some chars
         self.db.firstname = self.key
         self.db.lastname = ""
         self.db.age = random.randint(0,100)
@@ -69,7 +100,14 @@ class Character(ObjectParent, DefaultCharacter):
         """
         Get the main stats of this character
         """
-        return self.db.str, self.db.dex, self.db.int
+        statTuple = (self.traits.force.value,
+                    self.traits.dexterite.value, 
+                    self.traits.constitution.value,
+                    self.traits.intelligence.value,
+                    self.traits.sagesse.value,
+                    self.traits.charisme.value
+                    )
+        return statTuple
 
 
     def return_appearance(self, looker):

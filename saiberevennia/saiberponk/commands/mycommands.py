@@ -78,9 +78,11 @@ class CmdInfo(Command):
             if not target:
                 return
         # try to get stats
-        strength = target.traits["for"].value
-        dexterity = target.traits["dex"].value
-        intelligence = target.traits["int"].value
+        #from evennia import set_trace;set_trace()
+
+        strength = target.traits["force"].value
+        dexterity = target.traits["dexterite"].value
+        intelligence = target.traits["intelligence"].value
 
         if None in (strength, dexterity, intelligence):
             # Attributes not defined
@@ -127,35 +129,7 @@ class CmdStatCheck(Command):
             caller.msg(f"{self.statName} ROLL FAILURE")
         
 
-class CmdStatSet(Command):
-    """
-    Debug command for setting traits value
 
-
-    Usage:
-        statset statName statValue
-
-    """
-    key = "statset"
-
-    def parse(self):
-        if not self.args:
-            self.statName = None
-            self.statValue = None
-        else:
-            statName,statValue = self.args.strip().split(" ")
-            self.statName = statName
-            self.statValue = int(statValue)    
-
-    def func(self):
-        caller = self.caller
-        
-        if self.statName == None and self.targetNumber == None:
-            caller.msg("Missing arguments")
-            return
-        
-        self.caller.traits[self.statName].base = self.statValue
-        self.caller.msg(f"STAT {self.caller.traits[self.statName].name} set to value : {self.statValue}")
         
 
 
@@ -168,4 +142,3 @@ class CustomCmdSet(CmdSet):
         self.add(CmdFindTerm)
         self.add(CmdInfo)
         self.add(CmdStatCheck)
-        self.add(CmdStatSet)

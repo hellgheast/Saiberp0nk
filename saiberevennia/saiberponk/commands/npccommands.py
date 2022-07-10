@@ -2,7 +2,8 @@ from commands.command import Command
 from evennia import CmdSet
 from evennia import set_trace,default_cmds
 from evennia import create_object
-    
+
+# refactor both commands to take in account traits model
 class CmdCreateNPC(Command):
     """
     create a new npc

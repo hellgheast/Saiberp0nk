@@ -1,5 +1,6 @@
 from random import randint
 from typing import Tuple
+from evennia import set_trace
 
 def rollD6():
     return randint(1,6)
@@ -31,5 +32,22 @@ def rollStatCheck(character,stat:str,targetNumber:int,debug=False) -> bool:
         return False
 
 
-def rollSkillCheck(character,skill):
-    pass
+def characterMaxPv(character) -> float:
+    return 5 + 5 * character.traits.constitution.base
+
+def updateMaxPv(character):
+    character.traits.pv.max = characterMaxPv(character)
+
+def setCurrentPv(character,amount):
+    character.traits.current.value = amount
+
+def characterDefense(character):
+    character.traits.defense.base = 7 + character.traits.sagesse.value
+
+def acquireSkill(character,skill_id:str):
+    #set_trace()
+    if character.traits[skill_id] is None:
+        raise Exception("stat not existing")
+    character.traits[skill_id].acquired = True
+    character.traits[skill_id].base = 0
+    character.traits[skill_id].mod = 0

@@ -36,6 +36,8 @@ SERVERNAME = "saiberponk"
 # Allow guest accounts
 GUEST_ENABLED = True
 
+TRAIT_CLASS_PATHS = ["world.traits.SkillTrait"]
+
 ######################################################################
 # Settings given in secret_settings.py override those in this file.
 ######################################################################
