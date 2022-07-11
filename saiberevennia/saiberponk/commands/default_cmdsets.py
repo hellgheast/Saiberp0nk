@@ -42,7 +42,7 @@ class CharacterCmdSet(default_cmds.CharacterCmdSet):
         self.add(npccommands.NpcCmdSet)
 
         # Traduction
-        self.remove(default_cmds.CmdGet)
+        self.add(default_cmds.CmdGet)
         self.add(mycommands.CmdPrendre)
 
 class AccountCmdSet(default_cmds.AccountCmdSet):

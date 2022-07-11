@@ -12,7 +12,7 @@
 * Small quest (get X of Y)
 * Action with objects (get/use/attack)
 * Have a minimal XP system
-* Custom intro screen
+* Custom intro screen (also called cinematic module)
 * Have minimal french support (own command set)
 
 # As a user

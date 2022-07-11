@@ -7,12 +7,14 @@ is setup to be the "default" character type created by the default
 creation commands.
 
 """
-from evennia.contrib.rpg import traits
+
 from evennia.objects.objects import DefaultCharacter
 from evennia.utils import lazy_property
 from evennia.contrib.rpg.traits import TraitHandler
 
+from typeclasses.charinfohandler import CharInfoHandler
 from typeclasses.wallethelper import WalletHelper
+
 from .objects import ObjectParent
 
 import random
@@ -46,6 +48,9 @@ class Character(ObjectParent, DefaultCharacter):
     def wallet(self):
         return WalletHelper(self)
 
+    @lazy_property
+    def charinfo(self):
+        return CharInfoHandler(self)
     #@lazy_property
     #def stats(self):
     #    return StatsHandler(self)
@@ -53,6 +58,9 @@ class Character(ObjectParent, DefaultCharacter):
 
 
     def at_object_creation(self):
+
+        # Will need to refactor it if needed
+        
         
         # STATS
         self.traits.add("force","Force",trait_type="static",base=0,mod=0)
@@ -86,15 +94,10 @@ class Character(ObjectParent, DefaultCharacter):
 
         self.wallet.setup()
 
-        self.db.xp = 0
-        self.db.culture = None
+        self.charinfo.age = random.randint(1,100)
 
-        #TODO: Use a handler/object for some chars
-        self.db.firstname = self.key
-        self.db.lastname = ""
-        self.db.age = random.randint(0,100)
-        self.db.height = 0
-        self.db.weight = 0.0
+        self.db.xp = 0
+
        
     def get_stats(self):
         """
