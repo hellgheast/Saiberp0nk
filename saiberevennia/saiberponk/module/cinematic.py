@@ -10,7 +10,14 @@ def sendDelayedText(obj,text:str,delayTime:int):
     utils.delay(delayTime,sendText,obj=obj,text=text)
 
 def sendArrayText(obj,arrayText:List[Tuple[str,int]]):
+    """
+    Send delayed text stored in array.
+    each element in the array is a tuple (text,delay)
+    Each delay is relative to the previous one
+    """
+    mainDelay:int = 0
     for elem in arrayText:
         text,delayTime = elem
-        sendDelayedText(obj,text,delayTime)
+        mainDelay += delayTime
+        sendDelayedText(obj,text,mainDelay)
 

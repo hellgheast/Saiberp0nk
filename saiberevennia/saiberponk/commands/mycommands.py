@@ -7,6 +7,7 @@ from module import cinematic
 
 # Main commands for testing and debugging
 
+
 class CmdEchelon(Command):
     """
     Commande de base pour appeller Echelon
@@ -16,15 +17,34 @@ class CmdEchelon(Command):
 
     def func(self):
 
-        textList = [
-            (f"|gBonjour {self.caller.key} je suis Echelon 2 !|n\n",2),
-            ("|gDemande d'accès|n ... |rCODE ROUGE|n\n",10),
-            ("|bAccès accordé|n\n",15),
-        ]
-        cinematic.sendArrayText(self.caller,textList)
-
         if self.args:
             self.caller.msg(f"Ordres\t: [{self.args}]")
+            if "traitre" in self.args:
+                cinematic.sendArrayText(
+                    self.caller,
+                    [
+                        ("|rEspèce de salopard !|n", 1),
+                        ("|304Je vais envoyer les TacMercs à tes trousses !|n", 1),
+                        ("|550Fais tes prières !!|n", 1),
+                        (
+                            "|n|rERREUR: |yUTILISATEUR NON EXISTANT|n //..//.. |rDÉCONNEXION!!|n\n",
+                            2,
+                        ),
+                    ],
+                )
+        else:
+            textList = [
+                (f"|gBonjour {self.caller.key} je suis Echelon 2 !|n\n", 2),
+                ("|g.", 1),
+                ("|g.", 1),
+                ("|g.", 1),
+                ("|gDemande d'accès|n ... |rCODE ROUGE|n", 0),
+                (".", 1),
+                (".", 1),
+                (".", 1),
+                ("|bAccès accordé|n\n", 5),
+            ]
+            cinematic.sendArrayText(self.caller, textList)
 
 
 class CmdMobAdd(Command):
@@ -87,7 +107,7 @@ class CmdInfo(Command):
             if not target:
                 return
         # try to get stats
-        #from evennia import set_trace;set_trace()
+        # from evennia import set_trace;set_trace()
 
         strength = target.traits["force"].value
         dexterity = target.traits["dexterite"].value
@@ -100,7 +120,7 @@ class CmdInfo(Command):
 
         text = f"You diagnose {target} as having {strength} strength, {dexterity} dexterity and {intelligence} intelligence."
         prompt = f"{strength} STR, {dexterity} DEX, {intelligence} INT"
-        
+
         self.caller.msg(text=text)
         self.caller.msg(prompt=prompt)
 
@@ -113,6 +133,7 @@ class CmdStatCheck(Command):
         statcheck statName targetNumber
 
     """
+
     key = "statcheck"
 
     def parse(self):
@@ -120,26 +141,22 @@ class CmdStatCheck(Command):
             self.statName = None
             self.targetNumber = None
         else:
-            statName,targetNumber = self.args.strip().split(" ")
+            statName, targetNumber = self.args.strip().split(" ")
             self.statName = statName
             self.targetNumber = int(targetNumber)
-    
+
     def func(self):
         caller = self.caller
-        
+
         if self.statName == None and self.targetNumber == None:
             caller.msg("Missing arguments")
             return
-        
-        result = rules.rollStatCheck(caller,self.statName,self.targetNumber,True)
+
+        result = rules.rollStatCheck(caller, self.statName, self.targetNumber, True)
         if result:
             caller.msg(f"{self.statName} ROLL SUCCESS")
         else:
             caller.msg(f"{self.statName} ROLL FAILURE")
-        
-
-
-        
 
 
 class CustomCmdSet(CmdSet):
