@@ -3,7 +3,9 @@ from evennia import CmdSet
 import evennia
 from evennia import set_trace, default_cmds
 from world import rules
+from module import cinematic
 
+# Main commands for testing and debugging
 
 class CmdEchelon(Command):
     """
@@ -13,7 +15,14 @@ class CmdEchelon(Command):
     key = "echelon"
 
     def func(self):
-        self.caller.msg(f"Bonjour {self.caller.key} je suis Echelon 2 !")
+
+        textList = [
+            (f"|gBonjour {self.caller.key} je suis Echelon 2 !|n\n",2),
+            ("|gDemande d'accès|n ... |rCODE ROUGE|n\n",10),
+            ("|bAccès accordé|n\n",15),
+        ]
+        cinematic.sendArrayText(self.caller,textList)
+
         if self.args:
             self.caller.msg(f"Ordres\t: [{self.args}]")
 

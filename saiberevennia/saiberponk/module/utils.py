@@ -11,7 +11,8 @@ class WorldUtils:
     SKILL_DICT = {
         "acrobate",
         "face",
-        "tech" "ninja",
+        "tech", 
+        "ninja",
         "universitaire",
         "medic",
         "hacker",
