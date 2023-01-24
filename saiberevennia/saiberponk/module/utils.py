@@ -1,5 +1,5 @@
 from typing import Dict, List
-from enum import Enum
+from enum import Enum,StrEnum,auto
 
 class WorldUtils:
 
@@ -37,17 +37,16 @@ class WorldUtils:
         "DEF":"Défense"
     }
     
-    class CharInfo(Enum):
-        CULTURE = "CULTURE"
-        FIRSTNAME = "FIRSTNAME"
-        LASTNAME = "LASTNAME"
-        AGE = "AGE"
-        HEIGHT = "HEIGHT"
-        WEIGHT = "WEIGHT"
+    class CharInfo(StrEnum):
+        CULTURE = auto()
+        FIRSTNAME = auto()
+        LASTNAME = auto()
+        AGE = auto()
+        HEIGHT = auto()
+        WEIGHT = auto()
         @classmethod
-        def attributes(cls) -> List[str] :
-            return [cls.CULTURE,cls.FIRSTNAME,cls.LASTNAME,cls.AGE,cls.HEIGHT,cls.WEIGHT]
-
+        def attributes(cls) -> List[str]:
+            return [str(x).upper() for x in cls]
 
 
 
