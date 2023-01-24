@@ -109,9 +109,9 @@ class CmdInfo(Command):
         # try to get stats
         # from evennia import set_trace;set_trace()
 
-        strength = target.traits["force"].value
-        dexterity = target.traits["dexterite"].value
-        intelligence = target.traits["intelligence"].value
+        strength = target.traits.FOR.value
+        dexterity = target.traits.DEX.value
+        intelligence = target.traits.INT.value
 
         if None in (strength, dexterity, intelligence):
             # Attributes not defined

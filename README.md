@@ -12,7 +12,8 @@ VanillaJS
 GoldenLayout
 ## Backend
 Django
-Evennia 
+Evennia
+https://github.com/aparrish/pytracery
 # Maybe Future tech stack:
 Pixi.js
 Agenda

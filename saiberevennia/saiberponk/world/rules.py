@@ -33,16 +33,16 @@ def rollStatCheck(character,stat:str,targetNumber:int,debug=False) -> bool:
 
 
 def characterMaxPv(character) -> float:
-    return 5 + 5 * character.traits.constitution.base
+    return 5 + 5 * character.traits.CON.base
 
 def updateMaxPv(character):
-    character.traits.pv.max = characterMaxPv(character)
+    character.traits.PV.max = characterMaxPv(character)
 
 def setCurrentPv(character,amount):
     character.traits.current.value = amount
 
 def characterDefense(character):
-    character.traits.defense.base = 7 + character.traits.sagesse.value
+    character.traits.DEF.base = 7 + character.traits.SAG.value
 
 def acquireSkill(character,skill_id:str):
     #set_trace()

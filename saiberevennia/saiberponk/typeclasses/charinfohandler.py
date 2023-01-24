@@ -1,11 +1,12 @@
 from typing import Any
+from module.utils import WorldUtils
 
 class CharInfoHandler:
     """
     Main information of the character
     """
 
-    ALLOWED_ATTRIBUTES = ["culture", "firstname", "lastname", "age", "height", "weight"]
+    ALLOWED_ATTRIBUTES = WorldUtils.CharInfo.attributes()
 
     def __init__(self, character) -> None:
         self.character = character
@@ -29,4 +30,4 @@ class CharInfoHandler:
 
     @property
     def fullname(self) -> str:
-        return self.charinfo["firstname"] + " " + self.charinfo["lastname"]
+        return self.charinfo[WorldUtils.CharInfo.FIRSTNAME] + " " + self.charinfo[WorldUtils.CharInfo.LASTNAME]

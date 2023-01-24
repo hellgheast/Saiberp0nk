@@ -14,6 +14,7 @@ from evennia.contrib.rpg.traits import TraitHandler
 
 from typeclasses.charinfohandler import CharInfoHandler
 from typeclasses.wallethelper import WalletHelper
+from module.utils import WorldUtils
 
 from .objects import ObjectParent
 
@@ -51,46 +52,25 @@ class Character(ObjectParent, DefaultCharacter):
     @lazy_property
     def charinfo(self):
         return CharInfoHandler(self)
-    #@lazy_property
-    #def stats(self):
-    #    return StatsHandler(self)
-
 
 
     def at_object_creation(self):
-
-        # Will need to refactor it if needed
-        
         
         # STATS
-        self.traits.add("force","Force",trait_type="static",base=0,mod=0)
-        self.traits.add("dexterite","Dexterité",trait_type="static",base=0,mod=0)
-        self.traits.add("constitution","Constitution",trait_type="static",base=0,mod=0)
-        self.traits.add("intelligence","Intelligence",trait_type="static",base=0,mod=0)
-        self.traits.add("sagesse","Sagesse",trait_type="static",base=0,mod=0)
-        self.traits.add("charisme","Charisme",trait_type="static",base=0,mod=0)
-
+        for stat,desc in WorldUtils.STATS_DICT.items():
+            self.traits.add(stat,desc,trait_type="static",base=0,mod=0)
+         
         # SKILLS
-        self.traits.add("acrobate","Acrobate",trait_type="skill",base=0,mod=0)
-        self.traits.add("face","Face",trait_type="skill",base=0,mod=0)
-        self.traits.add("tech","Tech",trait_type="skill",base=0,mod=0)
-        self.traits.add("ninja","Ninja",trait_type="skill",base=0,mod=0)
-        self.traits.add("universitaire","Universitaire",trait_type="skill",base=0,mod=0)
-        self.traits.add("medic","Medic",trait_type="skill",base=0,mod=0)
-        self.traits.add("hacker","Hacker",trait_type="skill",base=0,mod=0)
-        self.traits.add("marchand","Marchand",trait_type="skill",base=0,mod=0)
-        self.traits.add("corporate","Corporate",trait_type="skill",base=0,mod=0)
-        self.traits.add("biochem","Biochem",trait_type="skill",base=0,mod=0)
-        self.traits.add("flic","Flic",trait_type="skill",base=0,mod=0)
-        self.traits.add("ganger","Ganger",trait_type="skill",base=0,mod=0)
+        for skill,desc in WorldUtils.SKILL_DICT.items():
+            self.traits.add(skill,desc,trait_type="skill",base=0,mod=0)
 
         # FIGHT SKILLS
-        self.traits.add("tir","Tir",trait_type="static",base=0,mod=0)
-        self.traits.add("cac","Corps à corps",trait_type="static",base=0,mod=0)
+        #for fight,desc in WorldUtils.FIGHT_DICT.items():
+        #   self.traits.add(fight,desc,trait_type="static",base=0,mod=0)
 
         # Computed properties
-        self.traits.add("pv","Points de vie",trait_type="counter",base=0,min=0,max=None)
-        self.traits.add("defense","Défense",trait_type="static",base=0,mod=0)
+        self.traits.add("PV",WorldUtils.COMPUTED_PROP["PV"],trait_type="counter",base=0,min=0,max=None)
+        self.traits.add("DEF",WorldUtils.COMPUTED_PROP["DEF"],trait_type="static",base=0,mod=0)
 
         self.wallet.setup()
 
