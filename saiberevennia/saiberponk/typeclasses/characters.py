@@ -62,7 +62,7 @@ class Character(ObjectParent, DefaultCharacter):
          
         # SKILLS
         for skill in Skill.attributes():
-            self.traits.add(skill,skill,trait_type="skill",base=0,mod=0)
+            self.traits.add(skill,skill,trait_type="skill")
 
         # FIGHT SKILLS
         for fight in FightSkill.attributes():
