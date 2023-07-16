@@ -14,7 +14,7 @@ class SkillTrait(StaticTrait):
     trait_type = "skill"
     default_keys = {
         "base": 0, 
-        "mod": 0, 
+        "mod": -2, 
         "mult": 1.0,
         "acquired":False
     }    
@@ -36,6 +36,10 @@ class SkillTrait(StaticTrait):
     def acquired(self,boolean):
         if type(boolean) is bool:
             self._data["acquired"] = boolean
+            # If it's not acquired put the not acquired modifier
+            if self._data["acquired"] == False:
+                self.mod = self.NOT_ACQUIRED_SKILL_VALUE
+
     
     @acquired.deleter
     def acquired(self):
@@ -44,10 +48,7 @@ class SkillTrait(StaticTrait):
     @property
     def value(self):
         "The value of the Trait."
-        if self.acquired:
-            return (self.base + self.mod) * self.mult
-        else:
-            return self.NOT_ACQUIRED_SKILL_VALUE
+        return (self.base + self.mod) * self.mult
 
 
 

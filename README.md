@@ -41,3 +41,11 @@ https://github.com/sevenecks/lambda-moo-programming
 sudo mongod --dbpath ./test/db
 mongosh
 mongoose
+
+# Useful evennia commands
+type/update
+delete the server evennia.db3
+evennia migrate
+evennia start
+voir le server.log pour les erreurs au démarrage
+examine me est pratique

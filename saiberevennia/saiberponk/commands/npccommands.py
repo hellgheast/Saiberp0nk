@@ -36,10 +36,7 @@ class CmdCreateNPC(Command):
                       location=caller.location,
                       locks="edit:id(%i) and perm(Builders);call:false()" % caller.id)
         
-        npc.db.strength = 1
-        npc.db.dexterity = 1
-        npc.db.intelligence = 1
-        npc.db.desc = "A dumb npc"
+        npc.db.desc = "A dummy npc"
         # announce
         #TODO: f-string
         message = "%s created the NPC '%s'."

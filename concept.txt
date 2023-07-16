@@ -21,6 +21,10 @@ https://files.ax86.net/terminus-ttf/
 * Aide pour le parsing des commandes
 
 
+* Donner des trucs graduels pour l'exploration pour amener des joueurs à un hub centralisé
+* Random zone de départ (qui fait office de tuto)
+* 
+
 * Système de Quête
 * Mission NPC driven et aussi antagonist
 * factions soient stables
@@ -51,3 +55,39 @@ https://files.ax86.net/terminus-ttf/
 * Dans une room
 * Random encounter
 * Pouvoir discuter avec les NPCs
+
+--> La manoeuvre, en premier, c'est se déplacer. Mais si tu te déplaces pas, t'as un bonus tactique.
+
+Je pense qu'il faut qu'il y ait un gain en gagnant le combat
+Pas forcément un objet ou quoi, mais juste que t'aies le sentiment d'avoir accompli quelque chose
+L'expérience sur DC est ignoble, genre l'existence d'un martial pour moi c'est pfff
+Raïne-chad — Yesterday at 9:15 PM
+:issou:
+Rei ( ˘ ³˘)♥ Storm
+OP
+ — Yesterday at 9:15 PM
+C'est clair
+Zartam Von ßtorm — Yesterday at 9:16 PM
+un peu plus de complexité que attaquer / défendre / soigner
+Raïne-chad — Yesterday at 9:16 PM
+Le martial est à chier, mais un sentiment de progression peut être intéressant à avoir
+Le problème, c'est de comment l'implémenter dans un système de monde permanent en temps 1:1
+Zartam Von ßtorm — Yesterday at 9:17 PM
+par exemple tu pourrais piquer le système de pillz de urban rivals, avec un nombre limité de pillz à allouer à chaque attaque, et tu peux bluffer pour faire surpillzer l'adversaire, puis le bouffer aux rounds suivants 
+Raïne-chad — Yesterday at 9:17 PM
+(En ayant une bonne balance entre sentiment de progression et difficulté pour rattraper le train en marche)
+Benjamin — Yesterday at 9:23 PM
+En vrai je pense perso que les systèmes de combat des JDR sont en général pas trop mal, puis comme ils sont automatisés ben... T'as pas ce truc où tu calcules tout le temps
+Un des systèmes de combat qui m'a le plus donné envie de combattre c'était sur Baldur's Gate 3, donc D&D 5eme édition
+Tu peux faire plusieurs actions lors de ton tour, ce que je trouve trop cool
+Genre tu peux :
+- bouger
+- faire une action
+- action bonus
+
+Bouger t'as X mètres de mouvement, dans les terrains difficiles il est divisé par 2
+Faire une action c'est tout ce qui est taper, lancer un sort, se cacher, courir (pour x2 ton mouvement)
+Action bonus ça contient :
+-> réagir à quelque chose qui se passe je crois
+-> boire une potion
+-> faire certains sorts, sauf si t'as lancé 1 sort pendant ton action

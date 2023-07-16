@@ -4,36 +4,55 @@ import evennia
 from evennia import set_trace,default_cmds
 
 from world import rules
+from module.utils import Stat,Skill
 
-class CmdSetForce(Command):
+class CmdSetStat(Command):
     """
-    Set the strength of a char
+    Set an Attribute of a char
 
     Usage:
-        setForce <0-7>
+        setStats <STAT> <1-20>
     """
-    key = "setForce"
+    key = "setStat"
     help_category = "chargen"
 
     def parse(self):
-        return super().parse()
+        errmsg = "No arguments !"
+        if not self.args:
+            self.caller.msg(f"{errmsg}")
+            return
+        else:
+            statName,statValue = self.args.strip().split(" ")
+            self.statName = None
+            self.statValue = None
+            try:
+                self.statValue = int(statValue)
+                self.statName = Stat.reverseMap(statName)
+            except ValueError:
+                errmsg = "Value is not a number !"
+                self.caller.msg(f"{errmsg}")
+                return
+            except KeyError:
+                errmsg = "Attribute is not correct !"
+                self.caller.msg(f"{errmsg}")
+        
     
     def func(self):
-        errmsg = "You must supply a number between 0 and 7."
+        errmsg = "Error."
         if not self.args:
             self.caller.msg(errmsg)
             return
-        try:
-            strength = int(self.args)
-        except ValueError:
+        if self.statName is None or self.statValue is None:
+            errmsg = "Parse error"
             self.caller.msg(errmsg)
             return
-        if not (0 <= strength <= 7):
+        if not (1 <= self.statValue <= 20):
+            errmsg = "Value should be between 1 and 20"
             self.caller.msg(errmsg)
             return
         # at this point the argument is tested as valid. Let's set it.
-        self.caller.traits.force.base = strength
-        self.caller.msg(f"Your strength was set to {strength}.")
+        self.caller.traits[self.statName].base = self.statValue
+        self.caller.msg(f"Your {self.statName} was set to {self.statValue}.")
 
 class CmdBuySkill(Command):
     """
@@ -52,18 +71,27 @@ class CmdBuySkill(Command):
         else:
             skillName = self.args.strip().split(" ")[0]
             self.showStats = False
-            self.skillName = skillName
+            self.skillName = None
+            try:
+                self.skillName = Skill.reverseMap(skillName)
+            except KeyError:
+                errmsg = "Skill is not correct !"
+                self.caller.msg(f"{errmsg}")
 
     def func(self):
         caller = self.caller
         
         if self.showStats:
             caller.msg("Liste des compétences disponibles\n")
-            for trait in caller.traits.all:
-                if caller.traits[f"{trait}"].trait_type == "skill":
-                    caller.msg(f"{caller.traits[trait].name}\n")
+            for skill in Skill.attributes():
+                if caller.traits[f"{skill}"].trait_type == "skill":
+                    caller.msg(f"{Skill.shortNames(skill)}/{caller.traits[skill].name}\n")
             return
         else:
+            if self.skillName is None:
+                errmsg = "Skill is not correct !"
+                self.caller.msg(f"{errmsg}")
+                return
             #set_trace()
             rules.acquireSkill(caller,self.skillName)
             caller.msg(f"Compétence {self.skillName} achetée")
@@ -105,6 +133,6 @@ class CharGenCmdSet(CmdSet):
     
     key = "CharGen"
     def at_cmdset_creation(self):
-        self.add(CmdSetForce)
+        self.add(CmdSetStat)
         self.add(CmdStatSet)
         self.add(CmdBuySkill)

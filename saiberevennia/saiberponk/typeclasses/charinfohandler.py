@@ -15,7 +15,7 @@ class CharInfoHandler:
         self.charinfo = character.db.charinfo
 
     def __setattr__(self, __name: str, __value: Any) -> None:
-        if __name in self.ALLOWED_ATTRIBUTES:
+        if __name in CharInfoHandler.ALLOWED_ATTRIBUTES:
             self.charinfo[__name] = __value
         else:
             

@@ -14,7 +14,7 @@ from evennia.contrib.rpg.traits import TraitHandler
 
 from typeclasses.charinfohandler import CharInfoHandler
 from typeclasses.wallethelper import WalletHelper
-from module.utils import WorldUtils
+from module.utils import WorldUtils,Stat,Skill,FightSkill,CombatRelated
 
 from .objects import ObjectParent
 
@@ -57,20 +57,20 @@ class Character(ObjectParent, DefaultCharacter):
     def at_object_creation(self):
         
         # STATS
-        for stat,desc in WorldUtils.STATS_DICT.items():
-            self.traits.add(stat,desc,trait_type="static",base=0,mod=0)
+        for stat in Stat.attributes():
+            self.traits.add(stat,stat,trait_type="static",base=0,mod=0)
          
         # SKILLS
-        for skill,desc in WorldUtils.SKILL_DICT.items():
-            self.traits.add(skill,desc,trait_type="skill",base=0,mod=0)
+        for skill in Skill.attributes():
+            self.traits.add(skill,skill,trait_type="skill",base=0,mod=0)
 
         # FIGHT SKILLS
-        #for fight,desc in WorldUtils.FIGHT_DICT.items():
-        #   self.traits.add(fight,desc,trait_type="static",base=0,mod=0)
+        for fight in FightSkill.attributes():
+           self.traits.add(fight,fight,trait_type="static",base=0,mod=0)
 
         # Computed properties
-        self.traits.add("PV",WorldUtils.COMPUTED_PROP["PV"],trait_type="counter",base=0,min=0,max=None)
-        self.traits.add("DEF",WorldUtils.COMPUTED_PROP["DEF"],trait_type="static",base=0,mod=0)
+        self.traits.add(str(CombatRelated.PV),str(CombatRelated.PV),trait_type="counter",base=0,min=0,max=None)
+        self.traits.add(str(CombatRelated.DEF),str(CombatRelated.DEF),trait_type="static",base=0,mod=0)
 
         self.wallet.setup()
 
@@ -79,18 +79,6 @@ class Character(ObjectParent, DefaultCharacter):
         self.db.xp = 0
 
        
-    def get_stats(self):
-        """
-        Get the main stats of this character
-        """
-        statTuple = (self.traits.force.value,
-                    self.traits.dexterite.value, 
-                    self.traits.constitution.value,
-                    self.traits.intelligence.value,
-                    self.traits.sagesse.value,
-                    self.traits.charisme.value
-                    )
-        return statTuple
 
 
     def return_appearance(self, looker):
