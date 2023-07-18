@@ -43,7 +43,8 @@ mongosh
 mongoose
 
 # Useful evennia commands
-type/update
+``type/update
+update character
 delete the server evennia.db3
 evennia migrate
 evennia start

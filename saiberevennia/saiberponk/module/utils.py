@@ -3,6 +3,16 @@ from enum import Enum,StrEnum,auto
 
 
 class Stat(StrEnum):
+    # This is a private dictionnary not an enum number
+    __STATS_DICT:Dict[str,str] = {
+        "FOR":"Force",
+        "INT":"Intelligence",
+        "SAG":"Sagesse",
+        "DEX":"Dexterité",
+        "CON":"Constitution",
+        "CHA":"Charisme",
+    }
+
     FOR = "Force"
     INT = "Intelligence"
     SAG = "Sagesse"
@@ -16,18 +26,33 @@ class Stat(StrEnum):
 
     @classmethod
     def reverseMap(cls,str) -> str:
-        STATS_DICT:Dict[str,str] = {
-            "FOR":"Force",
-            "INT":"Intelligence",
-            "SAG":"Sagesse",
-            "DEX":"Dexterité",
-            "CON":"Constitution",
-            "CHA":"Charisme",
-        }
-        return STATS_DICT.get(str)
+        return Stat.__STATS_DICT.get(str)
+    
+    @classmethod
+    def shortNames(cls,str) -> str:
+        INV_DICT = {v: k for k, v in Stat.__STATS_DICT.items()}
+        return INV_DICT.get(str)
 
 
 class Skill(StrEnum):
+    # This is a private dictionnary not an enum number
+    __SKILL_DICT:Dict[str,str] = {
+            "ADM":"Administrer",
+            "CNT":"Connecter",
+            "CND":"Conduire", 
+            "EXE":"Exercer",
+            "REP":"Réparer",
+            "SOI":"Soigner",
+            "SAV":"Savoir",
+            "DIR":"Diriger",
+            "PRF":"Performer",
+            "PRC":"Percevoir",
+            "PRG":"Programmer",
+            "PSD":"Persuader",
+            "MCD":"Marchander",
+            "TRV":"Travailler"
+    }
+
     ADM = "Administrer"
     CNT = "Connecter"
     CND = "Conduire" 
@@ -47,51 +72,24 @@ class Skill(StrEnum):
     def attributes(cls) -> List[str]:
         return [str(x) for x in cls]
     
-    #TODO: Unify both methods
     @classmethod
     def reverseMap(cls,str) -> str:
-        SKILL_DICT:Dict[str,str] = {
-            "ADM":"Administrer",
-            "CNT":"Connecter",
-            "CND":"Conduire", 
-            "EXE":"Exercer",
-            "REP":"Réparer",
-            "SOI":"Soigner",
-            "SAV":"Savoir",
-            "DIR":"Diriger",
-            "PRF":"Performer",
-            "PRC":"Percevoir",
-            "PRG":"Programmer",
-            "PSD":"Persuader",
-            "MCD":"Marchander",
-            "TRV":"Travailler"
-        }
-        return SKILL_DICT.get(str)
+        return Skill.__SKILL_DICT.get(str)
     
     @classmethod
     def shortNames(cls,str) -> str:
-        SKILL_DICT:Dict[str,str] = {
-            "ADM":"Administrer",
-            "CNT":"Connecter",
-            "CND":"Conduire", 
-            "EXE":"Exercer",
-            "REP":"Réparer",
-            "SOI":"Soigner",
-            "SAV":"Savoir",
-            "DIR":"Diriger",
-            "PRF":"Performer",
-            "PRC":"Percevoir",
-            "PRG":"Programmer",
-            "PSD":"Persuader",
-            "MCD":"Marchander",
-            "TRV":"Travailler"
-        }
-        INV_SKILL_DICT = {v: k for k, v in SKILL_DICT.items()}
-        return INV_SKILL_DICT.get(str)
+        INV_DICT = {v: k for k, v in Skill.__SKILL_DICT.items()}
+        return INV_DICT.get(str)
 
 
 
 class FightSkill(StrEnum):
+    __FIGHT_DICT:Dict[str,str] = {
+        "TIR":"Tirer",
+        "CAC":"Corps à corps",
+        "FRP":"Frapper"
+    }
+
     TIR = "Tirer"
     CAC = "Corps à corps"
     FRP = "Frapper"
@@ -102,15 +100,21 @@ class FightSkill(StrEnum):
     
     @classmethod
     def reverseMap(cls,str) -> str:
-        FIGHT_DICT:Dict[str,str] = {
-        "TIR":"Tirer",
-        "CAC":"Corps à corps",
-        "FRP":"Frapper"
-        }
-        return FIGHT_DICT.get(str)
+
+        return FightSkill.__FIGHT_DICT.get(str)
     
+    @classmethod
+    def shortNames(cls,str) -> str:
+        INV_DICT = {v: k for k, v in FightSkill.__FIGHT_DICT.items()}
+        return INV_DICT.get(str)
+
 
 class CombatRelated(StrEnum):
+    __COMPUTED_PROP:Dict[str,str] = {
+        "PV":"Points de vie",
+        "DEF":"Défense"
+    }
+
     PV  = "Points de vie"
     DEF = "Défense"
     
@@ -120,11 +124,17 @@ class CombatRelated(StrEnum):
     
     @classmethod
     def reverseMap(cls,str) -> str:
-        COMPUTED_PROP:Dict[str,str] = {
-            "PV":"Points de vie",
-            "DEF":"Défense"
-        }
-        return COMPUTED_PROP.get(str)
+        return CombatRelated.__COMPUTED_PROP.get(str)
+    
+    @classmethod
+    def shortNames(cls,str) -> str:
+        INV_DICT = {v: k for k, v in CombatRelated.__COMPUTED_PROP.items()}
+        return INV_DICT.get(str)
+
+
+class Backgrounds(Enum):
+    def __init__(self,freeSkill:Skill|FightSkill,GrowthTable,LearningTable) -> None:
+        pass
 
 class WorldUtils:
     pass
