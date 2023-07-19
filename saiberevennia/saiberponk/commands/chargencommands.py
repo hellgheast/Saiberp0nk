@@ -1,7 +1,8 @@
 from commands.command import Command
-from evennia import CmdSet
+from evennia import CmdSet,EvMenu
 import evennia
 from evennia import set_trace,default_cmds
+
 
 from world import rules
 from module.utils import Stat,Skill
@@ -127,6 +128,40 @@ class CmdStatSet(Command):
         self.caller.traits[self.statName].base = self.statValue
         self.caller.msg(f"STAT {self.caller.traits[self.statName].name} set to value : {self.statValue}")
 
+
+class CmdSelectBackground(Command):
+
+    """
+    Command to show the available background and proceed to the selection of it
+    With the skill selection or randomness
+
+
+    Usage:
+        selectbackground
+
+    """
+    key = "selectbackground"
+    help_category = "chargen"
+    def parse(self):
+        pass
+        if not self.args:
+            self.statName = None
+            self.statValue = None
+        else:
+            statName,statValue = self.args.strip().split(" ")
+            self.statName = statName
+            self.statValue = int(statValue)    
+
+    def func(self):
+        pass
+        caller = self.caller
+        
+        if self.statName == None and self.targetNumber == None:
+            caller.msg("Missing arguments")
+            return
+        
+        self.caller.traits[self.statName].base = self.statValue
+        self.caller.msg(f"STAT {self.caller.traits[self.statName].name} set to value : {self.statValue}")
 
 class CharGenCmdSet(CmdSet):
     """Set de commandes pour la génération de personnage"""
