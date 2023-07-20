@@ -1,141 +1,44 @@
 from typing import Dict, List
-from enum import Enum, StrEnum, auto
+from module.enums import Stat
+
+_OBJ_STATS = """
+|c{key}|n
+Valeur: ~|y{value}|n C$ {carried}
+
+{desc}
+
+Taille: |w{size}|n, Used from: |w{use_slot_name}|n
+Qualité: |w{quality}|n, Utilisation: |w{uses}|n
+Attacks using |w{attack_type_name}|n contre |w{defense_type_name}|n
+Dé de dégâts: |w{damage_roll}|n
+""".strip()
 
 
-class ExtEnum(StrEnum):
-    """
-    Main Enum class that provides useful helper functions
-    """
-    @classmethod
-    def reverseMap(cls, str) -> str:
-        return cls.__members__.get(str).value
-
-    @classmethod
-    def shortNames(cls, str) -> str:
-        INV_DICT = {v.value: k for k, v in cls.__members__.items()}
-        return INV_DICT.get(str)
+def get_obj_stats(obj, owner=None): 
+    """ 
+    Get a string of stats about the object.
     
-    @classmethod
-    def attributes(cls) -> List[str]:
-        return [str(x) for x in cls]
-
-
-class Stat(ExtEnum):
-    FOR = "Force"
-    INT = "Intelligence"
-    SAG = "Sagesse"
-    DEX = "Dexterité"
-    CON = "Constitution"
-    CHA = "Charisme"
-
-
-class Skill(ExtEnum):
-    ADM = "Administrer"
-    CNT = "Connecter"
-    CND = "Conduire"
-    EXE = "Exercer"
-    REP = "Réparer"
-    SOI = "Soigner"
-    SAV = "Savoir"
-    DIR = "Diriger"
-    PRF = "Performer"
-    PCV = "Percevoir"
-    PRG = "Programmer"
-    INF = "Infiltrer"
-    SRV = "Survivre"
-    PSD = "Persuader"
-    MCD = "Marchander"
-    TRV = "Travailler"
-
-class FightSkill(ExtEnum):
-
-    TIR = "Tirer"
-    CAC = "Corps à corps"
-    FRP = "Frapper"
-
-
-class CombatRelated(ExtEnum):
-
-    PV = "Points de vie"
-    DEF = "Défense"
-
-
-class MetaChoice(Enum):
-    ANY_SKILL = [Skill.attributes(), FightSkill.attributes()]
-    ANY_COMBAT = [FightSkill.attributes()]
-    ANY_STAT = [Stat.attributes()]
-    PHYSICAL = [Stat.CON.value, Stat.FOR.value, Stat.DEX.value]
-    MENTAL = [Stat.CHA.value, Stat.INT.value, Stat.SAG.value]
-
-
-class Backgrounds(Enum):
-
-    def __init__(
-        self,
-        desc: str,
-        freeSkill: Skill | FightSkill,
-        growth: List[MetaChoice | Skill | Stat],
-        learning: List[Skill | MetaChoice],
-    ) -> None:
-        self.desc = desc
-        self.freeSkill = freeSkill
-        self.growth = growth
-        self.learning = learning
-
-
-    BUM = (
-        "Clodo",
-        # free skill
-        Skill.SRV,
-        # Growth list
-        [
-            (1, MetaChoice.ANY_STAT),
-            (2, MetaChoice.PHYSICAL),
-            (2, MetaChoice.PHYSICAL),
-            (2, MetaChoice.MENTAL),
-            Skill.SRV,
-            MetaChoice.ANY_SKILL,
-        ],
-        # Learning list
-        [
-            MetaChoice.ANY_COMBAT,
-            Skill.SRV,
-            Skill.CNT,
-            Skill.INF,
-            Skill.PCV,
-            Skill.PSD,
-            Skill.REP,
-            Skill.MCD,
-        ],
+    Args:
+        obj (Object): The object to get stats for.
+        owner (Object): The one currently owning/carrying `obj`, if any. Can be 
+            used to show e.g. where they are wielding it.
+    Returns:
+        str: A nice info string to display about the object.
+     
+    """
+    return _OBJ_STATS.format(
+        key=obj.key, 
+        value=10, 
+        carried="[Pas porté]", 
+        desc=obj.db.desc, 
+        size=1,
+        quality=3,
+        uses="infinie",
+        use_slot_name="Sac à dos",
+        attack_type_name=Stat.FOR.value,
+        defense_type_name="Armure",
+        damage_roll="1d6"
     )
-
-    BUROCRAT = (
-        "Fonctionnaire",
-        # free skill
-        Skill.ADM,
-        # growth list
-        [
-            (1, MetaChoice.ANY_STAT),
-            (2, MetaChoice.MENTAL),
-            (2, MetaChoice.MENTAL),
-            (2, MetaChoice.MENTAL),
-            Skill.ADM,
-            MetaChoice.ANY_SKILL,
-        ],
-        # learning list
-        [
-            Skill.ADM,
-            Skill.SAV,
-            Skill.PSD,
-            Skill.PRG,
-            Skill.DIR,
-            Skill.MCD,
-            Skill.PCV,
-            MetaChoice.ANY_SKILL,
-        ],
-    )
-
-
 
 
 class WorldUtils:
@@ -156,14 +59,4 @@ class WorldUtils:
     #        "GNG":"Ganger",
     #    }
 
-    class CharInfo(StrEnum):
-        CULTURE = "CULTURE"
-        FIRSTNAME = "FIRSTNAME"
-        LASTNAME = "LASTNAME"
-        AGE = "AGE"
-        HEIGHT = "HEIGHT"
-        WEIGHT = "WEIGHT"
 
-        @classmethod
-        def attributes(cls) -> List[str]:
-            return [str(x) for x in cls]

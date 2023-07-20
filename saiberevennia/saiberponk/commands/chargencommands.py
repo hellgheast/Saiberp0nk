@@ -5,14 +5,14 @@ from evennia import set_trace,default_cmds
 
 
 from world import rules
-from module.utils import Stat,Skill
+from module.enums import Stat,Skill
 
 class CmdSetStat(Command):
     """
     Set an Attribute of a char
 
     Usage:
-        setStats <STAT> <1-20>
+        setStat <STAT> <1-20>
     """
     key = "setStat"
     help_category = "chargen"

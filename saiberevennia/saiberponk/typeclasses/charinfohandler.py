@@ -1,12 +1,12 @@
 from typing import Any
-from module.utils import WorldUtils
+from module.enums import CharInfo
 
 class CharInfoHandler:
     """
     Main information of the character
     """
 
-    ALLOWED_ATTRIBUTES = WorldUtils.CharInfo.attributes()
+    ALLOWED_ATTRIBUTES = CharInfo.attributes()
 
     def __init__(self, character) -> None:
         self.character = character

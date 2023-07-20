@@ -14,7 +14,7 @@ from evennia.contrib.rpg.traits import TraitHandler
 
 from typeclasses.charinfohandler import CharInfoHandler
 from typeclasses.wallethelper import WalletHelper
-from module.utils import WorldUtils,Stat,Skill,FightSkill,CombatRelated
+from module.enums import Stat,Skill,FightSkill,CombatRelated
 
 from .objects import ObjectParent
 
