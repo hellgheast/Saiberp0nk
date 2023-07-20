@@ -3,6 +3,18 @@ from enum import Enum, StrEnum, auto
 
 
 class ExtEnum(StrEnum):
+    """
+    Main Enum class that provides useful helper functions
+    """
+    @classmethod
+    def reverseMap(cls, str) -> str:
+        return cls.__members__.get(str).value
+
+    @classmethod
+    def shortNames(cls, str) -> str:
+        INV_DICT = {v.value: k for k, v in cls.__members__.items()}
+        return INV_DICT.get(str)
+    
     @classmethod
     def attributes(cls) -> List[str]:
         return [str(x) for x in cls]
@@ -15,15 +27,6 @@ class Stat(ExtEnum):
     DEX = "Dexterité"
     CON = "Constitution"
     CHA = "Charisme"
-
-    @classmethod
-    def reverseMap(cls, str) -> str:
-        return Stat.__members__.get(str).value
-
-    @classmethod
-    def shortNames(cls, str) -> str:
-        INV_DICT = {v.value: k for k, v in Stat.__members__.items()}
-        return INV_DICT.get(str)
 
 
 class Skill(ExtEnum):
@@ -44,57 +47,17 @@ class Skill(ExtEnum):
     MCD = "Marchander"
     TRV = "Travailler"
 
-    @classmethod
-    def reverseMap(cls, str) -> str:
-        return Skill.__members__.get(str).value
-
-    @classmethod
-    def shortNames(cls, str) -> str:
-        INV_DICT = {v.value: k for k, v in Skill.__members__.items()}
-        return INV_DICT.get(str)
-
-
-
 class FightSkill(ExtEnum):
-    __FIGHT_DICT: Dict[str, str] = {
-        "TIR": "Tirer",
-        "CAC": "Corps à corps",
-        "FRP": "Frapper",
-    }
 
     TIR = "Tirer"
     CAC = "Corps à corps"
     FRP = "Frapper"
 
-    @classmethod
-    def attributes(cls) -> List[str]:
-        return [str(x) for x in cls]
-
-    @classmethod
-    def reverseMap(cls, str) -> str:
-
-        return FightSkill.__FIGHT_DICT.get(str)
-
-    @classmethod
-    def shortNames(cls, str) -> str:
-        INV_DICT = {v: k for k, v in FightSkill.__FIGHT_DICT.items()}
-        return INV_DICT.get(str)
-
 
 class CombatRelated(ExtEnum):
-    __COMPUTED_PROP: Dict[str, str] = {"PV": "Points de vie", "DEF": "Défense"}
 
     PV = "Points de vie"
     DEF = "Défense"
-
-    @classmethod
-    def reverseMap(cls, str) -> str:
-        return CombatRelated.__COMPUTED_PROP.get(str)
-
-    @classmethod
-    def shortNames(cls, str) -> str:
-        INV_DICT = {v: k for k, v in CombatRelated.__COMPUTED_PROP.items()}
-        return INV_DICT.get(str)
 
 
 class MetaChoice(Enum):
