@@ -9,15 +9,6 @@ class ExtEnum(StrEnum):
 
 
 class Stat(ExtEnum):
-    # This is a private dictionnary not an enum number
-    __STATS_DICT: Dict[str, str] = {
-        "FOR": "Force",
-        "INT": "Intelligence",
-        "SAG": "Sagesse",
-        "DEX": "Dexterité",
-        "CON": "Constitution",
-        "CHA": "Charisme",
-    }
     FOR = "Force"
     INT = "Intelligence"
     SAG = "Sagesse"
@@ -27,35 +18,15 @@ class Stat(ExtEnum):
 
     @classmethod
     def reverseMap(cls, str) -> str:
-        return Stat.__STATS_DICT.get(str)
+        return Stat.__members__.get(str).value
 
     @classmethod
     def shortNames(cls, str) -> str:
-        INV_DICT = {v: k for k, v in Stat.__STATS_DICT.items()}
+        INV_DICT = {v.value: k for k, v in Stat.__members__.items()}
         return INV_DICT.get(str)
 
 
 class Skill(ExtEnum):
-    # This is a private dictionnary not an enum number
-    __SKILL_DICT: Dict[str, str] = {
-        "ADM": "Administrer",
-        "CNT": "Connecter",
-        "CND": "Conduire",
-        "EXE": "Exercer",
-        "REP": "Réparer",
-        "SOI": "Soigner",
-        "SAV": "Savoir",
-        "DIR": "Diriger",
-        "PRF": "Performer",
-        "PCV": "Percevoir",
-        "PRG": "Programmer",
-        "INF": "Infiltrer",
-        "SRV": "Survivre",
-        "PSD": "Persuader",
-        "MCD": "Marchander",
-        "TRV": "Travailler",
-    }
-
     ADM = "Administrer"
     CNT = "Connecter"
     CND = "Conduire"
@@ -75,15 +46,16 @@ class Skill(ExtEnum):
 
     @classmethod
     def reverseMap(cls, str) -> str:
-        return Skill.__SKILL_DICT.get(str)
+        return Skill.__members__.get(str).value
 
     @classmethod
     def shortNames(cls, str) -> str:
-        INV_DICT = {v: k for k, v in Skill.__SKILL_DICT.items()}
+        INV_DICT = {v.value: k for k, v in Skill.__members__.items()}
         return INV_DICT.get(str)
 
 
-class FightSkill(StrEnum):
+
+class FightSkill(ExtEnum):
     __FIGHT_DICT: Dict[str, str] = {
         "TIR": "Tirer",
         "CAC": "Corps à corps",
@@ -134,7 +106,21 @@ class MetaChoice(Enum):
 
 
 class Backgrounds(Enum):
-    BUM = [
+
+    def __init__(
+        self,
+        desc: str,
+        freeSkill: Skill | FightSkill,
+        growth: List[MetaChoice | Skill | Stat],
+        learning: List[Skill | MetaChoice],
+    ) -> None:
+        self.desc = desc
+        self.freeSkill = freeSkill
+        self.growth = growth
+        self.learning = learning
+
+
+    BUM = (
         "Clodo",
         # free skill
         Skill.SRV,
@@ -158,9 +144,9 @@ class Backgrounds(Enum):
             Skill.REP,
             Skill.MCD,
         ],
-    ]
+    )
 
-    BUROCRAT = [
+    BUROCRAT = (
         "Fonctionnaire",
         # free skill
         Skill.ADM,
@@ -184,19 +170,9 @@ class Backgrounds(Enum):
             Skill.PCV,
             MetaChoice.ANY_SKILL,
         ],
-    ]
+    )
 
-    def __init__(
-        self,
-        name: str,
-        freeSkill: Skill | FightSkill,
-        growth: List[MetaChoice | Skill | Stat],
-        learning: List[Skill | MetaChoice],
-    ) -> None:
-        self.name = name
-        self.freeSkill = freeSkill
-        self.growth = growth
-        self.learning = learning
+
 
 
 class WorldUtils:
