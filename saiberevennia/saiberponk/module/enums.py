@@ -23,7 +23,7 @@ class Stat(ExtEnum):
     FOR = "Force"
     INT = "Intelligence"
     SAG = "Sagesse"
-    DEX = "Dexterité"
+    DEX = "Dextérité"
     CON = "Constitution"
     CHA = "Charisme"
 
@@ -45,9 +45,7 @@ class Skill(ExtEnum):
     PSD = "Persuader"
     MCD = "Marchander"
     TRV = "Travailler"
-
-class FightSkill(ExtEnum):
-
+    # Fight Skills
     TIR = "Tirer"
     CAC = "Corps à corps"
     FRP = "Frapper"
@@ -70,8 +68,8 @@ class CharInfo(ExtEnum):
 
 
 class MetaChoice(Enum):
-    ANY_SKILL = [Skill.attributes(), FightSkill.attributes()]
-    ANY_COMBAT = [FightSkill.attributes()]
+    ANY_SKILL = [Skill.attributes()]
+    ANY_COMBAT = [Skill.TIR.value,Skill.CAC.value,Skill.FRP.value]
     ANY_STAT = [Stat.attributes()]
     PHYSICAL = [Stat.CON.value, Stat.FOR.value, Stat.DEX.value]
     MENTAL = [Stat.CHA.value, Stat.INT.value, Stat.SAG.value]
@@ -82,7 +80,7 @@ class Backgrounds(Enum):
     def __init__(
         self,
         desc: str,
-        freeSkill: Skill | FightSkill,
+        freeSkill: Skill,
         growth: List[MetaChoice | Skill | Stat],
         learning: List[Skill | MetaChoice],
     ) -> None:

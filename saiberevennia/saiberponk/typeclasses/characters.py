@@ -14,7 +14,7 @@ from evennia.contrib.rpg.traits import TraitHandler
 
 from typeclasses.charinfohandler import CharInfoHandler
 from typeclasses.wallethelper import WalletHelper
-from module.enums import Stat,Skill,FightSkill,CombatRelated
+from module.enums import Stat,Skill,CombatRelated
 
 from .objects import ObjectParent
 
@@ -63,10 +63,6 @@ class Character(ObjectParent, DefaultCharacter):
         # SKILLS
         for skill in Skill.attributes():
             self.traits.add(skill,skill,trait_type="skill")
-
-        # FIGHT SKILLS
-        for fight in FightSkill.attributes():
-           self.traits.add(fight,fight,trait_type="static",base=0,mod=0)
 
         # Computed properties
         self.traits.add(str(CombatRelated.PV),str(CombatRelated.PV),trait_type="counter",base=0,min=0,max=None)

@@ -2,7 +2,7 @@ from random import randint
 from typing import Tuple
 from evennia import set_trace
 from enum import IntEnum
-from module.enums import Stat,Skill,FightSkill
+from module.enums import Stat,Skill
 
 class Difficulty(IntEnum):
     EASY = 6
@@ -12,12 +12,14 @@ class Difficulty(IntEnum):
     COMPLEX = 14
 
 class RollEngine():
-    """
-    Transform a roll string i.e 4d6 into 4 random int and sum them
-    """
+    """Main roll system for saiberponk"""
+
     def roll(self,rollString:str) -> int:
+        """
+        Transform a roll string i.e 4d6 into 4 random int and sum them
+        """
         # Split arg
-        numberRolls,dieSize = rollString.spli("d")
+        numberRolls,dieSize = rollString.split("d")
         # Convert into int
         numberRolls = int(numberRolls)
         dieSize = int(dieSize)
@@ -25,7 +27,7 @@ class RollEngine():
         rollSum = sum([randint(1,dieSize) for _ in range(numberRolls)])
         return rollSum
     
-    def skillCheck(self,character,stat:Stat,skill:Skill|FightSkill,target:int) -> bool:
+    def skillCheck(self,character,stat:Stat,skill:Skill,target:int) -> bool:
         roll = self.roll("2d6")
         skillValue = character.traits[skill.value].value
         statValue = character.traits[stat.value].value
@@ -57,6 +59,9 @@ class RollEngine():
             return False
         else:        
             return roll >= target - sub
+
+
+dice = RollEngine()
 
 
 def rollD6():

@@ -30,4 +30,4 @@ class CharInfoHandler:
 
     @property
     def fullname(self) -> str:
-        return self.charinfo[WorldUtils.CharInfo.FIRSTNAME] + " " + self.charinfo[WorldUtils.CharInfo.LASTNAME]
+        return self.charinfo[CharInfo.FIRSTNAME] + " " + self.charinfo[CharInfo.LASTNAME]

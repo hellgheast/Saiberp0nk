@@ -6,6 +6,27 @@ from evennia import set_trace,default_cmds
 
 from world import rules
 from module.enums import Stat,Skill
+from module.chargen import startChargen
+
+class CmdCharGen(Command):
+    """
+    Proceed to the character generation
+
+    Usage:
+        chargen
+    """
+    key = "chargen"
+    help_category = "chargen"
+    
+    def func(self):
+        # Rolling the stats dice
+        self.msg("TEST")
+        startChargen(self.caller)
+
+
+
+
+
 
 class CmdSetStat(Command):
     """
@@ -171,3 +192,4 @@ class CharGenCmdSet(CmdSet):
         self.add(CmdSetStat)
         self.add(CmdStatSet)
         self.add(CmdBuySkill)
+        self.add(CmdCharGen)
