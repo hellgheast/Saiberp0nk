@@ -58,7 +58,7 @@ class Character(ObjectParent, DefaultCharacter):
         
         # STATS
         for stat in Stat.attributes():
-            self.traits.add(stat,stat,trait_type="static",base=0,mod=0)
+            self.traits.add(stat,stat,trait_type="stat")
          
         # SKILLS
         for skill in Skill.attributes():

@@ -14,12 +14,12 @@ class SkillTrait(StaticTrait):
     trait_type = "skill"
     default_keys = {
         "base": 0, 
-        "mod": -2, 
+        "mod": -1, 
         "mult": 1.0,
         "acquired":False
     }    
 
-    NOT_ACQUIRED_SKILL_VALUE = -2
+    NOT_ACQUIRED_SKILL_VALUE = -1
 
     def __str__(self):
         status = "{value:11}".format(value=self.value)
@@ -51,6 +51,55 @@ class SkillTrait(StaticTrait):
         return (self.base + self.mod) * self.mult
 
 
+class StatTrait(StaticTrait):
+    """
+    Stat Trait. This is a single value with a modifier,
+    multiplier, and no concept of a 'current' value or min/max etc.
+
+    We modify the modifier depending on the base value
+
+    value = (base) * mult
+
+    """
+    trait_type = "stat"
+    default_keys = {
+        "base": 0, 
+        "mod": 0, 
+        "mult": 1.0,
+    }    
+
+
+    def __str__(self):
+        status = "{value:11}".format(value=self.value)
+        return "{name:12} ({mod:+3}) (* {mult:.2f})".format(
+            name=self.name,  mod=self.mod, mult=self.mult
+        )
+
+
+    # Helpers
+    @property
+    def base(self):
+        return self._data["base"]
+
+    @base.setter
+    def base(self,value:int):
+        if type(value) is int:
+            self._data["base"] = value
+            if value <= 3:
+                self._data["mod"] = -2
+            elif value >= 4 and value <= 7:
+                self._data["mod"] = -1
+            elif value >= 8 and value <= 13:
+                self._data["mod"] = 0
+            elif value >= 14 and value <= 17:
+                self._data["mod"] = 1
+            elif value >= 18:
+                self._data["mod"] = 2
+
+    @property
+    def value(self):
+        "The value of the Trait."
+        return self.base * self.mult
 
 # computedtrait,char=self,traits=["","",""],computefunc=..
 # traitwithhook ??

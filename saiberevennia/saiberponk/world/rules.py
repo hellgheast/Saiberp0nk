@@ -2,14 +2,62 @@ from random import randint
 from typing import Tuple
 from evennia import set_trace
 from enum import IntEnum
+from module.enums import Stat,Skill,FightSkill
 
 class Difficulty(IntEnum):
-    EASY = 9
-    MEDIUM = 12
-    HARD = 15
-    VERY_HARD = 18
-    COMPLEX = 21
-    ALMOST_IMPOSSIBLE = 24
+    EASY = 6
+    MEDIUM = 8
+    HARD = 10
+    VERY_HARD = 12
+    COMPLEX = 14
+
+class RollEngine():
+    """
+    Transform a roll string i.e 4d6 into 4 random int and sum them
+    """
+    def roll(self,rollString:str) -> int:
+        # Split arg
+        numberRolls,dieSize = rollString.spli("d")
+        # Convert into int
+        numberRolls = int(numberRolls)
+        dieSize = int(dieSize)
+        # Generate the rolls an
+        rollSum = sum([randint(1,dieSize) for _ in range(numberRolls)])
+        return rollSum
+    
+    def skillCheck(self,character,stat:Stat,skill:Skill|FightSkill,target:int) -> bool:
+        roll = self.roll("2d6")
+        skillValue = character.traits[skill.value].value
+        statValue = character.traits[stat.value].value
+        
+        result = roll + skillValue + statValue
+        
+        if result >= target:
+            return True
+        else:
+            return False
+
+
+    def savingThrow(self, character,type:str,target:int):
+        match type:
+            case "PHYSICAL":
+                sub = max(character.traits[str(Stat.FOR)].mod,character.traits[str(Stat.CON)].mod)
+            case "EVASION":
+                sub = max(character.traits[str(Stat.INT)].mod,character.traits[str(Stat.DEX)].mod)
+            case "MENTAL":
+                sub = max(character.traits[str(Stat.FOR)].mod,character.traits[str(Stat.CON)].mod)
+            case "LUCK":
+                sub = 0
+
+        roll = self.roll("1d20")
+
+        if roll == 20:
+            return True
+        elif roll == 1:
+            return False
+        else:        
+            return roll >= target - sub
+
 
 def rollD6():
     return randint(1,6)
