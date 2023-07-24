@@ -23,6 +23,13 @@ class CharInfoHandler:
             # Had weird behavior with self.character and self.charinfo
             #raise Exception("Attribute not allowed !")
 
+
+    def __setitem__(self, key, value) -> None:
+        if key in CharInfoHandler.ALLOWED_ATTRIBUTES:
+            self.charinfo[key] = value
+        else:  
+            Exception("Not existing")
+
     def __getattr__(self, name):
         if name not in self.charinfo.keys():
             raise AttributeError

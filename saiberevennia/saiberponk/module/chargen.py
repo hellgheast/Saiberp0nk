@@ -169,7 +169,6 @@ def startChargen(caller,session=None):
     """
     Starting point
     """
-    caller.msg("BOUYA")
     menutree = {
         "nodeChargen":nodeChargen,
         "nodeChangeName":nodeChangeName,
@@ -182,4 +181,3 @@ def startChargen(caller,session=None):
     # Generate a template char
     EvMenu(caller,menutree,session=session,
            startnode="nodeChargen",tmpChar=tmpChar)
-    caller.msg("BOUYO")
