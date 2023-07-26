@@ -18,6 +18,10 @@ class ExtEnum(StrEnum):
     def attributes(cls) -> List[str]:
         return [str(x) for x in cls]
 
+    @classmethod
+    def enumList(cls) -> List[Enum]:
+        return [x for x in cls]
+
 
 class Stat(ExtEnum):
     FOR = "Force"

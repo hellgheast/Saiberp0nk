@@ -50,6 +50,12 @@ class tempCharSheet:
             desc=self.desc
         )
 
+    def resetStatAssignation(self):
+        # Stat array
+        self.statArray:List[int] = [14,12,11,10,9,7]
+        # Base stats
+        self.stats = {stat:0 for stat in Stat.attributes()}
+
     def apply(self,char:Character):
         try:
             # Apply stats
@@ -155,7 +161,7 @@ def nodeRollStat(caller, rawString:str, **kwargs):
     
     options = [
         {
-            "desc":"retour ?",
+            "desc":"retour au menu principal",
             "goto":("nodeChargen",kwargs)
         }
     ]
@@ -195,13 +201,28 @@ def subnodeAssignStatHelper(caller,rawString:str,**kwargs):
 
     return text, options
 
+def subnodeResetStat(caller,rawString:str,**kwargs):
+    tmpChar:tempCharSheet = caller.ndb._evmenu.tmpChar
+    tmpChar.resetStatAssignation()
+    return "nodeAssignStat", kwargs
+
+
 def nodeAssignStat(caller,rawString:str,**kwargs):
     """
     Node to assign the stats
     """
 
+
     tmpChar:tempCharSheet = caller.ndb._evmenu.tmpChar
-   
+
+    def _isAssigned(stat:Stat) -> str:
+        nonlocal tmpChar
+        if tmpChar.stats[stat] != 0:
+            return "(x)"
+        else:
+            return ""
+
+
     showStr = "\t".join([str(x) for x in tmpChar.statArray])
 
     text = (
@@ -215,41 +236,20 @@ def nodeAssignStat(caller,rawString:str,**kwargs):
         },
     ]
 
+    # Generate submenu assignation
+    for stat in Stat.enumList():
+        options.append(
+            {
+                "desc":f"Assigner {stat} {_isAssigned(stat)}",
+                "goto":("subnodeAssignStatHelper",{"stat": stat})
+            },
+        )
+
     options.append(
         {
-            "desc":f"Assigner {Stat.FOR}",
-            "goto":("subnodeAssignStatHelper",{"stat": Stat.FOR})
-        },
-    )
-    options.append(
-        {
-            "desc":f"Assigner {Stat.INT}",
-            "goto":("subnodeAssignStatHelper",{"stat": Stat.INT})
-        },
-    )
-    options.append(
-        {
-            "desc":f"Assigner {Stat.SAG}",
-            "goto":("subnodeAssignStatHelper",{"stat": Stat.SAG})
-        },
-    )
-    options.append(
-        {
-            "desc":f"Assigner {Stat.DEX}",
-            "goto":("subnodeAssignStatHelper",{"stat": Stat.DEX})
-        },
-    )
-    options.append(
-        {
-            "desc":f"Assigner {Stat.CON}",
-            "goto":("subnodeAssignStatHelper",{"stat": Stat.CON})
-        },
-    )
-    options.append(
-        {
-            "desc":f"Assigner {Stat.CHA}",
-            "goto":("subnodeAssignStatHelper",{"stat": Stat.CHA})
-        },
+            "desc":"Reset des statistiques",
+            "goto":(subnodeResetStat,kwargs)
+        }
     )
     return text,options
 
