@@ -2,6 +2,7 @@ from world.rules import dice
 from typeclasses.charinfohandler import CharInfoHandler
 from module.enums import Stat,Skill,CharInfo,CombatRelated
 from typeclasses.characters import Character
+from typing import List
 from evennia import EvMenu
 
 
@@ -32,6 +33,9 @@ class tempCharSheet:
         self.charinfo = {ci:"" for ci in CharInfo.attributes()}
         # Description
         self.desc = "Zlatows, le super zlatis"
+
+        # Stat array
+        self.statArray:List[int] = [14,12,11,10,9,7]
     
     def showSheet(self):
         return _TEMP_SHEET.format(
@@ -63,7 +67,6 @@ class tempCharSheet:
 
 def nodeChargen(caller,rawString,**kwargs):
     
-    caller.msg(f"{kwargs}")
     # Workaround as kwargs are not correctly tranmitted
     tmpChar:tempCharSheet = caller.ndb._evmenu.tmpChar
     
@@ -79,6 +82,13 @@ def nodeChargen(caller,rawString,**kwargs):
         {
             "desc":"Génération aléatoire de personnage",
             "goto":("nodeRollStat",kwargs)
+
+        }
+    )
+    options.append(
+        {
+            "desc":"Génération de personnage",
+            "goto":("nodeAssignStat",kwargs)
 
         }
     )
@@ -153,6 +163,96 @@ def nodeRollStat(caller, rawString:str, **kwargs):
     return text,options
 
 
+def _stat_assign_helper(caller,rawString:str,**kwargs):
+    
+    tmpChar:tempCharSheet = caller.ndb._evmenu.tmpChar
+    selectedStat = kwargs.get("stat",None)
+    
+    if rawString:
+        value = int(rawString)
+        if value in tmpChar.statArray:
+            tmpChar.stats[selectedStat.value]=value
+            tmpChar.statArray.remove(value)
+            caller.msg(f"{selectedStat} = {value}")
+    else:
+        caller.msg("No assign")
+    return "nodeAssignStat", kwargs
+
+def subnodeAssignStatHelper(caller,rawString:str,**kwargs):
+
+    tmpChar:tempCharSheet = caller.ndb._evmenu.tmpChar
+    selectedStat = kwargs.get("stat",None)
+    showStr = "\t".join([str(x) for x in tmpChar.statArray])
+
+    text = (
+        f"Insérer la valeur pour {selectedStat.value}\nDisponible:\n{showStr}",
+    )
+
+    options = {
+                "key": "_default", 
+                "goto": (_stat_assign_helper, {"stat": selectedStat})
+    }
+
+    return text, options
+
+def nodeAssignStat(caller,rawString:str,**kwargs):
+    """
+    Node to assign the stats
+    """
+
+    tmpChar:tempCharSheet = caller.ndb._evmenu.tmpChar
+   
+    showStr = "\t".join([str(x) for x in tmpChar.statArray])
+
+    text = (
+        f"Sélections des statistiques pour le personnage\n{showStr}",
+    )
+    
+    options = [
+        {
+            "desc":"retour au menu",
+            "goto":("nodeChargen",kwargs)
+        },
+    ]
+
+    options.append(
+        {
+            "desc":f"Assigner {Stat.FOR}",
+            "goto":("subnodeAssignStatHelper",{"stat": Stat.FOR})
+        },
+    )
+    options.append(
+        {
+            "desc":f"Assigner {Stat.INT}",
+            "goto":("subnodeAssignStatHelper",{"stat": Stat.INT})
+        },
+    )
+    options.append(
+        {
+            "desc":f"Assigner {Stat.SAG}",
+            "goto":("subnodeAssignStatHelper",{"stat": Stat.SAG})
+        },
+    )
+    options.append(
+        {
+            "desc":f"Assigner {Stat.DEX}",
+            "goto":("subnodeAssignStatHelper",{"stat": Stat.DEX})
+        },
+    )
+    options.append(
+        {
+            "desc":f"Assigner {Stat.CON}",
+            "goto":("subnodeAssignStatHelper",{"stat": Stat.CON})
+        },
+    )
+    options.append(
+        {
+            "desc":f"Assigner {Stat.CHA}",
+            "goto":("subnodeAssignStatHelper",{"stat": Stat.CHA})
+        },
+    )
+    return text,options
+
 def nodeApplyChargen(caller, rawString:str, **kwargs):
     """                              
     End chargen and create the character. We will also puppet it.
@@ -173,7 +273,9 @@ def startChargen(caller,session=None):
         "nodeChargen":nodeChargen,
         "nodeChangeName":nodeChangeName,
         "nodeRollStat":nodeRollStat,
-        "nodeApplyChargen":nodeApplyChargen
+        "nodeAssignStat":nodeAssignStat,
+        "subnodeAssignStatHelper":subnodeAssignStatHelper,
+        "nodeApplyChargen":nodeApplyChargen,
     }
 
     tmpChar = tempCharSheet()

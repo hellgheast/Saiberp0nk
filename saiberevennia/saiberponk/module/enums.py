@@ -55,7 +55,13 @@ class CombatRelated(ExtEnum):
 
     PV = "Points de vie"
     DEF = "Défense"
+    ATKBONUS = "Bonus d'attaque"
 
+class SaveThrow(ExtEnum):
+    PHYSAVE = "PHYSICAL"
+    EVSAVE = "EVASION"
+    MENTSAVE = "MENTAL"
+    LUCKSSAVE = "LUCK"
 
 class CharInfo(ExtEnum):
     CULTURE = "CULTURE"

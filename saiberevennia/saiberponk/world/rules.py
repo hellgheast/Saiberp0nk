@@ -2,7 +2,7 @@ from random import randint
 from typing import Tuple
 from evennia import set_trace
 from enum import IntEnum
-from module.enums import Stat,Skill
+from module.enums import Stat,Skill,SaveThrow
 
 class Difficulty(IntEnum):
     EASY = 6
@@ -40,15 +40,15 @@ class RollEngine():
             return False
 
 
-    def savingThrow(self, character,type:str,target:int):
+    def savingThrow(self, character,type:SaveThrow,target:int):
         match type:
-            case "PHYSICAL":
+            case SaveThrow.PHYSAVE:
                 sub = max(character.traits[str(Stat.FOR)].mod,character.traits[str(Stat.CON)].mod)
-            case "EVASION":
+            case SaveThrow.EVSAVE:
                 sub = max(character.traits[str(Stat.INT)].mod,character.traits[str(Stat.DEX)].mod)
-            case "MENTAL":
+            case SaveThrow.MENTSAVE:
                 sub = max(character.traits[str(Stat.FOR)].mod,character.traits[str(Stat.CON)].mod)
-            case "LUCK":
+            case SaveThrow.LUCKSSAVE:
                 sub = 0
 
         roll = self.roll("1d20")
@@ -118,10 +118,10 @@ def rollStatCheck(character,stat:str,targetNumber:int,debug=False) -> bool:
 
 # def setCurrentPv(character,amount):
 #     character.traits.current.value = amount
-
+#todo:refactor
 def characterDefense(character):
     character.traits.DEF.base = 7 + character.traits.SAG.value
-
+#todo:refactor
 def acquireSkill(character,skill_id:str):
     #set_trace()
     if character.traits[skill_id] is None:
