@@ -66,7 +66,7 @@ class LivingMixin:
     def atDamage(self,damage,attacker=None):
         if damage < 0:
             damage = 0
-        self.msg("DMG {} {}",type(damage),damage)
+        self.msg("DMG {} {}".format(type(damage),damage))
         self.traits[CombatMixin.PV].base -= damage
 
     def atDefeat(self):
