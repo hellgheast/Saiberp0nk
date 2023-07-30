@@ -4,6 +4,7 @@ from evennia import create_object, search_object
 from typeclasses.rooms import Room
 from typeclasses.exits import Exit
 from evennia import DefaultObject
+from typeclasses.objects import SbWeapon
 
 # CODE
 
@@ -16,5 +17,8 @@ room2 = create_object(Room, key="room2")
 room2.db.desc = "|gUne porte de sortie.."
 exit = create_object(Exit, key="out", location=cell_404, destination=room2)
 exit2 = create_object(Exit, key="back", location=room2, destination=cell_404) 
+
+# Create a weapon
+sg400 = create_object(SbWeapon,key="sg400",location=room2)
 
 caller.msg(f"Fin de construction de monde..")
