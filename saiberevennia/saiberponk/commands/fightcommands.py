@@ -30,6 +30,7 @@ class CmdHit(Command):
             self.weapon = None
 
     def func(self):
+        caller = self.caller
         if not self.args:
             self.caller.msg("Qui veux-tu frapper ?")
             return
@@ -47,21 +48,14 @@ class CmdHit(Command):
 
         self.caller.msg(f"Tu frappes {target.key} à pleine puissance avec {weaponstr} !")
         target.msg(f"Tu te fais frapper par {self.caller.key} à pleine puissance avec {weaponstr} !")
-
-        caller = self.caller
-        strength = caller.db.strength
-        if not strength:
-            # this can happen if caller is not of
-            # our custom Character typeclass
-            strength = 1
-        combat_score = random.randint(1, 10 * strength)
-        caller.db.combat_score = combat_score
+        #TODO:Fix with poings
+        weapon.use(caller,target)
 
         # announce
-        message = "%s frappes %s avec un score de combat de %s!"
-        caller.msg(message % ("Tu", "", combat_score))
+        message = "%s frappes %s avec %s!"
+        caller.msg(message % ("Tu", "", weaponstr))
         caller.location.msg_contents(message %
-                                     (caller.key, target.key, combat_score),
+                                     (caller.key, target.key, weaponstr),
                                      exclude=caller)
 
 class FightCmdSet(CmdSet):
