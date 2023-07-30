@@ -11,6 +11,7 @@ creation commands.
 from evennia.objects.objects import DefaultCharacter
 from evennia.utils import lazy_property
 from evennia.contrib.rpg.traits import TraitHandler
+from world.traits import ExtTraitHandler
 
 from typeclasses.charinfohandler import CharInfoHandler
 from typeclasses.wallethelper import WalletHelper
@@ -47,6 +48,9 @@ class LivingMixin:
     
     def heal(self,pv):
         damage = self.traits[CombatMixin.MAXPV].value - self.traits[CombatMixin.PV].value 
+        # You cannot negatively heal
+        if pv < 0:
+            pv = 0
         healValue = min(damage,pv)
         #TODO: Check when effect on HP are done !
         self.traits[CombatMixin.PV].base += healValue
@@ -60,6 +64,8 @@ class LivingMixin:
         pass
 
     def atDamage(self,damage,attacker=None):
+        if damage < 0:
+            damage = 0
         self.traits[CombatMixin.PV].base -= damage
 
     def atDefeat(self):
@@ -100,7 +106,7 @@ class Character(ObjectParent, DefaultCharacter,LivingMixin):
 
     @lazy_property
     def traits(self):
-        return TraitHandler(self)
+        return ExtTraitHandler(self)
     
     @lazy_property
     def wallet(self):
@@ -144,7 +150,7 @@ class Character(ObjectParent, DefaultCharacter,LivingMixin):
        
     def atDefeat(self):
         #TODO: Add allowDeath property
-        if self.location.allowDeath == True:
+        if self.location.attributes.get("allowDeath") == True:
             dice.rollDeath(self)
         else:
             self.location.msg_contents(

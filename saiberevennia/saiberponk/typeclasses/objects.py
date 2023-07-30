@@ -181,7 +181,7 @@ class Object(ObjectParent, DefaultObject):
 
 
 
-def SbObject(DefaultObject):
+class SbObject(DefaultObject):
     """
     Base object for everything in saiberponk
     """

@@ -1,5 +1,19 @@
-from evennia.contrib.rpg.traits import StaticTrait
+from evennia.contrib.rpg.traits import StaticTrait,TraitHandler
+from enum import StrEnum
 
+class ExtTraitHandler(TraitHandler):
+    """
+    TraitHandler with modifications for direct access to traits through enums
+    """
+
+    def __getitem__(self, trait_key):
+        """Returns `Trait` instances accessed as dict keys.
+        If an StrEnum is passed the enum is converted into a string"""
+        if isinstance(trait_key,StrEnum):
+            trait_key = str(trait_key)
+        return self.get(trait_key)
+
+    
 class SkillTrait(StaticTrait):
 
     """

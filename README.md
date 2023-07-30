@@ -45,8 +45,14 @@ mongoose
 # Useful evennia commands
 ``type/update
 update character
+update me
 delete the server evennia.db3
 evennia migrate
 evennia start
 voir le server.log pour les erreurs au démarrage
 examine me est pratique
+
+# Get attributes
+https://www.evennia.com/docs/latest/Components/Attributes.html?highlight=attributehandler
+# Set stuff from evennia
+use `set` command

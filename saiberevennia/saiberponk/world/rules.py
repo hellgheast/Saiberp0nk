@@ -120,7 +120,7 @@ class RollEngine():
         
         notLastingInjury = self.savingThrow(character,SaveThrow.PHYSAVE,16)
         if notLastingInjury == True:
-            pass
+            character.msg("Aucun dégâts long terme, simplement dans le coma..")
         else:
             damageType = self.rollRandomTable("1d12",damageTable)
             if damageType == "instantDeath":

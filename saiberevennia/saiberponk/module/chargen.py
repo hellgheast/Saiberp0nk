@@ -1,6 +1,6 @@
 from world.rules import dice
 from typeclasses.charinfohandler import CharInfoHandler
-from module.enums import Stat,Skill,CharInfo,CombatRelated,Backgrounds
+from module.enums import Stat,Skill,CharInfo,CombatMixin,Backgrounds
 from typeclasses.characters import Character
 from typing import List
 from evennia import EvMenu
