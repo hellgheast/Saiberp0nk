@@ -4,6 +4,8 @@ import evennia
 from evennia import set_trace, default_cmds
 from world import rules
 from module import cinematic
+from module.enums import Stat,CharInfo,CombatMixin
+from textwrap import dedent
 
 # Main commands for testing and debugging
 
@@ -109,20 +111,30 @@ class CmdInfo(Command):
         # try to get stats
         # from evennia import set_trace;set_trace()
 
-        strength = target.traits.FOR.value
-        dexterity = target.traits.DEX.value
-        intelligence = target.traits.INT.value
 
-        if None in (strength, dexterity, intelligence):
-            # Attributes not defined
-            self.caller.msg("Not a valid target!")
-            return
+        _CHAR_SHEET_HEADER ="""
+        |wPRÉNOM:{firstname} NOM:{lastname}|n
+        XP {xp} PV: {pv}/{pvmax}
+        -----------------------------------------
+        """.format(firstname=target.charinfo[CharInfo.FIRSTNAME],
+                           lastname=target.charinfo[CharInfo.LASTNAME],
+                           xp=target.db.xp,pv=target.traits[CombatMixin.PV].base,
+                           pvmax=target.traits[CombatMixin.MAXPV].base)
 
-        text = f"You diagnose {target} as having {strength} strength, {dexterity} dexterity and {intelligence} intelligence."
-        prompt = f"{strength} STR, {dexterity} DEX, {intelligence} INT"
+        _CHAR_SHEET_STAT="""
+        FOR:{force}\tDEX:{dex}
+        CON:{con}\tINT:{inte}
+        SAG:{sag}\tCHA:{cha}
+        """.format(force=target.traits[Stat.FOR].value,
+                   dex=target.traits[Stat.DEX].value,
+                   con=target.traits[Stat.CON].value,
+                   inte=target.traits[Stat.INT].value,
+                   sag=target.traits[Stat.SAG].value,
+                   cha=target.traits[Stat.CHA].value)
 
-        self.caller.msg(text=text)
-        self.caller.msg(prompt=prompt)
+        totalStr = dedent(_CHAR_SHEET_HEADER) + dedent(_CHAR_SHEET_STAT)
+
+        self.caller.msg(text=totalStr)
 
 
 class CmdStatCheck(Command):

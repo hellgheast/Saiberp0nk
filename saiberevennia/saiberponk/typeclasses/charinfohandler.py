@@ -1,5 +1,6 @@
 from typing import Any
 from module.enums import CharInfo
+from enum import StrEnum
 
 class CharInfoHandler:
     """
@@ -31,6 +32,13 @@ class CharInfoHandler:
             Exception("Not existing")
 
     def __getattr__(self, name):
+        if name not in self.charinfo.keys():
+            raise AttributeError
+        return self.charinfo.get(name, None)
+    
+    def __getitem__(self,name):
+        if isinstance(name,StrEnum):
+            name = str(name)
         if name not in self.charinfo.keys():
             raise AttributeError
         return self.charinfo.get(name, None)
