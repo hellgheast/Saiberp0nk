@@ -23,7 +23,7 @@ Valeur: ~|y10|n C$ [Pas porté]
 A test object
 
 Taille: |w1|n, Used from: |wSac à dos|n
-Qualité: |w3|n, Utilisation: |winfinie|n
+État: |w3|n, Utilisation: |winfinie|n
 Attacks using |wForce|n contre |wArmure|n
 Dé de dégâts: |w1d6|n
 """.strip()

@@ -262,6 +262,19 @@ class SbWeapon(SbObject):
     damageDie = AttributeProperty("1d6",autocreate=False)
 
 
+    def get_display_name(self,looker=None,**kwargs):
+        stateDesc = ""
+        if self.state <= 0:
+            stateDesc = "|r(cassé)|n"
+        elif self.state < 2:
+            stateDesc = "|y(endommagé)|n"
+        elif self.state < 3:
+            stateDesc = "|Y(eraflé)|n"
+        else:
+            stateDesc = "|G(neuf)|n"
+
+        return super().get_display_name(looker=looker,**kwargs) + stateDesc
+
     def preUse(self,user,target=None,*args,**kwargs):
         if target and user.location != target.location:
             user.msg("Vous n'êtes pas assez prêt de la cible !")
@@ -308,7 +321,7 @@ class SbWeapon(SbObject):
                     message += ".. it's a |rcritical miss!|n, damaging the weapon."
                     if self.state is not None:
                         self.state -= 1
-                    location.msg_contents(message, from_obj=attacker, mapping={target.key: target})
+                location.msg_contents(message, from_obj=attacker, mapping={target.key: target})
     
     def postUse(self,user,*args,**kwargs):
         if self.state is not None and self.state <= 0:
