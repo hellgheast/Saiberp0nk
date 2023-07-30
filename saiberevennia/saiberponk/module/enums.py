@@ -55,11 +55,14 @@ class Skill(ExtEnum):
     FRP = "Frapper"
 
 
-class CombatRelated(ExtEnum):
+class CombatMixin(ExtEnum):
 
     PV = "Points de vie"
+    MAXPV = "Points de vie Max"
     DEF = "Défense"
     ATKBONUS = "Bonus d'attaque"
+    RGARMORCLASS = "Classe d'armure/Distance"
+    CQDARMORCLASS = "Classe d'armure/Corps à corps"
 
 class SaveThrow(ExtEnum):
     PHYSAVE = "PHYSICAL"
@@ -68,13 +71,17 @@ class SaveThrow(ExtEnum):
     LUCKSSAVE = "LUCK"
 
 class CharInfo(ExtEnum):
-    CULTURE = "CULTURE"
+    BACKGROUND = "BACKGROUND"
     FIRSTNAME = "FIRSTNAME"
     LASTNAME = "LASTNAME"
     AGE = "AGE"
     HEIGHT = "HEIGHT"
     WEIGHT = "WEIGHT"
 
+
+class WeaponType(ExtEnum):
+    RANGED = "Distance"
+    CLOSEQUARTER = "Corps à corps"
 
 
 class MetaChoice(Enum):
@@ -98,7 +105,10 @@ class Backgrounds(Enum):
         self.freeSkill = freeSkill
         self.growth = growth
         self.learning = learning
-
+    
+    @classmethod
+    def enumList(cls) -> List[Enum]:
+        return [x for x in cls]
 
     BUM = (
         "Clodo",
@@ -152,4 +162,22 @@ class Backgrounds(Enum):
         ],
     )
 
+
+class WieldLocation(ExtEnum):
+    BACKPACK = "Sac à dos"
+    LEFT_HAND = "Main gauche"
+    RIGHT_HAND = "Main droite"
+    TWO_HANDS = "Deux mains"
+    BODY = "Corps"
+    LEGS = "Jambes"
+    HEAD = "Tête"
+
+class ObjType(ExtEnum):
+    WEAPON = "Arme"
+    ARMOR = "Armure"
+    HELMET = "Casque"
+    CONSUMABLE = "Consommable"
+    GEAR = "Équipement"
+    QUEST = "Quête"
+    CREDITUBE = "Créditube"
 

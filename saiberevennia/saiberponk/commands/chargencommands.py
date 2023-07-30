@@ -20,7 +20,6 @@ class CmdCharGen(Command):
     
     def func(self):
         # Rolling the stats dice
-        self.msg("TEST")
         startChargen(self.caller)
 
 

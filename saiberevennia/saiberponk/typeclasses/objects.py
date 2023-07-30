@@ -11,6 +11,11 @@ inheritance.
 
 """
 from evennia.objects.objects import DefaultObject
+from evennia import AttributeProperty
+from evennia.utils.utils import make_iter
+from module.utils import get_obj_stats
+from module.enums import WieldLocation,ObjType,WeaponType,Stat,Skill,CombatMixin
+from world.rules import dice
 
 
 class ObjectParent:
@@ -172,3 +177,139 @@ class Object(ObjectParent, DefaultObject):
     """
 
     pass
+
+
+
+
+def SbObject(DefaultObject):
+    """
+    Base object for everything in saiberponk
+    """
+
+    useSlot = WieldLocation.BACKPACK
+    size = AttributeProperty(1,autocreate=False)
+    value = AttributeProperty(0,autocreate=False)
+    objType = ObjType.GEAR
+
+    
+    def at_object_creation(self):
+        for objtypeElem in make_iter(self.objType):
+            self.tags.add(objtypeElem.value, category="objType")
+
+    
+    def get_display_header(self, looker, **kwargs):
+        """The top of the description"""
+        return ""
+
+    def get_display_desc(self,looker,**kwargs):
+        return get_obj_stats(self,owner=looker)
+    
+    # Saiberponk commands
+    
+    def isObjType(self,objtype:ObjType):
+        return objtype.value in make_iter(self.objType)
+
+    def preUse(self,*args,**kwargs):
+        return True
+
+    def use(self,*args,**kwargs):
+        pass
+
+    def postUse(self,*args,**kwargs):
+        pass
+
+    def getHelp(self):
+        return "Pas d'aide pour cet objet"
+    
+class SbQuest(SbObject):
+    objType = ObjType.QUEST
+
+class SbTreasure(SbObject):
+    objType = ObjType.CREDITUBE
+    value = AttributeProperty(100,autocreate=False)
+
+class SbConsumable(SbObject):
+    objType = ObjType.CONSUMABLE
+    value = AttributeProperty(0.25,autocreate=False)
+    uses = AttributeProperty(1,autocreate=False)
+
+    def preUse(self,user,target=None,*args,**kwargs):
+        if target and user.location != target.location:
+            user.msg("Vous n'êtes pas assez proche de la cible !")
+            return False
+        if self.uses <= 0:
+            user.msg(f"|w{self.key} est vide.|n")
+            return False
+    
+    def use(self,user,*args,**kwargs):
+        pass
+
+    def postUse(self,user,*args,**kwargs):
+        self.uses -= 1
+        if self.uses <= 0:
+            user.msg(f"|w{self.key} est vide.|n")
+            self.delete()
+
+
+class SbWeapon(SbObject):
+    useSlot = WieldLocation.RIGHT_HAND
+    size = AttributeProperty(3,autocreate=False)
+    value = AttributeProperty(0,autocreate=False)
+    state = AttributeProperty(3,autocreate=False)
+    objType = ObjType.WEAPON
+    weaponType = WeaponType.RANGED
+    traumaDie = AttributeProperty("1d6",autocreate=False)
+    damageDie = AttributeProperty("1d6",autocreate=False)
+
+
+    def preUse(self,user,target=None,*args,**kwargs):
+        if target and user.location != target.location:
+            user.msg("Vous n'êtes pas assez prêt de la cible !")
+            return False
+        if self.state is not None and self.state <= 0:
+            user.msg(f"{self.get_display_name(user)} est cassé et ne peut pas être utilisé")
+            return False
+        return super().preUse(user,target=target,*args,**kwargs)
+    
+    def use(self,attacker,target,*args,**kwargs):
+        location = attacker.location
+        
+        if self.weaponType == WeaponType.RANGED:
+            isHit:bool = False
+            result = dice.roll("1d20")
+            if result == 1:
+                isHit = False
+            elif result == 20:
+                isHit = True
+            else:
+                hitRoll = result + attacker.traits[Stat.DEX].mod + attacker.traits[Skill.TIR].value
+                if hitRoll >= target.traits[CombatMixin.RGARMORCLASS].value:
+                    isHit = True
+                else:
+                    isHit = False
+            location.msg_contents(
+                f"$You() $conj(attack) $You({target.key}) with {self.key}",
+                from_obj=attacker,
+                mapping={target.key: target},
+            )
+            if isHit:
+                attacker.msg("Vous touchez !")
+                target.msg("Vous êtes touché")
+                #TODO: Implement Traumatic Hit handling
+                #TODO: Implement Shock handling
+                damageResult = dice.roll(self.damageDie)
+                message = f" $You() $conj(hit) $You({target.key}) for |r{damageResult}|n dégats!"
+                location.msg_contents(message, from_obj=attacker, mapping={target.key: target})
+                target.atDamage(damageResult)
+            else:
+                # A miss
+                message = f" $You() $conj(miss) $You({target.key})."
+                if result == 1:
+                    message += ".. it's a |rcritical miss!|n, damaging the weapon."
+                    if self.state is not None:
+                        self.state -= 1
+                    location.msg_contents(message, from_obj=attacker, mapping={target.key: target})
+    
+    def postUse(self,user,*args,**kwargs):
+        if self.state is not None and self.state <= 0:
+            user.msg(f"|r{self.get_display_name(user)} breaks and can no longer be used!")

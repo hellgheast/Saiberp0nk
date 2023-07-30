@@ -1,6 +1,6 @@
 from world.rules import dice
 from typeclasses.charinfohandler import CharInfoHandler
-from module.enums import Stat,Skill,CharInfo,CombatRelated
+from module.enums import Stat,Skill,CharInfo,CombatRelated,Backgrounds
 from typeclasses.characters import Character
 from typing import List
 from evennia import EvMenu
@@ -28,7 +28,7 @@ class tempCharSheet:
         # Base stats
         self.stats = {stat:0 for stat in Stat.attributes()}
         # Skills
-        self.skills = {skill:0 for skill in Skill.attributes()}
+        self.skills = {skill:(0,False) for skill in Skill.attributes()}
         # CharInfo
         self.charinfo = {ci:"" for ci in CharInfo.attributes()}
         # Description
@@ -252,6 +252,47 @@ def nodeAssignStat(caller,rawString:str,**kwargs):
         }
     )
     return text,options
+
+def nodeSelectBackground(caller,rawString:str, **kwargs):
+    
+    tmpChar:tempCharSheet = caller.ndb._evmenu.tmpChar
+
+    def _isAssigned(stat:Stat) -> str:
+        nonlocal tmpChar
+        if tmpChar.stats[stat] != 0:
+            return "(x)"
+        else:
+            return ""
+
+
+    text = (
+        f"Sélection du background du personnage\n",
+    )
+    
+    options = [
+        {
+            "desc":"retour au menu",
+            "goto":("nodeChargen",kwargs)
+        },
+    ]
+
+    # Generate submenu assignation
+    for background in Stat.enumList():
+        options.append(
+            {
+                "desc":f"Assigner {stat} {_isAssigned(stat)}",
+                "goto":("subnodeAssignStatHelper",{"stat": stat})
+            },
+        )
+
+    options.append(
+        {
+            "desc":"Reset des statistiques",
+            "goto":(subnodeResetStat,kwargs)
+        }
+    )
+    return text,options
+
 
 def nodeApplyChargen(caller, rawString:str, **kwargs):
     """                              

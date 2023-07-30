@@ -62,4 +62,11 @@ HELP_ENTRY_DICTS = [
 
         """,
     },
+    {
+        "key": "histoire",
+        "category": "histoire",
+        "text": """
+            Saiberponk est un super jeu..    
+            """
+    }
 ]

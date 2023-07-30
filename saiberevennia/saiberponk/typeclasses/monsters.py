@@ -5,6 +5,9 @@ from typeclasses.objects import Object
 class Monster(Object):
     """It's the base class for any monster in the game"""
     
+    def at_object_creation(self):
+        pass
+
     def move_around(self):
         print(f"{self.key} se déplace !")
 

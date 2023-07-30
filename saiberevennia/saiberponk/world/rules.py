@@ -27,6 +27,10 @@ class RollEngine():
         rollSum = sum([randint(1,dieSize) for _ in range(numberRolls)])
         return rollSum
     
+
+    def rollWithModifier(self,rollString:str,modifier:int):
+        return self.roll(rollString) + modifier
+    
     def skillCheck(self,character,stat:Stat,skill:Skill,target:int) -> bool:
         roll = self.roll("2d6")
         skillValue = character.traits[skill.value].value
@@ -35,6 +39,22 @@ class RollEngine():
         result = roll + skillValue + statValue
         
         if result >= target:
+            return True
+        else:
+            return False
+
+    def opposedSkillCheck(self,character,opponent,charSkill:Skill,opponentSkill:Skill) -> bool:
+        if charSkill is None:
+            resultChar = self.roll("2d6")
+        else:
+            resultChar = self.roll("2d6") + character.traits[charSkill.value].value
+        
+        if opponentSkill is None:
+            resultOpponent = self.roll("2d6")
+        else:
+            resultOpponent = self.roll("2d6") + opponent.traits[charSkill.value].value
+
+        if resultChar >= resultOpponent:
             return True
         else:
             return False
@@ -59,6 +79,57 @@ class RollEngine():
             return False
         else:        
             return roll >= target - sub
+
+    def rollRandomTable(self,dieRoll,tableChoices):
+        
+        rollResult = self.roll(dieRoll)
+        if isinstance(tableChoices[0],(tuple,list)):
+            for valRange,choice in tableChoices:
+                minval,*maxval = valRange.split("-",1)
+                minval = abs(int(minval))
+                maxval = abs(int(maxval[0]) if maxval else minval)
+                
+                if minval <= rollResult <= maxval:
+                    return choice 
+                
+            # if we get here we must have set a dieroll producing a value 
+            # outside of the table boundaries - raise error
+            raise RuntimeError("rollRandomTable: Invalid die roll")
+        else:
+            # a simple regular list
+            rollResult = max(1, min(len(tableChoices), rollResult))
+            return tableChoices[rollResult - 1]
+    
+    #todo: combat roll
+
+
+    def rollDeath(self,character):
+        damageTable = (
+            ("1","instantDeath"),
+            ("2","internalDamage"),
+            ("3","brainDamage"),
+            ("4","eyeDamage"),
+            ("5","gutWound"),
+            ("6","rightLegRuined"),
+            ("7","leftLegRuined"),
+            ("8","rightArmRuined"),
+            ("9","leftArmRuined"),
+            ("10","systemDamage"),
+            ("11-12","justFleshWound"),   
+        )
+        
+        notLastingInjury = self.savingThrow(character,SaveThrow.PHYSAVE,16)
+        if notLastingInjury == True:
+            pass
+        else:
+            damageType = self.rollRandomTable("1d12",damageTable)
+            if damageType == "instantDeath":
+                character.msg("You're dead !")
+                character.atDeath()
+            elif damageType == "justFleshWound":
+                character.msg("You're fine")
+            else:
+                character.msg("Pas encore implémenté !")
 
 
 dice = RollEngine()
