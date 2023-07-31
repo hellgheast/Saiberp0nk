@@ -11,7 +11,7 @@ inheritance.
 
 """
 from evennia.objects.objects import DefaultObject
-from evennia import AttributeProperty
+from evennia import AttributeProperty, create_object, search_object
 from evennia.utils.utils import make_iter
 from module.utils import get_obj_stats
 from module.enums import WieldLocation,ObjType,WeaponType,Stat,Skill,CombatMixin
@@ -252,11 +252,11 @@ class SbConsumable(SbObject):
 
 
 class SbWeapon(SbObject):
+    objType = ObjType.WEAPON
     useSlot = WieldLocation.RIGHT_HAND
     size = AttributeProperty(3,autocreate=False)
     value = AttributeProperty(0,autocreate=False)
     state = AttributeProperty(3,autocreate=False)
-    objType = ObjType.WEAPON
     weaponType = WeaponType.RANGED
     traumaDie = AttributeProperty("1d6",autocreate=False)
     damageDie = AttributeProperty("1d6",autocreate=False)
@@ -264,14 +264,15 @@ class SbWeapon(SbObject):
 
     def get_display_name(self,looker=None,**kwargs):
         stateDesc = ""
-        if self.state <= 0:
-            stateDesc = "|r(cassé)|n"
-        elif self.state < 2:
-            stateDesc = "|y(endommagé)|n"
-        elif self.state < 3:
-            stateDesc = "|Y(eraflé)|n"
-        else:
-            stateDesc = "|G(neuf)|n"
+        if self.state is not None:
+            if self.state <= 0:
+                stateDesc = "|r(cassé)|n"
+            elif self.state < 2:
+                stateDesc = "|y(endommagé)|n"
+            elif self.state < 3:
+                stateDesc = "|Y(eraflé)|n"
+            else:
+                stateDesc = "|G(neuf)|n"
 
         return super().get_display_name(looker=looker,**kwargs) + stateDesc
 
@@ -287,42 +288,98 @@ class SbWeapon(SbObject):
     def use(self,attacker,target,*args,**kwargs):
         location = attacker.location
         
-        if self.weaponType == WeaponType.RANGED:
-            isHit:bool = False
-            result = dice.roll("1d20")
-            if result == 1:
-                isHit = False
-            elif result == 20:
-                isHit = True
-            else:
+        isHit:bool = False
+        result = dice.roll("1d20")
+        if result == 1:
+            isHit = False
+        elif result == 20:
+            isHit = True
+        else:
+            if self.weaponType == WeaponType.RANGED:
                 hitRoll = result + attacker.traits[Stat.DEX].mod + attacker.traits[Skill.TIR].value
                 if hitRoll >= target.traits[CombatMixin.RGARMORCLASS].value:
                     isHit = True
                 else:
                     isHit = False
-            location.msg_contents(
-                f"$You() $conj(attack) $You({target.key}) with {self.key}",
-                from_obj=attacker,
-                mapping={target.key: target},
+            elif self.weaponType == WeaponType.CLOSEQUARTER:
+                #TODO:Modify to take care of CAC and FRP
+                hitRoll = result + attacker.traits[Stat.FOR].mod + attacker.traits[Skill.CAC].value
+                if hitRoll >= target.traits[CombatMixin.CQDARMORCLASS].value:
+                    isHit = True
+                else:
+                    isHit = False
+        location.msg_contents(
+            f"$You() $conj(attack) $You({target.key}) with {self.key}",
+            from_obj=attacker,
+            mapping={target.key: target},
             )
-            if isHit:
-                attacker.msg("Vous touchez !")
-                target.msg("Vous êtes touché")
-                #TODO: Implement Traumatic Hit handling
-                #TODO: Implement Shock handling
-                damageResult = dice.roll(self.damageDie)
-                message = f" $You() $conj(hit) $You({target.key}) for |r{damageResult}|n dégats!"
-                location.msg_contents(message, from_obj=attacker, mapping={target.key: target})
-                target.atDamage(damageResult)
-            else:
-                # A miss
-                message = f" $You() $conj(miss) $You({target.key})."
-                if result == 1:
-                    message += ".. it's a |rcritical miss!|n, damaging the weapon."
-                    if self.state is not None:
-                        self.state -= 1
-                location.msg_contents(message, from_obj=attacker, mapping={target.key: target})
-    
+        if isHit:
+            attacker.msg("Vous touchez !")
+            target.msg("Vous êtes touché")
+            #TODO: Implement Traumatic Hit handling
+            #TODO: Implement Shock handling
+            damageResult = dice.roll(self.damageDie)
+            message = f" $You() $conj(hit) $You({target.key}) for |r{damageResult}|n dégats!"
+            location.msg_contents(message, from_obj=attacker, mapping={target.key: target})
+            target.atDamage(damageResult)
+        else:
+            # A miss
+            message = f" $You() $conj(miss) $You({target.key})."
+            if result == 1:
+                message += ".. it's a |rcritical miss!|n, damaging the weapon."
+                if self.state is not None:
+                    self.state -= 1
+            location.msg_contents(message, from_obj=attacker, mapping={target.key: target})
+
     def postUse(self,user,*args,**kwargs):
         if self.state is not None and self.state <= 0:
-            user.msg(f"|r{self.get_display_name(user)} breaks and can no longer be used!")
+            user.msg(f"|r{self.get_display_name(user)} se casse et ne peut plus être utilisé(e) !")
+
+class SbWeaponBareHands(SbWeapon):
+    """
+    This is a dummy-class loaded when you wield no weapons. We won't create any db-object for it.
+
+    """
+    objType = ObjType.WEAPON
+    key = "Mains nues"
+    useSlot = WieldLocation.RIGHT_HAND
+    weaponType = WeaponType.CLOSEQUARTER
+    damageDie = "1d2"
+    traumaDie = "1d6"
+    state = None  # let's assume fists are always available ...
+
+
+    def getBareHands():
+        """
+        Get the bare-hands singleton object.
+
+        Returns:
+            WeaponBareHands
+        """
+        global _BARE_HANDS
+
+        if not _BARE_HANDS:
+            _BARE_HANDS = search_object("Mains nues", typeclass=SbWeaponBareHands).first()
+        if not _BARE_HANDS:
+            _BARE_HANDS = create_object(SbWeaponBareHands, key="Mains nues")
+        return _BARE_HANDS
+
+
+class SbArmor(SbObject):
+    objType = ObjType.ARMOR
+    useSlot = WieldLocation.BODY
+    size = AttributeProperty(3,autocreate=False)
+    value = AttributeProperty(0,autocreate=False)
+    state = AttributeProperty(3,autocreate=False)
+    damageSoak = AttributeProperty(0,autocreate=False)
+    rangedAC = AttributeProperty(10,autocreate=False)
+    closequarterAC = AttributeProperty(10,autocreate=False)
+
+
+class SbHelmet(SbObject):
+    objType = ObjType.HELMET
+    useSlot = WieldLocation.HEAD
+    size = AttributeProperty(3,autocreate=False)
+    value = AttributeProperty(0,autocreate=False)
+    state = AttributeProperty(3,autocreate=False)
+

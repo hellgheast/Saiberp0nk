@@ -53,7 +53,8 @@ class SkillTrait(StaticTrait):
             # If it's not acquired put the not acquired modifier
             if self._data["acquired"] == False:
                 self.mod = self.NOT_ACQUIRED_SKILL_VALUE
-
+            if self._data["acquired"] == True:
+                self.mod = 0
     
     @acquired.deleter
     def acquired(self):

@@ -85,12 +85,27 @@ class WeaponType(ExtEnum):
 
 
 class MetaChoice(Enum):
-    ANY_SKILL = [Skill.attributes()]
-    ANY_COMBAT = [Skill.TIR.value,Skill.CAC.value,Skill.FRP.value]
-    ANY_STAT = [Stat.attributes()]
-    PHYSICAL = [Stat.CON.value, Stat.FOR.value, Stat.DEX.value]
-    MENTAL = [Stat.CHA.value, Stat.INT.value, Stat.SAG.value]
+    ANY_SKILL = Skill.enumList()
+    ANY_STAT = Stat.enumList()
+    ANY_COMBAT = [Skill.TIR,Skill.CAC,Skill.FRP]
+    PHYSICAL = [Stat.CON, Stat.FOR, Stat.DEX]
+    MENTAL = [Stat.CHA, Stat.INT, Stat.SAG]
 
+    @classmethod
+    def MetaChoice2str(cls,mc) -> str:
+        match mc:
+            case cls.ANY_SKILL:
+                return "Toute compétence"
+            case cls.ANY_STAT:
+                return "Toute statistique"
+            case cls.ANY_COMBAT:
+                return "Combat (TIR,CAC,FRP)"
+            case cls.PHYSICAL:
+                return "Physiques (CON,FOR,DEX)"
+            case cls.MENTAL:
+                return "Mentales (CHA,INT,SAG)"
+            
+           
 
 class Backgrounds(Enum):
 
@@ -158,7 +173,6 @@ class Backgrounds(Enum):
             Skill.DIR,
             Skill.MCD,
             Skill.PCV,
-            MetaChoice.ANY_SKILL,
         ],
     )
 
