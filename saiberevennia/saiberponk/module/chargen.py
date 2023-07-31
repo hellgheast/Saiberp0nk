@@ -7,6 +7,9 @@ from evennia import EvMenu
 from textwrap import dedent
 
 
+from evennia.utils.evform import EvForm
+from evennia.utils.evtable import EvTable
+
 
 _TEMP_SHEET = """
 Prénom : {firstname} Nom: {lastname}
@@ -21,6 +24,53 @@ CON:{CON}\tCHA:{CHA}
 {desc}
 
 """
+
+EV_FORM_DICT={
+    "FORMCHAR":"x",
+    "TABLECHAR":"c",
+    "FORM":"""
+.---------------------------------------------------.
+|                                                   |
+|  Nom :   xxxxx1xxxxx    Origine: xxxxxx3xxxxxx    |
+|                                                   |
+|  Prénom: xxxxx2xxxxx    PV     : xx11xx/xx12xx    |
+|                                                   |
+ >-------------------------------------------------<
+|                                                   |
+| Desc:  xxxxxxxxxxx    FOR: x5x    INT: x6x        |
+|        xxxxx4xxxxx    SAG: x7x    DEX: x8x        |
+|        xxxxxxxxxxx    CON: x9x    CHA: x10x       |
+|                                                   |
+ >-------------------------------------------------<
+|                                                   |
+| ccccccccccccccccccccccccccccccccccccccccccccccccc |
+| ccccccccccccccccccccccccccccccccccccccccccccccccc |
+| cccccccccccccccccccccAccccccccccccccccccccccccccc |
+| ccccccccccccccccccccccccccccccccccccccccccccccccc |
+| ccccccccccccccccccccccccccccccccccccccccccccccccc |
+| ccccccccccccccccccccccccccccccccccccccccccccccccc |
+| ccccccccccccccccccccccccccccccccccccccccccccccccc |
+| ccccccccccccccccccccccccccccccccccccccccccccccccc |
+| ccccccccccccccccccccccccccccccccccccccccccccccccc |
+| ccccccccccccccccccccccccccccccccccccccccccccccccc |
+| ccccccccccccccccccccccccccccccccccccccccccccccccc |
+| ccccccccccccccccccccccccccccccccccccccccccccccccc |
+| ccccccccccccccccccccccccccccccccccccccccccccccccc |
+| ccccccccccccccccccccccccccccccccccccccccccccccccc |
+| ccccccccccccccccccccccccccccccccccccccccccccccccc |
+| ccccccccccccccccccccccccccccccccccccccccccccccccc |
+| ccccccccccccccccccccccccccccccccccccccccccccccccc |
+| ccccccccccccccccccccccccccccccccccccccccccccccccc |
+| ccccccccccccccccccccccccccccccccccccccccccccccccc |
+| ccccccccccccccccccccccccccccccccccccccccccccccccc |
+| ccccccccccccccccccccccccccccccccccccccccccccccccc |
+| ccccccccccccccccccccccccccccccccccccccccccccccccc |
+| ccccccccccccccccccccccccccccccccccccccccccccccccc |
+|                                                   |
+-----------------------------------------------------
+"""
+}
+
 
 _SKILL_BUY_COUNTER = 2
 
@@ -47,37 +97,36 @@ class tempCharSheet:
     
 
     def showSheet(self):
-        skillForm = dedent(f"""
-        Compétences
-        """
+
+ 
+        form = EvForm(data=EV_FORM_DICT)
+        form.map(
+            cells = {
+                1: self.charinfo[CharInfo.LASTNAME],
+                2: self.charinfo[CharInfo.FIRSTNAME],
+                3: self.charinfo[CharInfo.BACKGROUND],
+                4: self.desc,
+                5: self.stats[Stat.FOR],
+            6:self.stats[Stat.INT],
+            7:self.stats[Stat.SAG],
+            8:self.stats[Stat.DEX],
+            9:self.stats[Stat.CON],
+            10:self.stats[Stat.CHA],
+            11:"10",
+            12:"20",
+            },
+            tables= {
+                "A": EvTable("Compétence","Niveau","Acquis",
+                             table=[[x for x in self.skills.keys()],
+                                    [x[0] for x in self.skills.values()],
+                                    ["Oui "if x[1] else "Non" for x in self.skills.values()]],
+                            border="incols"
+                            )
+            }
         )
 
-        # Build the skill show
-        i = 0
-        for k,v in self.skills.items():
-            skillForm += f"{Skill.shortNames(k) + ':' if v[1] == True else ''} {'' if v[1] == False else v[0]}\t"
-            if i!=0 and i%2 == 0:
-                skillForm+="\n"
-            i+=1    
-
-
-
-
-        return _TEMP_SHEET.format(
-            firstname=self.charinfo[CharInfo.FIRSTNAME],
-            lastname=self.charinfo[CharInfo.LASTNAME],
-            background=self.charinfo[CharInfo.BACKGROUND],
-            FOR=self.stats[Stat.FOR],
-            INT=self.stats[Stat.INT],
-            SAG=self.stats[Stat.SAG],
-            DEX=self.stats[Stat.DEX],
-            CON=self.stats[Stat.CON],
-            CHA=self.stats[Stat.CHA],
-            desc=self.desc,
-            sep1 = 15*"*",
-            skillForm=skillForm,
-            sep2 = 15*"^"
-        )
+        return str(form)
+        
 
     def buySkill(self,skill:Skill,free:bool=False) -> int:
         """
