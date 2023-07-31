@@ -118,16 +118,16 @@ class CmdBuySkill(Command):
             caller.msg(f"Compétence {self.skillName} achetée")
 
 
-class CmdStatSet(Command):
+class CmdTraitSet(Command):
     """
     Debug command for setting traits value
 
 
     Usage:
-        statset statName statValue
+        traitset traitName traitValue
 
     """
-    key = "statset"
+    key = "traitset"
     help_category = "chargen"
     def parse(self):
         if not self.args:
@@ -189,6 +189,6 @@ class CharGenCmdSet(CmdSet):
     key = "CharGen"
     def at_cmdset_creation(self):
         self.add(CmdSetStat)
-        self.add(CmdStatSet)
+        self.add(CmdTraitSet)
         self.add(CmdBuySkill)
         self.add(CmdCharGen)

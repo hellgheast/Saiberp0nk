@@ -10,17 +10,19 @@ from textwrap import dedent
 
 _TEMP_SHEET = """
 Prénom : {firstname} Nom: {lastname}
-
-FORCE :{FOR}
-INTELLIGENCE:{INT}
-SAGESSE:{SAG}
-DEXTERITÉ:{DEX}
-CONSTITUTION:{CON}
-CHARISME:{CHA}
+Origine: {background}
+{sep1}
+FOR:{FOR}\tINT:{INT}
+SAG:{SAG}\tDEX:{DEX}
+CON:{CON}\tCHA:{CHA}
+{sep2}
+{skillForm}
 
 {desc}
+
 """
 
+_SKILL_BUY_COUNTER = 2
 
 class tempCharSheet:
 
@@ -39,26 +41,72 @@ class tempCharSheet:
         self.statArray:List[int] = [14,12,11,10,9,7]
 
         # Maximum number of skill you can buy
-        self.maxSkillBuy = 2
+        self.skillBuyCounter = _SKILL_BUY_COUNTER
+
+        self.applyFreeSkill:bool = False
     
+
     def showSheet(self):
+        skillForm = dedent(f"""
+        Compétences
+        """
+        )
+
+        # Build the skill show
+        i = 0
+        for k,v in self.skills.items():
+            skillForm += f"{Skill.shortNames(k) + ':' if v[1] == True else ''} {'' if v[1] == False else v[0]}\t"
+            if i!=0 and i%2 == 0:
+                skillForm+="\n"
+            i+=1    
+
+
+
+
         return _TEMP_SHEET.format(
             firstname=self.charinfo[CharInfo.FIRSTNAME],
             lastname=self.charinfo[CharInfo.LASTNAME],
+            background=self.charinfo[CharInfo.BACKGROUND],
             FOR=self.stats[Stat.FOR],
             INT=self.stats[Stat.INT],
             SAG=self.stats[Stat.SAG],
             DEX=self.stats[Stat.DEX],
             CON=self.stats[Stat.CON],
             CHA=self.stats[Stat.CHA],
-            desc=self.desc
+            desc=self.desc,
+            sep1 = 15*"*",
+            skillForm=skillForm,
+            sep2 = 15*"^"
         )
+
+    def buySkill(self,skill:Skill,free:bool=False) -> int:
+        """
+        Method to buy/improve skill and modify needed attributes
+        Returns:
+            value of the current skill
+        """
+        acquired = self.skills[skill][1] # Elem 1 is Bool, Elem 0 is the value of the skill
+        if acquired:
+            self.skills[skill][0] += 1
+        else:
+            self.skills[skill][1] = True
+        if free == False:
+            self.skillBuyCounter -= 1
+        return self.skills[skill][0]
+
 
     def resetStatAssignation(self):
         # Stat array
         self.statArray:List[int] = [14,12,11,10,9,7]
         # Base stats
         self.stats = {stat:0 for stat in Stat.attributes()}
+        
+
+    def resetSkillAssignation(self):
+        # Skills dict
+        self.skills = {skill:[0,False] for skill in Skill.attributes()}
+        self.skillBuyCounter = _SKILL_BUY_COUNTER
+        self.applyFreeSkill = False
 
     def apply(self,char:Character):
         try:
@@ -277,24 +325,47 @@ _BACKGROUND_INFO_DICT = {
     # The keys here are the different options you can choose, and the values are the info pages
     Backgrounds.BUM: dedent(
         """\
-        Vagrant, junkie, wino... sometimes “homeless person” if somebody’s trying to coax donations. Most
-        in your situation are treated as nothing more than human detritus one step away from a welcome
-        grave. Maybe you were born to a poverty indistinguishable from professional indigence or maybe
-        some event threw you down from a better life, but you don’t intend to go quietly.
-        Being a societal castoff in a dystopia like this one is something only the strongest survive for long.
-        With the skills you have,you mean to do far more than just survive.
+        Vagabond, junkie, vagabond... parfois "sans-abri" si quelqu'un essaie d'obtenir des dons. 
+        La plupart de ceux qui se trouvent dans votre situation sont traités comme rien de plus 
+        que des détritus humains à deux pas d'une tombe bienvenue. Vous êtes peut-être né dans 
+        une pauvreté qui ne se distingue pas de l'indigence professionnelle ou peut-être 
+        qu'un événement vous a fait tomber d'un niveau de vie élevé où d'une vie meilleure, 
+        mais vous n'avez pas l'intention de vous laisser faire. Être un rebut de la société dans une 
+        dystopie comme celle-ci est une chose à laquelle seuls les plus forts survivent longtemps.
+        Avec les compétences que vous possédez, vous avez l'intention de faire bien plus que survivre.
         """
     ),
     Backgrounds.BUROCRAT: dedent(
         """\
-        Somebody had to keep the wheels of government turning, and you were as good as any.
-        The city governments may be little more than shells for corp exploitation, but they 
-        and their army of functionaries keep the power on, the slums contained, and some pretense 
-        of civic order in place. It can be a very lucrative line of work for those positioned to
-        demand bribes and other inducement, but you're going to need to collect your bonus pay in a more
-        direct fashion. You know how the machine works,and that can be worth more than any sum of bullets
+        Il fallait bien que quelqu'un fasse tourner les roues du gouvernement, et vous étiez aussi bon que n'importe qui d'autre.
+        Les gouvernements des villes ne sont peut-être guère plus que des coquilles pour l'exploitation des corpos, 
+        mais à eux et leur armée de fonctionnaires maintiennent l'électricité, les bidonvilles et un semblant d'ordre civique. 
+        Il peut s'agir d'un travail très lucratif pour ceux qui sont en mesure d'exiger des pots-de-vin et d'autres incitations, 
+        mais il vous faudra percevoir votre prime de façon plus directe désormais.
+        Vous savez comment fonctionne la machine, et cela peut valoir plus que n'importe quelle somme de balles.
         """
     ),
+    Backgrounds.CLERGY: dedent(
+        """\
+        Dans les bidonvilles, les gens ne peuvent compter que sur leurs propres forces et sur la miséricorde de Dieu. 
+        Au milieu du désespoir et la désolation de l'ère moderne, des milliers de croyances et de sectes différentes ont vu 
+        le jour pour apporter du réconfort à leurs adeptes. La plupart d'entre elles sont des canaux de commercialisation parrainés 
+        par des corpos pour vendre des retraites spirituelles, des artefacts bénis et des grades ecclésiastiques prestigieux, mais 
+        quelques membres du clergé s'obstinent encore à servir Dieu avant Mammon. Ces renégats sont souvent livrés à eux-mêmes, 
+        contraints de collecter leur propre dîme et de délivrer le juste jugement du Seigneur de leurs propres mains.
+        """
+    ),
+    Backgrounds.CODER: dedent(
+        """\
+        Le monde de l'entreprise repose sur du code, et vous êtes l'une des personnes qui le font tourner.
+        Les codeurs sont trop étroitement surveillés pour travailler en tant qu'opérateurs.
+        mais l'écosystème des freelances, des prodiges autodidactes et des grimpeurs désespérés est toujours
+        riche en opportunités. Vous pouvez être un véritable hacker, capable d'exécuter du code dans les situations les plus
+        stressantes, ou vous pouvez orienter vos compétences d'opérateur dans une direction plus physique, en gardant 
+        vos connaissances en programmation comme un outil de secours pour les cas où votre arme préférée ne convient pas.
+        """
+    ),
+
 }
 
 
@@ -318,11 +389,16 @@ def nodeInfoBackgroundBase(caller,rawString:str,**kwargs):
         },
     ]
 
+
+    # Safeguard: reset the skills whenever they have been applied
+    if tmpChar.applyFreeSkill:
+        tmpChar.resetSkillAssignation()
+
     # Generate submenu assignation
     for bg in _BACKGROUND_INFO_DICT.keys():
         options.append(
             {
-                "desc":f"En savoir plus sur {bg.desc}",
+                "desc":f"En savoir plus sur |w{bg.desc}|n",
                 "goto":("nodeSelectBackground",{"chosenBackground": bg})
             },
         )
@@ -333,8 +409,7 @@ def nodeInfoBackgroundBase(caller,rawString:str,**kwargs):
 def _showBackgroundSkill(bg:Backgrounds) -> str:
     """Fonction pour afficher correctement les compétences disponibles"""
     bgSheet:str = dedent(f"""
-    Nom:{bg.desc}
-    Compétence gratuite: {bg.freeSkill}
+    Origine: |c{bg.desc}|n Compétence gratuite: |015{bg.freeSkill}|n
     """.strip()
     )
     
@@ -343,7 +418,7 @@ def _showBackgroundSkill(bg:Backgrounds) -> str:
         if isinstance(elem,MetaChoice):
             learningSheet += "{}\n".format(MetaChoice.MetaChoice2str(elem))
         elif isinstance(elem,Skill):
-            learningSheet += "{}\n".format(elem.value)
+            learningSheet += "{}/{}\n".format(elem.value,Skill.shortNames(elem))
         else:
             # Show error
             learningSheet += "ERROR"
@@ -399,7 +474,7 @@ def subNodeBackground(caller, rawString:str,chosenBackground:Backgrounds=None,**
     if not chosenBackground:
         return "no chosenBackground !"
     
-    selected = [k for k,v in tmpChar.skills.items() if v[1] == True]
+
     
     options = [
         {
@@ -414,46 +489,108 @@ def subNodeBackground(caller, rawString:str,chosenBackground:Backgrounds=None,**
             "goto":("nodeInfoBackgroundBase",kwargs)
         }
     )
-    #TODO:Set a limit of buying skills
-    for elem in chosenBackground.learning:
-        if isinstance(elem,MetaChoice):
-            for subelem in elem.value:
+
+    options.append(
+        {
+            "desc":"Reset des compétences assignées",
+            "goto":(subnodeResetSkill,{"chosenBackground":chosenBackground})
+        }
+    )
+
+
+    selectedSkills = kwargs.get("selectedSkills",[])
+
+    # First time we enter here we apply or select the free skill
+    if tmpChar.applyFreeSkill == False:
+        if isinstance(chosenBackground.freeSkill,MetaChoice):
+            for elem in chosenBackground.freeSkill.value:
                 options.append(
                     {
-                        "desc":f"Acquérir {subelem.value}",
-                        "goto": (_selectSkill,{"skill":subelem,"chosenBackground":chosenBackground})
+                        "desc":f"Acquérir |ggratuitement|n {elem.value}",
+                        "goto": (_selectSkill,{"skill":elem,"chosenBackground":chosenBackground,"free":True})
                     }
                 )
-        elif isinstance(elem,Skill):
-            options.append(
-                {
-                    "desc":f"Acquérir {elem.value}",
-                    "goto": (_selectSkill,{"skill":elem,"chosenBackground":chosenBackground})
-                }
-            )
 
-    text = f"Sélection des compétences pour {chosenBackground.desc}"
+        elif isinstance(chosenBackground.freeSkill,Skill):
+            tmpChar.buySkill(chosenBackground.freeSkill,True)
+            caller.msg(f"Compétence {chosenBackground.freeSkill} gratuite appliquée")
+            selectedSkills.append(chosenBackground.freeSkill) # So we know we already acquired it
+            tmpChar.applyFreeSkill = True
+
+    #TODO:Set a limit of buying skills
+    if tmpChar.skillBuyCounter > 0:
+
+        for elem in chosenBackground.learning:
+            if isinstance(elem,MetaChoice):
+                for subelem in elem.value:
+                    if subelem in selectedSkills:
+                        optStr = f"|g{subelem.value}|n"
+                    else:
+                        optStr = f"{subelem.value}"
+                    options.append(
+                        {
+                            "desc":f"Acquérir {optStr}",
+                            "goto": (_selectSkill,{"skill":subelem,"selectedSkills":selectedSkills,"chosenBackground":chosenBackground})
+                        }
+                    )
+            elif isinstance(elem,Skill):
+                if elem in selectedSkills:
+                    optStr = f"|g{elem.value}|n"
+                else:
+                    optStr = f"{elem.value}"
+                options.append(
+                    {
+                        "desc":f"Acquérir {optStr}",
+                        "goto": (_selectSkill,{"skill":elem,"selectedSkills":selectedSkills,"chosenBackground":chosenBackground})
+                    }
+                )
+    if tmpChar.skillBuyCounter == 0:
+        options.append(
+            {
+                "desc":"Valider origine et compétences",
+                "goto":(_validateBackground,{"chosenBackground":chosenBackground})
+            }
+        )
+
+
+
+    text = f"Sélection des compétences pour {chosenBackground.desc}\nPoints de compétences restants: {tmpChar.skillBuyCounter}"
     help = f"Un vrai casse-tête"
     #TODO:Maybe add option for growth table and random generatinon
 
 
     return (text, help), options
 
-def _selectSkill(caller,rawString:str,skill:Skill,**kwargs):
-    """Modify the needed skill"""
+def _selectSkill(caller,rawString:str,skill:Skill,free:bool=False,selectedSkills:List[Skill] = [],**kwargs):
+    """Modify the needed skill and render the correct message """
     tmpChar:tempCharSheet = caller.ndb._evmenu.tmpChar
-    acquired = tmpChar.skills[skill][1]
-    if acquired:
-        tmpChar.skills[skill][0] += 1
+    skillValue = tmpChar.buySkill(skill,free)
+    if free == True:
+        tmpChar.applyFreeSkill = True
+    if skillValue > 0:
         caller.msg(f"|wCompétence {str(skill)} = {tmpChar.skills[skill][0]}|n")
     else:
-        tmpChar.skills[skill][1] = True
         caller.msg(f"|wCompétence {str(skill)} achetée|n")
+    selectedSkills.append(skill)
+    return ("subNodeBackground",{"selectedSkills":selectedSkills,"chosenBackground":kwargs.get("chosenBackground")})
+
+
+def _validateBackground(caller,rawString:str,chosenBackground:Backgrounds=None,**kwargs):
+    tmpChar:tempCharSheet = caller.ndb._evmenu.tmpChar
+    if not chosenBackground:
+        return "no chosenBackground :validateBackground"
     
-    return "subNodeBackground",kwargs
+    tmpChar.charinfo[CharInfo.BACKGROUND] = chosenBackground.desc
+    caller.msg(f"Origine {chosenBackground.desc} sélectionné !")
+
+    return "nodeChargen",kwargs
 
 
-
+def subnodeResetSkill(caller,rawString:str,**kwargs):
+    tmpChar:tempCharSheet = caller.ndb._evmenu.tmpChar
+    tmpChar.resetSkillAssignation()
+    caller.msg("Reset des compétences effectué !")
+    return "subNodeBackground", kwargs
 
 def nodeApplyChargen(caller, rawString:str, **kwargs):
     """                              
@@ -463,7 +600,7 @@ def nodeApplyChargen(caller, rawString:str, **kwargs):
     tmpChar:tempCharSheet = caller.ndb._evmenu.tmpChar
     tmpChar.apply(caller)      
     
-    text = "Character created!"
+    text = "Personnage crée !"
     
     return text, None 
 

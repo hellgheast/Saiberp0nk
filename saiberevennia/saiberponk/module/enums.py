@@ -42,7 +42,7 @@ class Skill(ExtEnum):
     SAV = "Savoir"
     DIR = "Diriger"
     PRF = "Performer"
-    PCV = "Percevoir"
+    PCV = "Percevoir" 
     PRG = "Programmer"
     INF = "Infiltrer"
     SRV = "Survivre"
@@ -175,6 +175,58 @@ class Backgrounds(Enum):
             Skill.PCV,
         ],
     )
+
+    CLERGY = (
+        "Religieux",
+        # free skill
+        Skill.DIR,
+        # growth list
+        [
+            (1, MetaChoice.ANY_STAT),
+            (2, MetaChoice.MENTAL),
+            (2, MetaChoice.MENTAL),
+            (2, MetaChoice.MENTAL),
+            Skill.CNT,
+            MetaChoice.ANY_SKILL,
+        ],
+        # learning list
+        [
+            Skill.DIR,
+            Skill.PSD,
+            Skill.CNT,
+            Skill.PRF,
+            Skill.SAV,
+            Skill.SOI,
+            Skill.PCV,
+        ],
+    )
+
+    CODER = (
+        "Codeur",
+        # free skill
+        Skill.PRG,
+        # growth list
+        [
+            (1, MetaChoice.ANY_STAT),
+            (2, MetaChoice.MENTAL),
+            (2, MetaChoice.MENTAL),
+            (2, MetaChoice.MENTAL),
+            Skill.PRG,
+            MetaChoice.ANY_SKILL,
+        ],
+        # learning list
+        [
+            Skill.PRG,
+            Skill.ADM,
+            Skill.REP,
+            Skill.PSD,
+            Skill.CNT,
+            Skill.SAV,
+            Skill.PCV,
+        ],
+    )
+
+
 
 
 class WieldLocation(ExtEnum):

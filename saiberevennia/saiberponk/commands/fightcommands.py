@@ -2,6 +2,7 @@ from commands.command import Command
 from evennia import CmdSet
 import random
 from evennia import set_trace,default_cmds
+from typeclasses.objects import SbWeaponBareHands
 
 class CmdHit(Command):
     """
@@ -44,6 +45,7 @@ class CmdHit(Command):
         if weapon:
             weaponstr = f"{weapon.key}"
         else:
+            weapon = SbWeaponBareHands.getBareHands()
             weaponstr = "poings"
 
         self.caller.msg(f"Tu frappes {target.key} à pleine puissance avec {weaponstr} !")
