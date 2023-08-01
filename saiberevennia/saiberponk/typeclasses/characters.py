@@ -14,6 +14,7 @@ from evennia.contrib.rpg.traits import TraitHandler
 from world.traits import ExtTraitHandler
 
 from typeclasses.charinfohandler import CharInfoHandler
+from typeclasses.characterhandler import CharacterHandler
 from typeclasses.wallethelper import WalletHelper
 from module.enums import Stat,Skill,CombatMixin
 from world.rules import dice
@@ -28,7 +29,7 @@ class LivingMixin:
 
     @property
     def lifeLevel(self) -> str:
-        percent = max(0, min(100, 100 * (self.traits[CombatMixin.PV] / self.traits[CombatMixin.MAXPV])))
+        percent = max(0, min(100, 100 * (self.helper[CombatMixin.PV] / self.helper[CombatMixin.MAXPV])))
         if 95 < percent <= 100:
             return "|gEn bonne santée|n"
         elif 80 < percent <= 95:
@@ -47,13 +48,13 @@ class LivingMixin:
             return "|REffondré!|n"
     
     def heal(self,pv):
-        damage = self.traits[CombatMixin.MAXPV].value - self.traits[CombatMixin.PV].value 
+        damage = self.helper[CombatMixin.MAXPV] - self.helper[CombatMixin.PV] 
         # You cannot negatively heal
         if pv < 0:
             pv = 0
         healValue = min(damage,pv)
         #TODO: Check when effect on HP are done !
-        self.traits[CombatMixin.PV].base += healValue
+        self.helper[CombatMixin.PV] += healValue
     
     def atPay(self,amount:int) -> int:
         amount = min(self.wallet.content(),amount)
@@ -67,7 +68,7 @@ class LivingMixin:
         if damage < 0:
             damage = 0
         self.msg("DMG {} {}".format(type(damage),damage))
-        self.traits[CombatMixin.PV].base -= damage
+        self.data[CombatMixin.PV] -= damage
 
     def atDefeat(self):
         self.atDeath()
@@ -118,9 +119,14 @@ class Character(ObjectParent, DefaultCharacter,LivingMixin):
         return CharInfoHandler(self)
 
 
+    @lazy_property
+    def helper(self):
+        return CharacterHandler(self)
+
     def at_object_creation(self):
         
         # STATS
+        # Traits are nice for this
         for stat in Stat.attributes():
             self.traits.add(stat,stat,trait_type="stat")
          
@@ -129,9 +135,10 @@ class Character(ObjectParent, DefaultCharacter,LivingMixin):
             self.traits.add(skill,skill,trait_type="skill")
 
         # PV,DEF,ATKBONUS,ARMORCLASS
+        # TODO: Create specific handler
         for mixin in CombatMixin.attributes():
             # Computed properties
-            self.traits.add(mixin,mixin,trait_type="static")
+            self.helper[mixin] = 0
 
         self.wallet.setup()
 
@@ -141,11 +148,11 @@ class Character(ObjectParent, DefaultCharacter,LivingMixin):
         self.db.xp = 0
         self.db.level = 1
 
-        self.traits[CombatMixin.PV].base = 10
-        self.traits[CombatMixin.MAXPV].base = 10
-        self.traits[CombatMixin.ATKBONUS].base = 0
-        self.traits[CombatMixin.RGARMORCLASS].base = 10
-        self.traits[CombatMixin.CQDARMORCLASS].base = 10
+        self.helper[CombatMixin.PV] = 10
+        self.helper[CombatMixin.MAXPV] = 10
+        self.helper[CombatMixin.ATKBONUS] = 0
+        self.helper[CombatMixin.RGARMORCLASS] = 10
+        self.helper[CombatMixin.CQDARMORCLASS] = 10
 
 
        
@@ -157,7 +164,7 @@ class Character(ObjectParent, DefaultCharacter,LivingMixin):
             self.location.msg_contents(
                 "$You() $conj(collapse) in a heap, alive but beaten.",
                 from_obj=self)
-            self.heal(self.traits[CombatMixin.MAXPV].base)
+            self.heal(self.heal[CombatMixin.MAXPV])
     
     def atDeath(self):
         self.location.msg_contents(

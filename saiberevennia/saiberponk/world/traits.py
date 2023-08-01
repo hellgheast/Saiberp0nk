@@ -52,9 +52,9 @@ class SkillTrait(StaticTrait):
             self._data["acquired"] = boolean
             # If it's not acquired put the not acquired modifier
             if self._data["acquired"] == False:
-                self.mod = self.NOT_ACQUIRED_SKILL_VALUE
+                self.base = self.NOT_ACQUIRED_SKILL_VALUE
             if self._data["acquired"] == True:
-                self.mod = 0
+                self.base = 0
     
     @acquired.deleter
     def acquired(self):
@@ -63,7 +63,7 @@ class SkillTrait(StaticTrait):
     @property
     def value(self):
         "The value of the Trait."
-        return (self.base + self.mod) * self.mult
+        return (self.base) * self.mult
 
 
 class StatTrait(StaticTrait):

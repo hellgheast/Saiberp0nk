@@ -4,7 +4,10 @@ import evennia
 from evennia import set_trace, default_cmds
 from world import rules
 from module import cinematic
-from module.enums import Stat,CharInfo,CombatMixin
+from module.enums import Stat, CharInfo, CombatMixin,Skill
+from evennia.utils.evform import EvForm
+from evennia.utils.evtable import EvTable
+from module.forms import EV_PC_SHEET_DICT
 from textwrap import dedent
 
 # Main commands for testing and debugging
@@ -102,9 +105,11 @@ class CmdInfo(Command):
     key = "info"
 
     def func(self):
+        caller = self.caller
         if not self.args:
             target = self.caller
         else:
+            #FIXME: Broken research
             target = self.search(self.args)
             if not target:
                 return
@@ -112,29 +117,40 @@ class CmdInfo(Command):
         # from evennia import set_trace;set_trace()
 
 
-        _CHAR_SHEET_HEADER ="""
-        |wPRÉNOM:{firstname} NOM:{lastname}|n
-        XP {xp} PV: {pv}/{pvmax}
-        -----------------------------------------
-        """.format(firstname=target.charinfo[CharInfo.FIRSTNAME],
-                           lastname=target.charinfo[CharInfo.LASTNAME],
-                           xp=target.db.xp,pv=target.traits[CombatMixin.PV].base,
-                           pvmax=target.traits[CombatMixin.MAXPV].base)
 
-        _CHAR_SHEET_STAT="""
-        FOR:{force}\tDEX:{dex}
-        CON:{con}\tINT:{inte}
-        SAG:{sag}\tCHA:{cha}
-        """.format(force=target.traits[Stat.FOR].value,
-                   dex=target.traits[Stat.DEX].value,
-                   con=target.traits[Stat.CON].value,
-                   inte=target.traits[Stat.INT].value,
-                   sag=target.traits[Stat.SAG].value,
-                   cha=target.traits[Stat.CHA].value)
 
-        totalStr = dedent(_CHAR_SHEET_HEADER) + dedent(_CHAR_SHEET_STAT)
-
-        self.caller.msg(text=totalStr)
+        form = EvForm(data=EV_PC_SHEET_DICT)
+        genSkill = {k: [target.traits[k].value,target.traits[k].acquired] for k in Skill.attributes()}
+        form.map(
+            cells={
+                1: target.charinfo[CharInfo.LASTNAME],
+                2: target.charinfo[CharInfo.FIRSTNAME],
+                3: target.charinfo[CharInfo.BACKGROUND],
+                4: target.return_appearance(caller),
+                5: target.traits[Stat.FOR].value,
+                6: target.traits[Stat.INT].value,
+                7: target.traits[Stat.SAG].value,
+                8: target.traits[Stat.DEX].value,
+                9: target.traits[Stat.CON].value,
+                10: target.traits[Stat.CHA].value,
+                11: target.helper[CombatMixin.PV],
+                12: target.helper[CombatMixin.MAXPV],
+            },
+            tables={
+                "A": EvTable(
+                    "Compétence",
+                    "Niveau",
+                    "Acquis",
+                    table=[
+                        [x for x in genSkill.keys()],
+                        [x[0] for x in genSkill.values()],
+                        ["Oui " if x[1] else "Non" for x in genSkill.values()],
+                    ],
+                    border="incols",
+                )
+            },
+        )
+        self.caller.msg(text=str(form))        
 
 
 class CmdStatCheck(Command):

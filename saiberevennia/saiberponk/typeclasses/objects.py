@@ -297,14 +297,14 @@ class SbWeapon(SbObject):
         else:
             if self.weaponType == WeaponType.RANGED:
                 hitRoll = result + attacker.traits[Stat.DEX].mod + attacker.traits[Skill.TIR].value
-                if hitRoll >= target.traits[CombatMixin.RGARMORCLASS].value:
+                if hitRoll >= target.helper[CombatMixin.RGARMORCLASS]:
                     isHit = True
                 else:
                     isHit = False
             elif self.weaponType == WeaponType.CLOSEQUARTER:
                 #TODO:Modify to take care of CAC and FRP
                 hitRoll = result + attacker.traits[Stat.FOR].mod + attacker.traits[Skill.CAC].value
-                if hitRoll >= target.traits[CombatMixin.CQDARMORCLASS].value:
+                if hitRoll >= target.helper[CombatMixin.CQDARMORCLASS]:
                     isHit = True
                 else:
                     isHit = False
