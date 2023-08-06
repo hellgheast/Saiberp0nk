@@ -24,7 +24,7 @@ class CharacterHandler:
             super(CharacterHandler, self).__setattr__(__name, __value)
 
     def __getattr__(self, name):
-        if name not in self.data.keys():
+        if name not in CharacterHandler.ALLOWED_ATTRIBUTES:
             raise AttributeError
         return self.data.get(name, None)
     
@@ -46,15 +46,14 @@ class CharacterHandler:
     def __getitem__(self,key):
         if isinstance(key,StrEnum):
             key = str(key)
-        if key not in self.data.keys():
-            raise AttributeError("Not existing")
-        match key:
-            case str(CombatMixin.MAXPV):
-                self.maxPV
-            case str(CombatMixin.MAXCW):
-                self.maxCW
-            case _:
-                pass  
+        if key in CharacterHandler.ALLOWED_ATTRIBUTES:
+            match key:
+                case str(CombatMixin.MAXPV):
+                    self.maxPV
+                case str(CombatMixin.MAXCW):
+                    self.maxCW
+                case _:
+                    pass  
         return self.data.get(key, None)
 
 ## Computed properties and co !
@@ -65,7 +64,7 @@ class CharacterHandler:
         const = self.character.traits[Stat.CON].value
         force = self.character.traits[Stat.FOR].value
         computemaxCW = 10 + ((const + force)/2) * 5
-        self.data[CombatMixin.MAXCW] = computemaxCW
+        self.data[CombatMixin.MAXCW.value] = computemaxCW
         return computemaxCW
     
     @property
@@ -80,22 +79,22 @@ class CharacterHandler:
         if amount > computemaxCW:
             self.character.msg("oups !")
             amount = computemaxCW
-        self.data[CombatMixin.CW] = amount
+        self.data[CombatMixin.CW.value] = amount
 
     @property
     def maxPV(self):
         con = self.character.traits[Stat.CON].value
-        currentPV = self.data.get(CombatMixin.PV,20)
+        currentPV = self.data.get(CombatMixin.PV.value,20)
         maxPV = 7 + con
-        self.data[CombatMixin.MAXPV] = maxPV
+        self.data[CombatMixin.MAXPV.value] = maxPV
         if currentPV > maxPV:
-            self.data[CombatMixin.PV] = maxPV
+            self.data[CombatMixin.PV.value] = maxPV
         return maxPV
 
     @property
     def pv(self):
         """Current point de vie on the character"""
-        return self.data.get(CombatMixin.PV,20)
+        return self.data.get(CombatMixin.PV.value,20)
     
     @pv.setter
     def pv(self,amount:int):
@@ -103,7 +102,7 @@ class CharacterHandler:
         if amount > maxPV:
             self.character.msg("oups !")
             amount = maxPV
-        self.data[CombatMixin.PV] = amount
+        self.data[CombatMixin.PV.value] = amount
 
 
 

@@ -29,7 +29,7 @@ class SkillTrait(StaticTrait):
     default_keys = {
         "base": 0, 
         "mod": -1, 
-        "mult": 1.0,
+        "mult": 1,
         "acquired":False
     }    
 
@@ -63,7 +63,10 @@ class SkillTrait(StaticTrait):
     @property
     def value(self):
         "The value of the Trait."
-        return (self.base) * self.mult
+        if self.acquired == False:
+            return self.NOT_ACQUIRED_SKILL_VALUE
+        else:
+            return (self.base) * int(self.mult)
 
 
 class StatTrait(StaticTrait):
@@ -80,7 +83,7 @@ class StatTrait(StaticTrait):
     default_keys = {
         "base": 0, 
         "mod": 0, 
-        "mult": 1.0,
+        "mult": 1,
     }    
 
 
@@ -97,9 +100,10 @@ class StatTrait(StaticTrait):
         return self._data["base"]
 
     @base.setter
-    def base(self,value:int):
+    def base(self,value:int|float):
+        value = int(value)
         if type(value) is int:
-            self._data["base"] = value
+            self._data["base"] = int(value)
             if value <= 3:
                 self._data["mod"] = -2
             elif value >= 4 and value <= 7:

@@ -32,14 +32,14 @@ class CharInfoHandler:
             Exception("Not existing")
 
     def __getattr__(self, name):
-        if name not in self.charinfo.keys():
+        if name not in CharInfoHandler.ALLOWED_ATTRIBUTES:
             raise AttributeError
         return self.charinfo.get(name, None)
     
     def __getitem__(self,name):
         if isinstance(name,StrEnum):
             name = str(name)
-        if name not in self.charinfo.keys():
+        if name not in CharInfoHandler.ALLOWED_ATTRIBUTES:
             raise AttributeError
         return self.charinfo.get(name, None)
 

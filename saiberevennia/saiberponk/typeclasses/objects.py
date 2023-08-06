@@ -278,10 +278,10 @@ class SbWeapon(SbObject):
 
     def preUse(self,user,target=None,*args,**kwargs):
         if target and user.location != target.location:
-            user.msg("Vous n'êtes pas assez prêt de la cible !")
+            user.msg("Vous n'êtes pas assez près de la cible !")
             return False
         if self.state is not None and self.state <= 0:
-            user.msg(f"{self.get_display_name(user)} est cassé et ne peut pas être utilisé")
+            user.msg(f"{self.get_display_name(user)} est cassé(e) et ne peut pas être utilisé(e)")
             return False
         return super().preUse(user,target=target,*args,**kwargs)
     
@@ -309,7 +309,7 @@ class SbWeapon(SbObject):
                 else:
                     isHit = False
         location.msg_contents(
-            f"$You() $conj(attack) $You({target.key}) with {self.key}",
+            f"Tu attaques {target.key} avec {self.key}",
             from_obj=attacker,
             mapping={target.key: target},
             )
@@ -319,14 +319,14 @@ class SbWeapon(SbObject):
             #TODO: Implement Traumatic Hit handling
             #TODO: Implement Shock handling
             damageResult = dice.roll(self.damageDie)
-            message = f" $You() $conj(hit) $You({target.key}) for |r{damageResult}|n dégats!"
+            message = f"Tu touches {target.key} et inflige |r{damageResult}|n dégats!"
             location.msg_contents(message, from_obj=attacker, mapping={target.key: target})
             target.atDamage(damageResult)
         else:
             # A miss
-            message = f" $You() $conj(miss) $You({target.key})."
+            message = f"Tu rates {target.key}."
             if result == 1:
-                message += ".. it's a |rcritical miss!|n, damaging the weapon."
+                message += ".. c'est un |réchec critique|n, qui endommage l'arme !."
                 if self.state is not None:
                     self.state -= 1
             location.msg_contents(message, from_obj=attacker, mapping={target.key: target})
@@ -358,8 +358,7 @@ class SbWeaponBareHands(SbWeapon):
         """
         global _BARE_HANDS
 
-        if not _BARE_HANDS:
-            _BARE_HANDS = search_object("Mains nues", typeclass=SbWeaponBareHands).first()
+        _BARE_HANDS = search_object("Mains nues", typeclass=SbWeaponBareHands).first()
         if not _BARE_HANDS:
             _BARE_HANDS = create_object(SbWeaponBareHands, key="Mains nues")
         return _BARE_HANDS

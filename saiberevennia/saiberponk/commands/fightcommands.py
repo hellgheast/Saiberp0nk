@@ -54,10 +54,8 @@ class CmdHit(Command):
         weapon.use(caller,target)
 
         # announce
-        message = "%s frappes %s avec %s!"
-        caller.msg(message % ("Tu", "", weaponstr))
-        caller.location.msg_contents(message %
-                                     (caller.key, target.key, weaponstr),
+        message = f"{caller.key} frappe {target.key} avec {weaponstr}!"
+        caller.location.msg_contents(message,
                                      exclude=caller)
 
 class FightCmdSet(CmdSet):

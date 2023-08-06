@@ -110,7 +110,7 @@ class CmdInfo(Command):
             target = self.caller
         else:
             #FIXME: Broken research
-            target = self.search(self.args)
+            target = self.caller.search(self.args)
             if not target:
                 return
         # try to get stats
