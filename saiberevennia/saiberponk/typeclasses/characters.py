@@ -68,7 +68,7 @@ class LivingMixin:
         if damage < 0:
             damage = 0
         self.msg("DMG {} {}".format(type(damage),damage))
-        self.data[CombatMixin.PV] -= damage
+        self.helper[CombatMixin.PV] -= damage
 
     def atDefeat(self):
         self.atDeath()
@@ -135,7 +135,6 @@ class Character(ObjectParent, DefaultCharacter,LivingMixin):
             self.traits.add(skill,skill,trait_type="skill")
 
         # PV,DEF,ATKBONUS,ARMORCLASS
-        # TODO: Create specific handler
         for mixin in CombatMixin.attributes():
             # Computed properties
             self.helper[mixin] = 0
@@ -147,13 +146,6 @@ class Character(ObjectParent, DefaultCharacter,LivingMixin):
         self.charinfo.age = random.randint(1,100)
         self.db.xp = 0
         self.db.level = 1
-
-        self.helper[CombatMixin.PV] = 10
-        self.helper[CombatMixin.MAXPV] = 10
-        self.helper[CombatMixin.ATKBONUS] = 0
-        self.helper[CombatMixin.RGARMORCLASS] = 10
-        self.helper[CombatMixin.CQDARMORCLASS] = 10
-
 
        
     def atDefeat(self):
@@ -178,15 +170,8 @@ class Character(ObjectParent, DefaultCharacter,LivingMixin):
         The return from this method is what
         looker sees when looking at this object.
         """
+        #TODO: Refactor this method
         text = super().return_appearance(looker)
-        cscore = " (combat score: %s)" % self.db.combat_score
-        if "\n" in text:
-            # text is multi-line, add score after first line
-            first_line, rest = text.split("\n", 1)
-            text = first_line + cscore + "\n" + rest
-        else:
-            # text is only one line; add score to end
-            text += cscore
         return text
     
 class NPC(DefaultCharacter):

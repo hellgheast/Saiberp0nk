@@ -17,33 +17,70 @@ class CharacterHandler:
         self.data = character.db.data
 
     def __setattr__(self, __name: str, __value: Any) -> None:
+        #TODO: Check how clean is this solution with properties and items 
         if __name in CharacterHandler.ALLOWED_ATTRIBUTES:
-            if __name == str(CombatMixin.PV):
-                self.pv = __value
-            else:
-                self.data[__name] = __value
+            self.data[__name] = __value
         else:
             super(CharacterHandler, self).__setattr__(__name, __value)
-
-    def __setitem__(self, key, value) -> None:
-        if key in CharacterHandler.ALLOWED_ATTRIBUTES:
-            self.data[key] = value
-        else:  
-            Exception("Not existing")
 
     def __getattr__(self, name):
         if name not in self.data.keys():
             raise AttributeError
         return self.data.get(name, None)
     
-    def __getitem__(self,name):
-        if isinstance(name,StrEnum):
-            name = str(name)
-        if name not in self.data.keys():
-            raise AttributeError
-        if name == str(CombatMixin.MAXPV):
-            self.maxPV
-        return self.data.get(name, None)
+
+    def __setitem__(self, key: str, value:Any) -> None:
+        if isinstance(key,StrEnum):
+            key = str(key)
+        if key in CharacterHandler.ALLOWED_ATTRIBUTES:
+            match key:
+                case str(CombatMixin.PV):
+                    self.pv = value
+                case str(CombatMixin.CW):
+                    self.cw = value
+                case _:
+                    self.data[key] = value
+        else:
+            raise AttributeError("Not existing")
+            
+    def __getitem__(self,key):
+        if isinstance(key,StrEnum):
+            key = str(key)
+        if key not in self.data.keys():
+            raise AttributeError("Not existing")
+        match key:
+            case str(CombatMixin.MAXPV):
+                self.maxPV
+            case str(CombatMixin.MAXCW):
+                self.maxCW
+            case _:
+                pass  
+        return self.data.get(key, None)
+
+## Computed properties and co !
+
+    @property
+    def maxCW(self):
+        """ Compute the maximum weight you can have in kilos"""
+        const = self.character.traits[Stat.CON].value
+        force = self.character.traits[Stat.FOR].value
+        computemaxCW = 10 + ((const + force)/2) * 5
+        self.data[CombatMixin.MAXCW] = computemaxCW
+        return computemaxCW
+    
+    @property
+    def cw(self):
+        """Current weight carried by char"""
+        return self.data.get(CombatMixin.CW,0)
+
+    @cw.setter
+    def cw(self,amount:int):
+        #from evennia import set_trace;set_trace()
+        computemaxCW = self.character.helper[CombatMixin.MAXCW]
+        if amount > computemaxCW:
+            self.character.msg("oups !")
+            amount = computemaxCW
+        self.data[CombatMixin.CW] = amount
 
     @property
     def maxPV(self):
@@ -55,9 +92,9 @@ class CharacterHandler:
             self.data[CombatMixin.PV] = maxPV
         return maxPV
 
-
     @property
     def pv(self):
+        """Current point de vie on the character"""
         return self.data.get(CombatMixin.PV,20)
     
     @pv.setter
@@ -65,6 +102,7 @@ class CharacterHandler:
         maxPV = self.character.helper[CombatMixin.MAXPV]
         if amount > maxPV:
             self.character.msg("oups !")
+            amount = maxPV
         self.data[CombatMixin.PV] = amount
 
 

@@ -59,7 +59,8 @@ class CombatMixin(ExtEnum):
 
     PV = "Points de vie"
     MAXPV = "Points de vie Max"
-    DEF = "Défense"
+    MAXCW = "Charge maximale"
+    CW = "Charge transportee"
     ATKBONUS = "Bonus d'attaque"
     RGARMORCLASS = "Classe d'armure/Distance"
     CQDARMORCLASS = "Classe d'armure/Corps à corps"
@@ -224,6 +225,32 @@ class Backgrounds(Enum):
             Skill.SAV,
             Skill.PCV,
         ],
+    )
+
+    CORPSEC = (
+        "Sécu Corpo",
+        # free skill
+        MetaChoice.ANY_COMBAT,
+        # growth list
+        [
+            (1, MetaChoice.ANY_STAT),
+            (2, MetaChoice.PHYSICAL),
+            (2, MetaChoice.PHYSICAL),
+            (2, MetaChoice.PHYSICAL),
+            MetaChoice.ANY_COMBAT,
+            MetaChoice.ANY_SKILL,
+        ],
+        # learning list
+        [
+            Skill.ADM,
+            Skill.CNT,
+            Skill.PCV,
+            Skill.EXE,
+            Skill.SOI,
+            Skill.INF,
+            Skill.DIR,
+        ],
+
     )
 
 
