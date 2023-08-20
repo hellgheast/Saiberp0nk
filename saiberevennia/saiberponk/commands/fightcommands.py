@@ -40,6 +40,7 @@ class CmdHit(Command):
             self.caller.msg("Cible inexistante..")
             return
         weapon = None
+        # Use the equipement handler for using the weapons
         if self.weapon:
             weapon = self.caller.search(self.weapon)
         if weapon:

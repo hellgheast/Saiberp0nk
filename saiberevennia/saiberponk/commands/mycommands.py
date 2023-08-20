@@ -76,10 +76,46 @@ class CmdPrendre(default_cmds.CmdGet):
     """
 
     key = "prendre"
+    aliases = "obtenir"
+    locks = "cmd:all();view:perm(Developer);read:perm(Developer)"
+    arg_regex = r"\s|$"
 
     def func(self):
-        super().func()
-        self.caller.msg(str(self.caller.location.contents))
+        """implements the command."""
+
+        caller = self.caller
+
+        if not self.args:
+            caller.msg("Prendre quoi ?")
+            return
+        obj = caller.search(self.args, location=caller.location)
+        if not obj:
+            return
+        if caller == obj:
+            caller.msg("Tu ne peux pas te prendre toi-même.")
+            return
+        if not obj.access(caller, "get"):
+            if obj.db.get_err_msg:
+                caller.msg(obj.db.get_err_msg)
+            else:
+                caller.msg("Tu ne peux pas prendre celà.")
+            return
+
+        # calling at_pre_get hook method
+        if not obj.at_pre_get(caller):
+            return
+
+        success = obj.move_to(caller, quiet=True, move_type="get")
+        if not success:
+            caller.msg("Ceci ne peux pas être pris.")
+        else:
+            singular, _ = obj.get_numbered_name(1, caller)
+            #TODO: Add inline func $Tu()
+            caller.location.msg_contents(f"$You() prends {singular}.", from_obj=caller)
+            # calling at_get hook method
+            obj.at_get(caller)
+
+
 
 
 class CmdFindTerm(Command):
@@ -186,6 +222,42 @@ class CmdStatCheck(Command):
         else:
             caller.msg(f"{self.statName} ROLL FAILURE")
 
+class CmdInventory(Command):
+    """
+    Commande pour voir son inventaire
+
+    Usage:
+        inventaire
+
+    """
+    key = "inventaire"
+    aliases = ("i","inv")
+
+    def func(self):
+        caller = self.caller
+
+        loadout = caller.inventory.displayLoadout()
+        backpack = caller.inventory.displayBackpack()
+        carryUsage = caller.inventory.displayCarryUsage()
+        caller.msg(f"{loadout}\n{backpack}\n{carryUsage}")
+
+
+class CmdWieldOrWear(Command):
+    """
+    Équiper une arme/un équipement or porter une armure/un casque
+    
+    Usage:
+        équiper <objet>
+        porter <objet>
+
+    """
+
+    key = "équiper"
+    aliases = ("porter",)
+
+
+
+
 
 class CustomCmdSet(CmdSet):
     """Set de commandes spéciales"""
@@ -196,3 +268,5 @@ class CustomCmdSet(CmdSet):
         self.add(CmdFindTerm)
         self.add(CmdInfo)
         self.add(CmdStatCheck)
+        self.add(CmdInventory)
+        self.add(CmdWieldOrWear)

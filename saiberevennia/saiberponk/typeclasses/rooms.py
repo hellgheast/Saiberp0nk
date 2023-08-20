@@ -9,7 +9,7 @@ import random
 from evennia.objects.objects import DefaultRoom
 from .objects import ObjectParent
 from commands.chargencommands import CharGenCmdSet
-from evennia import TICKER_HANDLER
+from evennia import TICKER_HANDLER,AttributeProperty
 
 class Room(ObjectParent, DefaultRoom):
     """
@@ -24,7 +24,18 @@ class Room(ObjectParent, DefaultRoom):
 
     pass
 
-class ChargenRoom(Room):
+
+class SbRoom(Room):
+    allowCombat = AttributeProperty(False,autocreate=False)
+    allowPvP = AttributeProperty(False,autocreate=False)
+    allowDeath = AttributeProperty(False,autocreate=False)
+
+class SbRoomPvP(SbRoom):
+    allowCombat = AttributeProperty(True,autocreate=False)
+    allowPvP = AttributeProperty(True,autocreate=False)
+    allowDeath = AttributeProperty(True,autocreate=False)
+
+class ChargenRoom(SbRoom):
     """
     This room class is used by character-generation rooms. It makes
     the CharGenCmdSet available.
@@ -41,19 +52,23 @@ EVENT_STRINGS = [
     "|rZlatows |nest entrain de manger un |gKebabum Imperalis|n avec une sauce de la |rvile albion.."
 ]
 
-class RandomRoom(Room):
+class RandomRoom(SbRoom):
     """This room class is used to show some random events to the player which is inside"""
-    
+
     def at_object_creation(self):
-        self.db.interval = random.randint(10, 20)
+        self.db.interval = random.randint(60, 120)
+        self.db.events = EVENT_STRINGS
+
+    def at_object_delete(self):
+        self.stopEcho()
+        return super().at_object_delete()
+
+    def startEcho(self):
         TICKER_HANDLER.add(
             interval=self.db.interval, callback=self.update_event
         )
-    
-    def at_object_delete(self):
+    def stopEcho(self):
         TICKER_HANDLER.remove(self.db.interval,self.update_event)
-        return super().at_object_delete()
-
     def update_event(self, *args, **kwargs):
         """
         Called by the tickerhandler at regular intervals. Even so, we
@@ -64,4 +79,4 @@ class RandomRoom(Room):
         """
         if random.random() < 0.5:
             # only update 50 % of the time
-            self.msg_contents("|w%s|n" % random.choice(EVENT_STRINGS))
+            self.msg_contents("|w%s|n" % random.choice(self.db.events))

@@ -16,6 +16,7 @@ from world.traits import ExtTraitHandler
 from typeclasses.charinfohandler import CharInfoHandler
 from typeclasses.characterhandler import CharacterHandler
 from typeclasses.wallethelper import WalletHelper
+from typeclasses.inventoryhandler import InventoryHandler
 from module.enums import Stat,Skill,CombatMixin
 from world.rules import dice
 
@@ -118,6 +119,9 @@ class Character(ObjectParent, DefaultCharacter,LivingMixin):
     def charinfo(self):
         return CharInfoHandler(self)
 
+    @lazy_property
+    def inventory(self):
+        return InventoryHandler(self)
 
     @lazy_property
     def helper(self):
@@ -147,20 +151,33 @@ class Character(ObjectParent, DefaultCharacter,LivingMixin):
         self.db.xp = 0
         self.db.level = 1
 
-       
+
+    def at_pre_object_receive(self,movedObject,sourceLocation,**kwargs):
+        return self.inventory.validateSlotUsage(movedObject)
+
+    def at_object_receive(self,movedObject,sourceLocation,**kwargs):
+        self.inventory.add(movedObject)
+    
+    def at_pre_object_leave(self, leaving_object, destination, **kwargs):
+        return True
+
+    def at_object_leave(self,movedObject,destination,**kwargs):
+        from evennia import set_trace;set_trace()
+        return self.inventory.remove(movedObject)
+
     def atDefeat(self):
         #TODO: Add allowDeath property
         if self.location.attributes.get("allowDeath") == True:
             dice.rollDeath(self)
         else:
             self.location.msg_contents(
-                "$You() $conj(collapse) in a heap, alive but beaten.",
+                "Tu t'effrondres sur place, battu mais vivant.",
                 from_obj=self)
             self.heal(self.heal[CombatMixin.MAXPV])
     
     def atDeath(self):
         self.location.msg_contents(
-            "$You() collapse in a heap, embraced by death.",
+            "Tu t'effrondres sur place, sentant l'étreinte de la mort.",
             from_obj=self) 
 
 
@@ -172,6 +189,7 @@ class Character(ObjectParent, DefaultCharacter,LivingMixin):
         """
         #TODO: Refactor this method
         text = super().return_appearance(looker)
+        text += self.inventory.displayLoadout()
         return text
     
 class NPC(DefaultCharacter):

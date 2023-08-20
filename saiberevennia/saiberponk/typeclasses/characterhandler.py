@@ -77,7 +77,7 @@ class CharacterHandler:
         #from evennia import set_trace;set_trace()
         computemaxCW = self.character.helper[CombatMixin.MAXCW]
         if amount > computemaxCW:
-            self.character.msg("oups !")
+            self.character.msg("oups CW !")
             amount = computemaxCW
         self.data[CombatMixin.CW.value] = amount
 
@@ -100,7 +100,7 @@ class CharacterHandler:
     def pv(self,amount:int):
         maxPV = self.character.helper[CombatMixin.MAXPV]
         if amount > maxPV:
-            self.character.msg("oups !")
+            self.character.msg("oups PV !")
             amount = maxPV
         self.data[CombatMixin.PV.value] = amount
 

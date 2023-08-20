@@ -213,7 +213,7 @@ class SbObject(DefaultObject):
         return True
 
     def use(self,*args,**kwargs):
-        pass
+        raise NotImplementedError
 
     def postUse(self,*args,**kwargs):
         pass
@@ -240,7 +240,9 @@ class SbConsumable(SbObject):
         if self.uses <= 0:
             user.msg(f"|w{self.key} est vide.|n")
             return False
-    
+        
+        return super().at_pre_use(user, target=target, *args, **kwargs)
+
     def use(self,user,*args,**kwargs):
         pass
 
@@ -381,4 +383,6 @@ class SbHelmet(SbObject):
     size = AttributeProperty(3,autocreate=False)
     value = AttributeProperty(0,autocreate=False)
     state = AttributeProperty(3,autocreate=False)
+    rangedAC = AttributeProperty(0,autocreate=False)
+    closequarterAC = AttributeProperty(0,autocreate=False)
 

@@ -54,5 +54,31 @@ examine me est pratique
 
 # Get attributes
 https://www.evennia.com/docs/latest/Components/Attributes.html?highlight=attributehandler
+https://www.evennia.com/docs/latest/Components/Objects.html
+https://www.evennia.com/docs/latest/Components/Components-Overview.html
+https://www.evennia.com/docs/latest/Components/Objects.html#changing-an-objects-appearance
+https://www.evennia.com/docs/latest/Components/Exits.html
+https://www.evennia.com/docs/latest/Components/Rooms.html
+https://www.evennia.com/docs/latest/Components/Tags.html
+https://www.evennia.com/docs/latest/Components/Prototypes.html
+https://www.evennia.com/docs/latest/Components/Permissions.html
+https://www.evennia.com/docs/latest/Components/Locks.html
+https://www.evennia.com/docs/latest/Components/Commands.html#how-commands-actually-work
+https://www.evennia.com/docs/latest/Evennia-API.html
+
 # Set stuff from evennia
 use `set` command
+## Room creation
+dig market:rooms.RandomRoom = market,back
+>> py here.startEcho()
+## Object creation
+create Sg400:objects.SbWeapon
+
+## Have builder
+Need to add needed permissions to account and character !
+pperm Builder
+perm Builder
+# update evennia in virtual env
+pip install -e evennia
+cd saiberponk
+evennia migrate
