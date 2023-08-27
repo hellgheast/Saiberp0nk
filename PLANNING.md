@@ -1,18 +1,18 @@
 # Goal for minimal release
 
 * Batch commands to build the world
-* Character creation process
-* Object system
+* Character creation process (Done)
+* Object system (In progress)
 * Simple but efficient Room description
 * Support a small NPC
 * World minimal description
-* Dice roll
+* Dice roll (Done)
 * RP/wear system
 * Exchange system (money and object)
 * Small quest (get X of Y)
 * Action with objects (get/use/attack)
 * Have a minimal XP system
-* Custom intro screen (also called cinematic module)
+* Custom intro screen (also called cinematic module) (In progress)
 * Have minimal french support (own command set)
 
 # As a user

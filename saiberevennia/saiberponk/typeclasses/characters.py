@@ -162,7 +162,7 @@ class Character(ObjectParent, DefaultCharacter,LivingMixin):
         return True
 
     def at_object_leave(self,movedObject,destination,**kwargs):
-        from evennia import set_trace;set_trace()
+        #from evennia import set_trace;set_trace()
         return self.inventory.remove(movedObject)
 
     def atDefeat(self):

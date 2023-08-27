@@ -313,7 +313,8 @@ class CmdExport(MuxCommand):
 
             aliases = target.aliases.all()
 
-            aliases.remove(str(target.id))
+            #TODO:check how to remove the dbref in the aliases
+            #aliases.remove(str(target.id))
 
             tags = target.tags.all(return_key_and_category=True)
 
@@ -333,7 +334,7 @@ class CmdExport(MuxCommand):
                 }
             )
 
-            self.caller.msg(f"Here's your Export String: {export_dict}")
+            self.caller.msg(f"Here's your Export String for {target.name}:\n{export_dict}")
             # self.caller.popup(export_dict,f"|x>>|wExporting {target.name}",True)
 
             return

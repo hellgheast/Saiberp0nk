@@ -41,6 +41,7 @@ class InventoryHandler:
 
     @property
     def maxWeight(self):
+        # Refactor and output maxCW from helper
         return self.character.helper.maxCW
 
     def currentWeight(self):
@@ -170,9 +171,8 @@ class InventoryHandler:
 
     def remove(self, slotObj):
         ret = []
-        self.character.msg(f"1 {slotObj} {type(slotObj)}")
+        #import pdb; pdb.set_trace()
         if isinstance(slotObj, WieldLocation):
-            self.character.msg(f"1.5 {slotObj} {type(slotObj)}")
             if slotObj is WieldLocation.BACKPACK:
                 # empty entire backpack
                 ret.extend(self.slots[slotObj])
@@ -181,20 +181,17 @@ class InventoryHandler:
                 ret.append(self.slots[slotObj])
                 self.slots[slotObj] = None
         elif slotObj in self.slots.values():
-            self.character.msg(f"2 {slotObj} {type(slotObj)}")
             for slot, elem in self.slots.items():
                 if elem is slotObj:
                     self.slots[slot] = None
                     ret.append(slotObj)
         elif slotObj in self.slots[WieldLocation.BACKPACK]:
             try:
-                self.character.msg(f"3 {slotObj} {type(slotObj)}")
                 self.slots[WieldLocation.BACKPACK].remove(slotObj)
                 ret.append(slotObj)
             except ValueError:
                 pass
         if ret:
-            self.character.msg(f"4 {slotObj} {type(slotObj)}")
             removedWeight = 0
             for elem in ret:
                 removedWeight += getattr(elem, "size", 0)
