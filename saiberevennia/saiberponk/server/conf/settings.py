@@ -36,6 +36,12 @@ SERVERNAME = "saiberponk"
 # Allow guest accounts
 GUEST_ENABLED = True
 
+# lightly customized websocket protocol to play better with the custom client
+WEBSOCKET_PROTOCOL_CLASS = "server.portal.websocket.WebSocketClient"
+
+# CACHE BUSTERRRR
+TEMPLATES[0]["OPTIONS"]["context_processors"].append("web.custom_context.extra_context")
+
 TRAIT_CLASS_PATHS = ["world.traits.SkillTrait","world.traits.StatTrait"]
 
 ######################################################################

@@ -82,3 +82,6 @@ perm Builder
 pip install -e evennia
 cd saiberponk
 evennia migrate
+
+# webclient code
+https://nikitahl.com/css-only-tooltip

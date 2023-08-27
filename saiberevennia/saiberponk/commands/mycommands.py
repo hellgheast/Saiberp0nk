@@ -39,7 +39,7 @@ class CmdEchelon(Command):
                 )
         else:
             textList = [
-                (f"|gBonjour {self.caller.key} je suis Echelon 2 !|n\n", 2),
+                (f"|gBonjour {self.caller.key} je suis Echelon charcudoc 2 !|n\n", 2),
                 ("|g.", 1),
                 ("|g.", 1),
                 ("|g.", 1),
