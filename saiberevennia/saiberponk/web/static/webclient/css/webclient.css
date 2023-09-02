@@ -218,4 +218,32 @@ span.tooltip:hover::after {
 	visibility: visible;
   }
   
+
+#modal_div {
+	position: absolute;
+	cursor: move;
+	background: rgba(235, 150, 89, 0.7);
+	top: 50%;
+	left: 50%;
+	height: fit-content;
+	max-height: 90%;
+	width: min-content;
+	min-width: 50%;
+	z-index: 20;
+	margin: auto;
+	padding: 0.5em;
+	border-radius: 0.1em;
+	white-space: pre-wrap;
+}
+
+#closer_div {
+	position: fixed;
+	top: 0;
+	left: 0;
+	padding: 0;
+	margin: 0;
+	z-index: 10;
+	width: 100lvw;
+	height: 100lvh;
+}
 /*** responsive/mobile layout handling will go down here ***/

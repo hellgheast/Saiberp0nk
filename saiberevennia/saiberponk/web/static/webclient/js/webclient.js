@@ -33,6 +33,34 @@ function MakeClickables(el) {
 		MakeClickables(curr);
 	}
 }
+//WIP
+function makeDragable(el) {
+
+
+	el.ondragstart = () => {
+		return false;
+	}
+
+	el.onmousedown = (event) => {
+		el.style.top = event.clickX;
+		el.style.left = event.clickY;
+
+		// When mouses moves
+		el.onmousemove = onMouseMove;
+		function onMouseMove(e) {
+			el.style.top = e.clientY - el.offsetHeight/2 + 'px';
+			el.style.left = e.clientX - el.offsetWidth/2 + 'px';
+		}
+		document.addEventListener('mousemove', onMouseMove);
+	
+		// When mouse leaves
+		el.onmouseup = () => {
+			document.removeEventListener('mousemove', onMouseMove);
+			el.onmouseup = null;
+		}
+	}
+
+}
 
 // base function for adding new log lines to the end of an element
 function LogTo(el, msg, cls) {
@@ -335,6 +363,45 @@ let tooltipCatcher = (function () {
     }
 })()
 
+
+
+function setModal(content) {
+    closer_elem = document.getElementById('closer_div');
+    if (!closer_elem) {
+        // create the div
+        closer_elem = document.createElement('div');
+        closer_elem.id = 'closer_div';
+        closer_elem.addEventListener('click', closeModal);
+        document.body.append(closer_elem);
+    }
+    menu_elem = document.getElementById('modal_div');
+    if (!menu_elem) {
+        // create the popup
+        menu_elem = document.createElement('div');
+        menu_elem.id = 'modal_div';
+        document.body.append(menu_elem);
+    }
+    menu_elem.innerHTML = content;
+    MakeClickables(menu_elem)
+	makeDragable(menu_elem)
+}
+
+function closeModal(ev) {
+    send_quit = false;
+    el = document.getElementById('closer_div');
+    if (el) {
+        el.remove();
+        send_quit = true;
+    }
+    el = document.getElementById('modal_div');
+    if (el) {
+        el.remove();
+        send_quit = true;
+    }
+    if (send_quit) SendFunc('close_quit', '', '');
+}
+
+
 // handle all messages coming from the server
 socket.onmessage = function (e) {
 	msg = JSON.parse(e.data);
@@ -363,6 +430,10 @@ socket.onmessage = function (e) {
 					break;
 				case 'input':
 					EchoMsg(message);
+					break;
+				case 'menu':
+					console.log("Menu inside");
+					setModal(message);
 					break;
 				// the following cases happen AS WELL AS the normal message display
 				// so there is no `break` and multiple can be triggered by one message
@@ -454,6 +525,20 @@ document.addEventListener("keydown", (e) => {
 	else if (input_box !== document.activeElement) {
 		// automatically focus on the input area when you start typing
 		if ( e.key && e.key.length === 1 && !(e.ctrlKey || e.altKey) ) {
+			input_box.focus();
+		}
+	}
+});
+
+// handles keypresses at the modal level
+document.addEventListener("keydown", (e) => {
+	if (e.key === 'Escape' && input_box === document.activeElement) input_box.blur();
+	if (document.getElementById('closer_div')) {
+		if (e.key === 'Escape') closeModal(e);
+		// TODO: make it so i can enter a number key on the modal to choose an option
+	}
+	if (input_box !== document.activeElement) {
+		if (e.key && e.key.length === 1 && !(e.ctrlKey || e.altKey)) {
 			input_box.focus();
 		}
 	}

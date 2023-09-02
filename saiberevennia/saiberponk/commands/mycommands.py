@@ -52,6 +52,20 @@ class CmdEchelon(Command):
             cinematic.sendArrayText(self.caller, textList)
 
 
+class CmdOpenModal(Command):
+    """
+    Fonction qui teste les fonctionnalités du client web
+    """
+    key="openmodal"
+
+    def parse(self):
+        pass
+
+    def func(self):
+        caller = self.caller
+        caller.msg(("|bTestMenu",{'type':'menu'}))
+        caller.msg(("|rTestMap",{'type':'map'}))
+
 class CmdMobAdd(Command):
     """
     Fonction pour rajouter un mob pour faire des essais
@@ -314,7 +328,7 @@ class CmdExport(MuxCommand):
             aliases = target.aliases.all()
 
             #TODO:check how to remove the dbref in the aliases
-            #aliases.remove(str(target.id))
+            aliases = [x for x in aliases if str(target.id) not in x]
 
             tags = target.tags.all(return_key_and_category=True)
 
@@ -600,5 +614,6 @@ class CustomCmdSet(CmdSet):
         self.add(CmdStatCheck)
         self.add(CmdInventory)
         #self.add(CmdWieldOrWear)
+        self.add(CmdOpenModal)
         self.add(CmdImport)
         self.add(CmdExport)
