@@ -61,15 +61,19 @@ class RollEngine():
 
 
     def savingThrow(self, character,type:SaveThrow,target:int):
-        match type:
-            case SaveThrow.PHYSAVE:
-                sub = max(character.traits[str(Stat.FOR)].mod,character.traits[str(Stat.CON)].mod)
-            case SaveThrow.EVSAVE:
-                sub = max(character.traits[str(Stat.INT)].mod,character.traits[str(Stat.DEX)].mod)
-            case SaveThrow.MENTSAVE:
-                sub = max(character.traits[str(Stat.FOR)].mod,character.traits[str(Stat.CON)].mod)
-            case SaveThrow.LUCKSSAVE:
-                sub = 0
+        sub = 0
+        # If is PC, we compute the sub, we don't substract anything
+        if character.isPC:
+            match type:
+                case SaveThrow.PHYSAVE:
+                    sub = max(character.traits[str(Stat.FOR)].mod,character.traits[str(Stat.CON)].mod)
+                case SaveThrow.EVSAVE:
+                    sub = max(character.traits[str(Stat.INT)].mod,character.traits[str(Stat.DEX)].mod)
+                case SaveThrow.MENTSAVE:
+                    sub = max(character.traits[str(Stat.FOR)].mod,character.traits[str(Stat.CON)].mod)
+                case SaveThrow.LUCKSSAVE:
+                    sub = 0
+        
 
         roll = self.roll("1d20")
 
@@ -193,10 +197,14 @@ def rollStatCheck(character,stat:str,targetNumber:int,debug=False) -> bool:
 def characterDefense(character):
     character.traits.DEF.base = 7 + character.traits.SAG.value
 #todo:refactor
-def acquireSkill(character,skill_id:str):
-    #set_trace()
-    if character.traits[skill_id] is None:
+def buySkill(character,skillName:str):
+    if character.traits[skillName] is None:
         raise Exception("Non existent skill")
-    character.traits[skill_id].acquired = True
-    character.traits[skill_id].base = 0
-    character.traits[skill_id].mod = 0
+    character.traits[skillName].acquired = True
+    character.traits[skillName].base = 0
+
+def setSkill(character,skillName:str,value:int):
+    if character.traits[skillName] is None:
+        raise Exception("Non existent skill")
+    character.traits[skillName].acquired = True
+    character.traits[skillName].base = value

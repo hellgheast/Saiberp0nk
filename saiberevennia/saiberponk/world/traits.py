@@ -28,18 +28,11 @@ class SkillTrait(StaticTrait):
     trait_type = "skill"
     default_keys = {
         "base": 0, 
-        "mod": -1, 
         "mult": 1,
         "acquired":False
     }    
 
     NOT_ACQUIRED_SKILL_VALUE = -1
-
-    def __str__(self):
-        status = "{value:11}".format(value=self.value)
-        return "{name:12} {status} ({mod:+3}) (* {mult:.2f})/ acquired: {acq}".format(
-            name=self.name, status=status, mod=self.mod, mult=self.mult,acq=self.acquired
-        )
 
     # Helpers
     @property

@@ -1,7 +1,7 @@
 from evennia.utils.utils import inherits_from
 from module.enums import WieldLocation, Stat
 from typeclasses.objects import SbObject, SbWeapon, SbWeaponBareHands
-from typing import Dict, Any, List
+from typing import Dict, Any, List,Tuple
 
 
 class InventoryError(TypeError):
@@ -62,7 +62,7 @@ class InventoryHandler:
         return wieldWeight + backpackWeight
 
     @property
-    def armor(self):
+    def armor(self) -> Tuple[int,int]:
         rangedAC: int = (
             sum(
                 getattr(self.slots[WieldLocation.BODY], "rangedAC", 10),

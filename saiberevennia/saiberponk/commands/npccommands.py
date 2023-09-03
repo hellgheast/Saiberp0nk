@@ -31,7 +31,7 @@ class CmdCreateNPC(Command):
         # make name always start with capital letter
         name = self.args.strip().capitalize()
         # create npc in caller's location
-        npc = create_object("characters.Character",
+        npc = create_object("characters.NPC",
                       key=name,
                       location=caller.location,
                       locks="edit:id(%i) and perm(Builders);call:false()" % caller.id)

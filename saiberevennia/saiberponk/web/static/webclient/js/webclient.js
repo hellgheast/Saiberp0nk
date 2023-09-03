@@ -36,11 +36,6 @@ function MakeClickables(el) {
 //WIP
 function makeDragable(el) {
 
-
-	el.ondragstart = () => {
-		return false;
-	}
-
 	el.onmousedown = (event) => {
 		el.style.top = event.clickX;
 		el.style.left = event.clickY;

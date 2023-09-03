@@ -204,3 +204,7 @@ Formation militaire : +1/+2 aux jet d'attaques
 Dur à cuir: + 15 PV
 
 
+### TODO
+Harmonize API between NPC and character
+* Get rid of spaghetti code
+* Read more thourougly the rules of the game

@@ -83,6 +83,7 @@ class CharacterHandler:
 
     @property
     def maxPV(self):
+        #TODO: Fix the computation for NPC
         con = self.character.traits[Stat.CON].value
         currentPV = self.data.get(CombatMixin.PV.value,20)
         maxPV = 7 + con

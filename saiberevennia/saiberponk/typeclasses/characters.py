@@ -11,14 +11,15 @@ creation commands.
 from evennia.objects.objects import DefaultCharacter
 from evennia.utils import lazy_property
 from evennia.contrib.rpg.traits import TraitHandler
+from evennia import logger,AttributeProperty
 from world.traits import ExtTraitHandler
 
 from typeclasses.charinfohandler import CharInfoHandler
 from typeclasses.characterhandler import CharacterHandler
 from typeclasses.wallethelper import WalletHelper
-from typeclasses.inventoryhandler import InventoryHandler
+from typeclasses.inventoryhandler import InventoryHandler,InventoryError
 from module.enums import Stat,Skill,CombatMixin
-from world.rules import dice
+from world.rules import dice,setSkill
 
 from .objects import ObjectParent
 
@@ -27,6 +28,14 @@ import random
 
 class LivingMixin:
     isPC = False
+
+    @lazy_property
+    def traits(self):
+        return ExtTraitHandler(self)
+
+    @lazy_property
+    def helper(self):
+        return CharacterHandler(self)
 
     @property
     def lifeLevel(self) -> str:
@@ -107,9 +116,7 @@ class Character(ObjectParent, DefaultCharacter,LivingMixin):
 
     """
 
-    @lazy_property
-    def traits(self):
-        return ExtTraitHandler(self)
+    isPc = True
     
     @lazy_property
     def wallet(self):
@@ -122,10 +129,6 @@ class Character(ObjectParent, DefaultCharacter,LivingMixin):
     @lazy_property
     def inventory(self):
         return InventoryHandler(self)
-
-    @lazy_property
-    def helper(self):
-        return CharacterHandler(self)
 
     def at_object_creation(self):
         
@@ -143,6 +146,11 @@ class Character(ObjectParent, DefaultCharacter,LivingMixin):
             # Computed properties
             self.helper[mixin] = 0
 
+        self.helper[CombatMixin.ATKBONUS] = 0
+        self.helper[CombatMixin.CQDARMORCLASS] = 10
+        self.helper[CombatMixin.RGARMORCLASS] = 10
+
+
         self.wallet.setup()
 
 
@@ -156,7 +164,11 @@ class Character(ObjectParent, DefaultCharacter,LivingMixin):
         return self.inventory.validateSlotUsage(movedObject)
 
     def at_object_receive(self,movedObject,sourceLocation,**kwargs):
-        self.inventory.add(movedObject)
+        try:
+
+            self.inventory.add(movedObject)
+        except InventoryError:
+            logger.log_trace()
     
     def at_pre_object_leave(self, leaving_object, destination, **kwargs):
         return True
@@ -192,8 +204,46 @@ class Character(ObjectParent, DefaultCharacter,LivingMixin):
         text += self.inventory.displayLoadout()
         return text
     
-class NPC(DefaultCharacter):
-    pass
+class NPC(LivingMixin,DefaultCharacter):
+    
+    isPc = False
+
+    hitDice = AttributeProperty(default=1, autocreate=False)
+    armorClass = AttributeProperty(default=(10,10), autocreate=False)
+    genericSkill = AttributeProperty(default=1, autocreate=False)
+    saveTarget = AttributeProperty(default=15, autocreate=False)
+    atkBonus = AttributeProperty(default=1, autocreate=False)
+    dmg = AttributeProperty(default=1, autocreate=False)
+    #traumaTarget = AttributeProperty(default=1, autocreate=False)
+    #shock = AttributeProperty(default=1, autocreate=False)
+
+
+    def at_object_creation(self):
+        
+        # STATS
+        # Traits are nice for this
+        for stat in Stat.attributes():
+            self.traits.add(stat,stat,trait_type="stat")
+            self.traits[stat].base = 8
+         
+        # SKILLS
+        for skill in Skill.attributes():
+            self.traits.add(skill,skill,trait_type="skill")
+            setSkill(self,skill,self.genericSkill)
+
+        # PV,DEF,ATKBONUS,ARMORCLASS
+        for mixin in CombatMixin.attributes():
+            # Computed properties
+            self.helper[mixin] = 0
+        
+        self.helper[CombatMixin.MAXPV] = self.hitDice * 5
+        self.helper[CombatMixin.PV] = self.hitDice * 5
+        self.helper[CombatMixin.CQDARMORCLASS] = self.armorClass[0]
+        self.helper[CombatMixin.RGARMORCLASS] = self.armorClass[1]
+        self.helper[CombatMixin.ATKBONUS] = self.atkBonus
+
+
+
 
 class Mob(NPC):
     pass

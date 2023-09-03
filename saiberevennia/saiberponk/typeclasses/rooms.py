@@ -35,7 +35,7 @@ class SbRoomPvP(SbRoom):
     allowPvP = AttributeProperty(True,autocreate=False)
     allowDeath = AttributeProperty(True,autocreate=False)
 
-class ChargenRoom(SbRoom):
+class SbChargenRoom(SbRoom):
     """
     This room class is used by character-generation rooms. It makes
     the CharGenCmdSet available.
@@ -52,7 +52,7 @@ EVENT_STRINGS = [
     "|rZlatows |nest entrain de manger un |gKebabum Imperalis|n avec une sauce de la |rvile albion.."
 ]
 
-class RandomRoom(SbRoom):
+class SbRandomRoom(SbRoom):
     """This room class is used to show some random events to the player which is inside"""
 
     def at_object_creation(self):

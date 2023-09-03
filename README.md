@@ -78,6 +78,10 @@ create Sg400:objects.SbWeapon
 Need to add needed permissions to account and character !
 pperm Builder
 perm Builder
+
+## Automatic build
+batchcode world.batch_cmds.py
+
 # update evennia in virtual env
 pip install -e evennia
 cd saiberponk

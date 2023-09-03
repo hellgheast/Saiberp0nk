@@ -114,7 +114,7 @@ class CmdBuySkill(Command):
                 self.caller.msg(f"{errmsg}")
                 return
             #set_trace()
-            rules.acquireSkill(caller,self.skillName)
+            rules.buySkill(caller,self.skillName)
             caller.msg(f"Compétence {self.skillName} achetée")
 
 
