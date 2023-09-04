@@ -57,8 +57,8 @@ class Skill(ExtEnum):
 
 class CombatMixin(ExtEnum):
 
-    PV = "Points de vie"
     MAXPV = "Points de vie Max"
+    PV = "Points de vie"
     MAXCW = "Charge maximale"
     CW = "Charge transportee"
     ATKBONUS = "Bonus d'attaque"

@@ -83,14 +83,24 @@ class CharacterHandler:
 
     @property
     def maxPV(self):
-        #TODO: Fix the computation for NPC
-        con = self.character.traits[Stat.CON].value
-        currentPV = self.data.get(CombatMixin.PV.value,20)
-        maxPV = 7 + con
-        self.data[CombatMixin.MAXPV.value] = maxPV
-        if currentPV > maxPV:
-            self.data[CombatMixin.PV.value] = maxPV
-        return maxPV
+        # We compute the maxPV value for PC
+        if self.character.isPc:
+            con = self.character.traits[Stat.CON].value
+            currentPV = self.data.get(CombatMixin.PV.value,20)
+            maxPV = 7 + con
+            self.data[CombatMixin.MAXPV.value] = maxPV
+            if currentPV > maxPV:
+                self.data[CombatMixin.PV.value] = maxPV
+            return maxPV
+        else:
+           return self.data[CombatMixin.MAXPV.value]
+
+    @maxPV.setter
+    def maxPV(self,amount:int):
+        # We can only set this value for NPC
+        if self.character.isPc == False:
+           self.data[CombatMixin.MAXPV.value] = amount
+           return self.data[CombatMixin.MAXPV.value]
 
     @property
     def pv(self):
