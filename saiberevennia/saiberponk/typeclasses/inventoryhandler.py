@@ -206,6 +206,7 @@ class InventoryHandler:
         toBackpack = []
         # Which slot does this object uses
         useSlot = getattr(obj, "useSlot", WieldLocation.BACKPACK)
+        #self.character.msg(f"move: {useSlot}")
         if useSlot is WieldLocation.TWO_HANDS:
             # If we have anything in right and left hand we remove it
             toBackpack = [
@@ -217,11 +218,12 @@ class InventoryHandler:
             self.slots[useSlot] = obj
         elif useSlot in [WieldLocation.RIGHT_HAND, WieldLocation.LEFT_HAND]:
             # We move the dual hand weapon back to backpack
-            toBackpack = self.slots[WieldLocation.TWO_HANDS]
+            toBackpack = [self.slots[WieldLocation.TWO_HANDS]]
             self.slots[WieldLocation.TWO_HANDS] = None
             self.slots[useSlot] = obj
         elif useSlot is WieldLocation.BACKPACK:
             toBackpack = [obj]
+            self.character.msg("In bkp")
         else:
             # for head,body and legs
             toBackpack = [self.slots[useSlot]]

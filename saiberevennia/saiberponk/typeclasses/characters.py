@@ -242,6 +242,11 @@ class NPC(LivingMixin,DefaultCharacter):
         self.helper[CombatMixin.RGARMORCLASS] = self.armorClass[1]
         self.helper[CombatMixin.ATKBONUS] = self.atkBonus
 
+    def atAttacked(self,attacker,**kwargs):
+        pass
+
+    def aiNextAction(self,**kwargs):
+        pass
 
 
 

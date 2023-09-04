@@ -5,7 +5,7 @@ import evennia
 from evennia import set_trace, default_cmds
 from world import rules
 from module import cinematic
-from module.enums import Stat, CharInfo, CombatMixin, Skill
+from module.enums import Stat, CharInfo, CombatMixin, Skill, WieldLocation
 from evennia.utils.evform import EvForm
 from evennia.utils.evtable import EvTable
 from module.forms import EV_PC_SHEET_DICT
@@ -268,6 +268,43 @@ class CmdWieldOrWear(Command):
 
     key = "équiper"
     aliases = ("porter",)
+
+    out_txts = {
+        WieldLocation.BACKPACK: "Tu mets {key} dans ton sac à dos.",
+        WieldLocation.LEGS: "Tu enfiles {key} sur tes jambes.",
+        WieldLocation.TWO_HANDS: "Tu prends {key} à deux mains.",
+        WieldLocation.LEFT_HAND: "Tu prends {key} avec ta main gauche.",
+        WieldLocation.RIGHT_HAND: "Tu prends {key} avec ta main droite.",
+        WieldLocation.BODY: "Tu enfiles {key} sur toi même.",
+        WieldLocation.HEAD: "Tu mets {key} sur ta tête.",
+    }
+
+    def func(self):
+        # find the item among those in equipment
+        item = self.caller.search(self.args, candidates=self.caller.inventory.all(onlyObj=True))
+        self.caller.msg(f"item {item}")
+        if not item:
+            # An 'item not found' error will already have been reported; we add another line
+            # here for clarity.
+            self.caller.msg("Tu dois avoir les objets que tu souhaites équiper/porter.")
+            return
+
+        useSlot = getattr(item, "useSlot", WieldLocation.BACKPACK)
+
+        # check what is currently in this slot
+        current = self.caller.inventory.slots[useSlot]
+
+        if current == item:
+            self.caller.msg(f"Tu utilises déjà {item.key}.")
+            return
+
+        # move it to the right slot based on the type of object
+        self.caller.inventory.move(item)
+
+        # inform the user of the change (and potential swap)
+        if current:
+            self.caller.msg(f"Tu remets {current.key} dans ton sac à dos.")
+        self.caller.msg(self.out_txts[useSlot].format(key=item.key))
 
 
 class CmdExport(MuxCommand):
@@ -613,7 +650,7 @@ class CustomCmdSet(CmdSet):
         self.add(CmdInfo)
         self.add(CmdStatCheck)
         self.add(CmdInventory)
-        #self.add(CmdWieldOrWear)
+        self.add(CmdWieldOrWear)
         self.add(CmdOpenModal)
         self.add(CmdImport)
         self.add(CmdExport)
