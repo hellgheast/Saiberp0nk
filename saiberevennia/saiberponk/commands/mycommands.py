@@ -63,7 +63,7 @@ class CmdOpenModal(Command):
 
     def func(self):
         caller = self.caller
-        caller.msg(("|bTestMenu",{'type':'menu'}))
+        caller.msg(("|bTestMenu",{'type':'popup'}))
         caller.msg(("|rTestMap",{'type':'map'}))
 
 class CmdMobAdd(Command):

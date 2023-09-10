@@ -426,8 +426,8 @@ socket.onmessage = function (e) {
 				case 'input':
 					EchoMsg(message);
 					break;
-				case 'menu':
-					console.log("Menu inside");
+				case 'popup':
+					console.log("Popup inside");
 					setModal(message);
 					break;
 				// the following cases happen AS WELL AS the normal message display

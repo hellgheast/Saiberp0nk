@@ -16,7 +16,7 @@ class CmdCharGen(Command):
         chargen
     """
     key = "chargen"
-    help_category = "chargen"
+    help_category = "PCGeneration"
     
     def func(self):
         # Rolling the stats dice
@@ -35,7 +35,7 @@ class CmdSetStat(Command):
         setStat <STAT> <1-20>
     """
     key = "setStat"
-    help_category = "chargen"
+    help_category = "PCGeneration"
 
     def parse(self):
         errmsg = "No arguments !"
@@ -84,7 +84,7 @@ class CmdBuySkill(Command):
         buyskill (show a list of available skills)
     """
     key = "buyskill"
-    help_category = "chargen"
+    help_category = "PCGeneration"
 
     def parse(self):
         if not self.args:
@@ -128,7 +128,7 @@ class CmdTraitSet(Command):
 
     """
     key = "traitset"
-    help_category = "chargen"
+    help_category = "PCGeneration"
     def parse(self):
         if not self.args:
             self.statName = None
@@ -161,7 +161,7 @@ class CmdSelectBackground(Command):
 
     """
     key = "selectbackground"
-    help_category = "chargen"
+    help_category = "PCGeneration"
     def parse(self):
         pass
         if not self.args:
@@ -186,7 +186,7 @@ class CmdSelectBackground(Command):
 class CharGenCmdSet(CmdSet):
     """Set de commandes pour la génération de personnage"""
     
-    key = "CharGen"
+    key = "PCGeneration"
     def at_cmdset_creation(self):
         self.add(CmdSetStat)
         self.add(CmdTraitSet)
