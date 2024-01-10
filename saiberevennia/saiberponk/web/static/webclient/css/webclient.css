@@ -107,6 +107,12 @@ body {
 	overflow-wrap: break-word;
 	white-space: pre-wrap;
 	height: inherit;
+.dl-button {
+	cursor: pointer;
+	position: sticky;
+	top: 0;
+	float: right;
+	margin-right: 0.5rem;
 }
 
 .mxplink {
