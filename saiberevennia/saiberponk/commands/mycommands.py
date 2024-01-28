@@ -56,15 +56,17 @@ class CmdOpenModal(Command):
     """
     Fonction qui teste les fonctionnalités du client web
     """
-    key="openmodal"
+
+    key = "openmodal"
 
     def parse(self):
         pass
 
     def func(self):
         caller = self.caller
-        caller.msg(("|bTestMenu",{'type':'popup'}))
-        caller.msg(("|rTestMap",{'type':'map'}))
+        caller.msg(("|bTestMenu", {"type": "popup"}))
+        caller.msg(("|rTestMap", {"type": "map"}))
+
 
 class CmdMobAdd(Command):
     """
@@ -281,7 +283,9 @@ class CmdWieldOrWear(Command):
 
     def func(self):
         # find the item among those in equipment
-        item = self.caller.search(self.args, candidates=self.caller.inventory.all(onlyObj=True))
+        item = self.caller.search(
+            self.args, candidates=self.caller.inventory.all(onlyObj=True)
+        )
         self.caller.msg(f"item {item}")
         if not item:
             # An 'item not found' error will already have been reported; we add another line
@@ -364,7 +368,7 @@ class CmdExport(MuxCommand):
 
             aliases = target.aliases.all()
 
-            #TODO:check how to remove the dbref in the aliases
+            # TODO:check how to remove the dbref in the aliases
             aliases = [x for x in aliases if str(target.id) not in x]
 
             tags = target.tags.all(return_key_and_category=True)
@@ -385,7 +389,9 @@ class CmdExport(MuxCommand):
                 }
             )
 
-            self.caller.msg(f"Here's your Export String for {target.name}:\n{export_dict}")
+            self.caller.msg(
+                f"Here's your Export String for {target.name}:\n{export_dict}"
+            )
             # self.caller.popup(export_dict,f"|x>>|wExporting {target.name}",True)
 
             return
